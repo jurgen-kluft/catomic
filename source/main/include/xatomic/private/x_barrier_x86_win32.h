@@ -1,7 +1,7 @@
 /**
- * @file xmulticore\private\x_barrier_x86_win32.h
+ * @file xatomic\private\x_barrier_x86_win32.h
  * X86 (32 and 64 bit) specific barriers.
- * @warning do not include directly. @see xmulticore\x_barrier.h
+ * @warning do not include directly. @see xatomic\x_barrier.h
  */
 
 // Memory barriers

@@ -9,9 +9,9 @@
 #include "xbase\x_debug.h"
 #include "xbase\x_memory_std.h"
 
-#include "xmulticore\x_dlist.h"
-#include "xmulticore\x_atomic.h"
-#include "xmulticore\x_compiler.h"
+#include "xatomic\x_dlist.h"
+#include "xatomic\x_atomic.h"
+#include "xatomic\x_compiler.h"
 
 namespace xcore
 {

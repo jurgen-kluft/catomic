@@ -7,9 +7,9 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_atomic.h"
-#include "xmulticore\x_barrier.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_atomic.h"
+#include "xatomic\x_barrier.h"
 
 namespace xcore
 {
@@ -39,9 +39,9 @@ namespace xcore
 				volatile u64 next_salt64;
 				struct
 				{
-#ifdef X_BIG_ENDIAN
-					volatile u32 next;
-					volatile u32 salt;
+#ifdef X_LITTLE_ENDIAN
+					volatile u32 next;		// low u32, little endian will swap into the low word of a u64
+					volatile u32 salt;		// high u32
 #else
 					volatile u32 salt;
 					volatile u32 next;
@@ -184,7 +184,7 @@ namespace xcore
 				if (n == LAST) 
 				{
 					// Try to link this element to the tail element
-					if (atomic::cas32((xcore::s32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
+					if (uint32::cas((xcore::u32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
 						break;
 				} 
 				else
@@ -192,13 +192,13 @@ namespace xcore
 					// Tail element was not the last, try to fix it up.
 					// This is done to take care of the races were another 
 					// writer got preempted before completing the push.
-					atomic::cas64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
+					uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
 				}
 			}
 
 			// Complete the push.
 			// Try to point tail to this element.
-			atomic::cas64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, i, t.next_salt32.salt + 1);
+			uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, i, t.next_salt32.salt + 1);
 
 			return true;
 		}
@@ -225,7 +225,7 @@ namespace xcore
 
 					// Tail is pointing to the head in the non empty fifo,
 					// try to fix it up.
-					atomic::cas64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
+					uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
 					continue;
 				}
 
@@ -233,7 +233,7 @@ namespace xcore
 				{
 					// Head points to the usable element.
 					// Try to re point it to the next element
-					if (atomic::cas64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1))
+					if (uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1))
 						break;
 				}
 			}

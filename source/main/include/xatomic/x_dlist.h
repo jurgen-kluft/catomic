@@ -8,7 +8,7 @@
 #include "xbase\x_types.h"
 
 /**
-* @file xmulticore\dlist.h
+* @file xatomic\dlist.h
 * Generic circular doubly linked list
 *
 * Head:            +------+------+

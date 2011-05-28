@@ -3,8 +3,8 @@
 #include "xbase\x_allocator.h"
 #include "xunittest\xunittest.h"
 
-#include "xmulticore\x_allocator.h"
-#include "xmulticore\x_cpu_info.h"
+#include "xatomic\x_allocator.h"
+#include "xatomic\x_cpu_info.h"
 
 UNITTEST_SUITE_LIST(xMultiCoreUnitTest);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, cpu_info);
@@ -103,7 +103,7 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 	}
 	if (threadHeapAllocator.mNumAllocations!=0)
 	{
-		reporter.reportFailure(__FILE__, __LINE__, "xmulticore::heap", "memory leaks detected!");
+		reporter.reportFailure(__FILE__, __LINE__, "xatomic::heap", "memory leaks detected!");
 		r = -1;
 	}
 

@@ -8,7 +8,7 @@
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
 
-#include "xmulticore\x_mbuf.h"
+#include "xatomic\x_mbuf.h"
 
 namespace xcore
 {
@@ -137,26 +137,6 @@ namespace xcore
 
 				/** Set tag  for all heads in the queue */
 				void		tag(u16 tag);
-
-				/**
-				* Get an iovec representation of this head_queue.
-				* @warn Using preallocated iovecs is desirable in many situations.
-				* For such situations, use populateIovec instead.
-				* @param[out] iv Pointer to an iovec pointer to be set to the iovec 
-				* created from this queue.
-				* @param[out] count pointer to an int which will be set with the size
-				* of the iovec.
-				* @return boolean indicating success.
-				*/ 
-				iovec*		to_iovec(u32 *count);
-
-				/**
-				* Populates an iovec from this head_queue.
-				* @param[out] iv pointer to the iovec to populate 
-				* @param niv number of entries on the iovec
-				* @return number of iovec entries populated
-				*/
-				u32			to_iovec(struct iovec *iv, u32 niv);
 
 				/**
 				* Consolidates mbuf queue into a single mbuf. It is up to the caller

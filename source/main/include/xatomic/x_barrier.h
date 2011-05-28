@@ -7,7 +7,7 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_compiler.h"
+#include "xatomic\x_compiler.h"
 
 namespace xcore
 {
@@ -21,7 +21,9 @@ namespace xcore
 	} // namespace barrier
 
 	#if defined(TARGET_PC)
-		#include "xmulticore\private\x_barrier_x86_win32.h"
+		#include "xatomic\private\x_barrier_x86_win32.h"
+	#elif defined(TARGET_PS3)
+		#include "xatomic\private\x_barrier_ppc_ps3.h"
 	#else
 		#error Unsupported CPU
 	#endif

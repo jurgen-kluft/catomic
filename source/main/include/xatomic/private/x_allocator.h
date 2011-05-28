@@ -5,10 +5,10 @@
 #pragma once 
 #endif
 #include "xbase\x_types.h"
-#include "xmulticore\x_allocator.h"
+#include "xatomic\x_allocator.h"
 
 //==============================================================================
-// xmulticore namespace
+// xatomic namespace
 //==============================================================================
 namespace xcore
 {

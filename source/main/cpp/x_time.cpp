@@ -1,6 +1,6 @@
-#include "xmulticore\x_cpu.h"
-#include "xmulticore\x_time.h"
-#include "xmulticore\x_barrier.h"
+#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_time.h"
+#include "xatomic\x_barrier.h"
 
 namespace xcore
 {

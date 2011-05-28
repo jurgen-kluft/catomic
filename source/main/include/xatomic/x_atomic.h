@@ -11,172 +11,183 @@ namespace xcore
 {
 	namespace atomic
 	{
-		/** 
-		* Atomic 32 bit integer.
-		*/
-		class int32
-		{
-		private:
-			typedef			volatile s32		vo_s32;
+		class aint32_t;
+		class auint32_t;
+		class aint64_t;
+		class auint64_t;
 
-			vo_s32			_data;
+
+		typedef		aint32_t				int32;
+		typedef		auint32_t				uint32;
+
+		typedef		aint64_t				int64;
+		typedef		auint64_t				uint64;
+
+
+		//-------------------------------------------------------------------------------------
+		// atomic integer public base
+		//-------------------------------------------------------------------------------------
+		template<class T, class U>
+		class integer_base
+		{
+		public:
+			typedef			volatile T			vo_int;
+
+		protected:
+			vo_int			_data;
 
 		public:
-			/**
-			* Constructor.
-			*/ 	
-							int32(s32 val = 0) : _data(val)							{ }
-							int32(const int32& other) : _data(other._data)			{ }
+			static T		read(vo_int* p);
+			static void		write(vo_int* p, T v);
+			static bool		cas(vo_int* mem, T old, T n);
+			static bool		cas(vo_int* mem, U ol, U oh, U nl, U nh);
 
-			/**
-			* Get value of atomic integer. 
-			* @return integer value
-			*/
-			inline s32		get() const												{ return _data; }
+			T				get() const;
+			void			set(T v);
 
-			/**
-			* Set value of atomic integer. 
-			*/
-			inline void		set(s32 v) 												{ _data = v; }
+			T				swap(T i);
 
-			/**
-			* Get and set value.
-			* @param i desired value
-			* @return integer value of the counter
-			*/
-			s32				swap(s32 i);
-
-			/**
-			* Increment atomic counter
-			*/
 			void			incr();
 
-			/**
-			* Test for zero and decrement if not zero.
-			* @return returns true if result is not zero. 
-			*/
 			bool			testAndDecr();
-
-			/**
-			* Decrement and test for non zero.
-			* @return returns true if result is not zero. 
-			*/
 			bool			decrAndTest();
-
-			/**
-			* Decrement atomic integer.
-			* This is a bit cheaper than 'dec()' because it does not
-			* check the result.
-			*/
 			void			decr();
 
-			/**
-			* Add to atomic integer.
-			* @param i the amount to be added
-			*/ 
-			void			add(s32 i);
+			void			add(T i);
+			void			sub(T i);
 
-			/**
-			* Subtract from atomic integer.
-			* @param i the amount to subtract
-			*/
-			void			sub(s32 i);
+			inline			integer_base()													{ set(0); }
+			inline			integer_base(const integer_base& i)								{ set(i.get()); }
+			inline			integer_base(T i)												{ set(i); }
 		};
-
-		/** 
-		* Atomic 64 bit integer.
-		*/
-		class int64
-		{
-		private:
-			typedef			volatile s64		vo_s64;
-
-			vo_s64			_data;
-
-		public:
-			/**
-			* Constructor.
-			*/ 	
-							int64(s64 val = 0) : _data(val)							{ }
-							int64(const int64& other) : _data(other._data)			{ }
-
-			/**
-			* Get value of atomic integer. 
-			* @return integer value
-			*/
-			inline s64		get() const												{ return _data; }
-
-			/**
-			* Set value of atomic integer. 
-			*/
-			inline void		set(s64 v)												{ _data = v; }
-
-			/**
-			* Get and set value.
-			* @param i desired value
-			* @return integer value of the counter
-			*/
-			s64				swap(s64 i);
-
-			/**
-			* Increment atomic counter
-			*/
-			void			incr();
-
-			/**
-			* Test for zero and decrement if not zero.
-			* @return returns true if result is not zero. 
-			*/
-			bool			testAndDecr();
-
-			/**
-			* Decrement and test for non zero.
-			* @return returns true if result is not zero. 
-			*/
-			bool			decrAndTest();
-
-			/**
-			* Decrement atomic integer.
-			* This is a bit cheaper than 'dec()' because it does not
-			* check the result.
-			*/
-			void			decr();
-
-			/**
-			* Add to atomic integer.
-			* @param i the amount to be added
-			*/ 
-			void			add(s64 i);
-
-			/**
-			* Subtract from atomic integer.
-			* @param i the amount to subtract
-			*/
-			void			sub(s64 i);
-
-			void			bor(s64 i);
-			void			band(s64 i);
-			void			bxor(s64 i);
-		};
-
-
-	} // namespace atomic
-
-
-} // namespace xcore
-
+	}
+}
 
 #if defined(TARGET_PC)
-	#include "xmulticore\private\x_atomic_x86_win32.h"
+	#include "xatomic\private\x_atomic_x86_win32.h"
 #elif defined(TARGET_360)
-	#include "xmulticore\private\x_atomic_ppc_360.h"
+	#include "xatomic\private\x_atomic_ppc_360.h"
 #elif defined(TARGET_PS3)
-	#include "xmulticore\private\x_atomic_ppc_ps3.h"
+	#include "xatomic\private\x_atomic_ppc_ps3.h"
 #elif defined(TARGET_WII)
-	#include "xmulticore\private\x_atomic_ppc_wii.h"
+	#include "xatomic\private\x_atomic_ppc_wii.h"
 #else
 	#error Unsupported CPU
 #endif
 
+namespace xcore
+{
+	namespace atomic
+	{
+
+		//-------------------------------------------------------------------------------------
+		// atomic integer base function implementations
+		//-------------------------------------------------------------------------------------
+
+		template<class T, class U>
+		inline bool		integer_base<T,U>::cas(vo_int* mem, U ol, U oh, U nl, U nh)
+		{
+			T old = oh; old = old << (sizeof(T)*4); old = old | ol;
+			T n   = nh; n   = n   << (sizeof(T)*4); n   = n   | nl;
+			return integer_base<T,U>::cas(mem, old, n);
+		}	
+
+		template<class T, class U>
+		inline T		integer_base<T,U>::get() const
+		{
+			return read((vo_int*)&_data); 
+		}
+
+		template<class T, class U>
+		inline void		integer_base<T,U>::set(T v)
+		{
+			write(&_data, v); 
+		}
+
+		// Swap and return old value
+		template<class T, class U>
+		inline T		integer_base<T,U>::swap(T i)
+		{
+			// Automatically locks when doing this op with a memory operand.
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, i) == false);
+			return old;
+		}
+
+		// Increment
+		template<class T, class U>
+		inline void		integer_base<T,U>::incr()
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, old + 1) == false);
+		}
+
+		// Test for zero and decrement if non-zero
+		template<class T, class U>
+		inline bool		integer_base<T,U>::testAndDecr()
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+				if (old == 0)
+					return false;
+			} while (cas(&_data, old, old - 1) == false);
+			return true;
+		}
+
+		// Decrement and test for non zero
+		template<class T, class U>
+		inline bool		integer_base<T,U>::decrAndTest()
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, old - 1) == false);
+			return (old-1) != 0;
+		}
+
+		// Decrement, return true if non-zero
+		template<class T, class U>
+		inline void		integer_base<T,U>::decr()
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, old - 1) == false);
+		}
+
+		// Add
+		template<class T, class U>
+		inline void		integer_base<T,U>::add(T i)
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, old + i) == false);
+		}
+
+		// Subtract
+		template<class T, class U>
+		inline void		integer_base<T,U>::sub(T i)
+		{
+			register T old;
+			do
+			{
+				old = read((vo_int*)&_data);
+			} while (cas(&_data, old, old - i) == false);
+		}
+
+	} // namespace atomic
+} // namespace xcore
 
 #endif // __XMULTICORE_ATOMIC_H__

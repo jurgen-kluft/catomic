@@ -7,9 +7,9 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_atomic.h"
-#include "xmulticore\x_barrier.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_atomic.h"
+#include "xatomic\x_barrier.h"
 
 namespace xcore
 {
@@ -39,7 +39,7 @@ namespace xcore
 				volatile u64 next_salt64;
 				struct
 				{
-#ifdef X_BIG_ENDIAN
+#ifdef X_LITTLE_ENDIAN
 					volatile u32 next;
 					volatile u32 salt;
 #else
@@ -177,7 +177,7 @@ namespace xcore
 				// We need write barrier here to make sure that _chain[i].next
 				// is visible on all CPUs before it's linked in.
 				barrier::memw();
-			} while (!cas64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, h.next_salt32.salt + 1));
+			} while (!uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, h.next_salt32.salt + 1));
 
 			return true;
 		}
@@ -197,7 +197,7 @@ namespace xcore
 					return false;
 
 				n = _chain[h.next_salt32.next].next;
-			} while (!cas64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1));
+			} while (!uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1));
 
 			i = h.next_salt32.next;
 

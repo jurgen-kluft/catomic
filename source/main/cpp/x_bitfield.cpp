@@ -1,4 +1,4 @@
-#include "xmulticore\x_bitfield.h"
+#include "xatomic\x_bitfield.h"
 
 namespace xcore
 {

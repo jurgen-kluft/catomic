@@ -1,5 +1,5 @@
-#include "xmulticore\private\x_allocator.h"
-#include "xmulticore\x_fifo.h"
+#include "xatomic\private\x_allocator.h"
+#include "xatomic\x_fifo.h"
 
 namespace xcore
 {

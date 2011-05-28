@@ -7,7 +7,7 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_barrier.h"
+#include "xatomic\x_barrier.h"
 
 namespace xcore
 {

@@ -8,11 +8,11 @@
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
 
-#include "xmulticore\private\x_allocator.h"
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_fifo.h"
-#include "xmulticore\x_mempool.h"
-#include "xmulticore\x_atomic.h"
+#include "xatomic\private\x_allocator.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_fifo.h"
+#include "xatomic\x_mempool.h"
+#include "xatomic\x_atomic.h"
 
 namespace xcore
 {

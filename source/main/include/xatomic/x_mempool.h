@@ -8,9 +8,9 @@
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_lifo.h"
-#include "xmulticore\x_barrier.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_lifo.h"
+#include "xatomic\x_barrier.h"
 
 namespace xcore
 {
@@ -96,7 +96,7 @@ namespace xcore
 			void		put(u32 i)
 			{
 				bool r = _lifo.push(i);
-				ASSERT(r && "Invalid index or double free");
+				ASSERTS(r, "Invalid index or double free");
 			}
 
 			/**

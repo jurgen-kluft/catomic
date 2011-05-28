@@ -1,7 +1,7 @@
 /**
- * @file xmulticore\private\x_atomic_ppc_ps3.h
+ * @file xatomic\private\x_atomic_ppc_ps3.h
  * PS3 (32 and 64 bit) specific implementation of the atomic operations.
- * @warning Do not include this header file directly. Include "xmulticore\x_atomic.h" instead.
+ * @warning Do not include this header file directly. Include "xatomic\x_atomic.h" instead.
  */
 #include <cell/atomic.h>
 
@@ -9,23 +9,24 @@ namespace xcore
 {
 	namespace atomic
 	{
+		// 32 and 64 bit interlocked compare and exchange functions for a 64 bit ppc cpu
 		namespace cpu_ppc_ps3
 		{
 			inline static u32 sInterlockedCompareExchange(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
-				uint32_t r = cellAtomicCompareAndSwap32((uint32_t volatile*)dest, (uint32_t)exchange, (uint32_t)comperand);
+				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)exchange, (std::uint32_t)comperand);
 				return r;
 			}
 
 			inline static bool sInterlockedSetIfEqual(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
-				uint32_t r = cellAtomicCompareAndSwap32((uint32_t volatile*)dest, (uint32_t)exchange, (uint32_t)comperand) == comperand;
-				return r == old;
+				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)exchange, (std::uint32_t)comperand) == comperand;
+				return r == comperand;
 			}
 
 			inline static u64 sInterlockedCompareExchange64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
-				uint64_t r = cellAtomicCompareAndSwap64((uint64_t volatile*)dest, (uint64_t)exchange, (uint64_t)comperand);
+				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)exchange, (std::uint64_t)comperand);
 				return r;
 			}
 
@@ -33,171 +34,131 @@ namespace xcore
 			// It's more efficient to use the z flag than to do another compare
 			inline static bool sInterlockedSetIfEqual64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
-				uint64_t r = cellAtomicCompareAndSwap64((uint64_t volatile*)dest, (uint64_t)exchange, (uint64_t)comperand);
+				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)exchange, (std::uint64_t)comperand);
 				return r == comperand;
 			}
 		}
 
-		/**
-		 * 32-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old if equal update it with _new.
-		 * @param mem pointer to memory that needs to be updated
-		 * @param old old value
-		 * @param n new value
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas32(volatile s32 *mem, s32 old, s32 n)
+		//-------------------------------------------------------------------------------------
+		// 32 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint32_t : public integer_base<s32, s16>
 		{
-			return cpu_ppc_ps3::sInterlockedSetIfEqual(mem, n, old);
+		public:
+			inline			aint32_t() : integer_base<s32,s16>(0)						{ }
+			inline			aint32_t(s32 i) : integer_base<s32,s16>(i)					{ }
+		};
+
+		template<>
+		inline s32			integer_base<s32,s16>::read(vo_int* p)
+		{
+			s32 r = (s32)cpu_ppc_ps3::sInterlockedCompareExchange((u32 volatile*)p, 0, 0);
+			return r;
 		}
 
-		/**
-		 * 64-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old (low + high) if equal update it with new (low + high).
-		 * @param mem pointer to memory that needs to be updated
-		 * @param ol old value (low)
-		 * @param ol old value (high)
-		 * @param nl new value (low)
-		 * @param nh new value (high)
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas64(volatile s64 *mem, s64 old, s64 n)
+		template<>
+		inline void			integer_base<s32,s16>::write(vo_int* p, s32 v)
 		{
-			return cpu_ppc_ps3::sInterlockedSetIfEqual64(mem, n, old);
+			*p = v;
 		}
 
-		static inline s64 read64(s64 volatile* p)
+		template<>
+		inline bool			integer_base<s32,s16>::cas(vo_int* mem, s32 old, s32 n)
+		{
+			s32 r = (s32)cpu_ppc_ps3::sInterlockedCompareExchange((u32 volatile*)mem, (u32)n, (u32)old);
+			return r == old;
+		}
+
+
+		//-------------------------------------------------------------------------------------
+		// 32 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint32_t : public integer_base<u32,u16>
+		{
+		public:
+			inline			auint32_t() : integer_base<u32,u16>(0)						{ }
+			inline			auint32_t(u32 i) : integer_base<u32,u16>(i)					{ }
+		};
+
+		template<>
+		inline u32			integer_base<u32,u16>::read(vo_int* p)
+		{
+			return *p;
+		}
+
+		template<>
+		inline void			integer_base<u32,u16>::write(vo_int* p, u32 v)
+		{
+			*p = v;
+		}
+
+		template<>
+		inline bool			integer_base<u32,u16>::cas(vo_int* mem, u32 old, u32 n)
+		{
+			u32 r = cpu_ppc_ps3::sInterlockedCompareExchange(mem, n, old);
+			return r == old;
+		}
+
+
+		//-------------------------------------------------------------------------------------
+		// 64 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint64_t : public integer_base<s64,s32>
+		{
+		public:
+			inline			aint64_t() : integer_base<s64,s32>(0)						{ }
+			inline			aint64_t(s64 i) : integer_base<s64,s32>(i)					{ }
+		};
+
+		template<>
+		inline s64			integer_base<s64,s32>::read(vo_int* p)
 		{
 			return cpu_ppc_ps3::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
 		}
 
-		// Swap and return old value
-		inline s32 int32::swap(s32 i)
+		template<>
+		inline void			integer_base<s64,s32>::write(vo_int* p, s64 v)
 		{
-			// Automatically locks when doing this op with a memory operand.
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, i) == false);
-			return old;
+			*p = v;
 		}
 
-		// Increment
-		inline void int32::inc()
+		template<>
+		inline bool			integer_base<s64,s32>::cas(vo_int* mem, s64 old, s64 n)
 		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old + 1) == false);
-			return old != 0;
-		}
-
-		// Decrement, return true if non-zero
-		inline bool int32::decAndTest()
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - 1) == false);
-			return old != 0;
-		}
-
-		// Decrement, return true if non-zero
-		inline void	int32::dec()
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - 1) == false);
-		}
-
-		// Add
-		inline void int32::add(s32 i)
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old + i) == false);
-		}
-
-		// Subtract
-		inline void int32::sub(s32 i)
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - i) == false);
+			s64 r = (s64)cpu_ppc_ps3::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
 		}
 
 
-
-		// Swap and return old value
-		inline s64 int64::swap(s64 i)
+		//-------------------------------------------------------------------------------------
+		// 64 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint64_t : public integer_base<u64,u32>
 		{
-			// Automatically locks when doing this op with a memory operand.
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, i) == false);
-			return old;
+		public:
+			inline			auint64_t() : integer_base<u64,u32>(0)						{ }
+			inline			auint64_t(u64 i) : integer_base<u64,u32>(i)					{ }
+		};
+
+		template<>
+		inline u64			integer_base<u64,u32>::read(vo_int* p)
+		{
+			return cpu_ppc_ps3::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
 		}
 
-		// Increment
-		inline void int64::inc()
+		template<>
+		inline void			integer_base<u64,u32>::write(vo_int* p, u64 v)
 		{
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, old + 1) == false);
+			*p = v;
 		}
 
-		// Decrement, return true if non-zero
-		inline bool int64::decAndTest()
+		template<>
+		inline bool			integer_base<u64,u32>::cas(vo_int* mem, u64 old, u64 n)
 		{
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, old - 1) == false);
-			return old != 0;
+			u64 r = (u64)cpu_ppc_ps3::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
 		}
 
-		// Decrement, return true if non-zero
-		inline void	int64::dec()
-		{
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, old - 1) == false);
-		}
 
-		// Add
-		inline void int64::add(s64 i)
-		{
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, old + i) == false);
-		}
-
-		// Subtract
-		inline void int64::sub(s64 i)
-		{
-			register s64 old;
-			do
-			{
-				old = read64(_data);
-			} while (cas64(&_data, old, old - i) == false);
-		}
 	}
 }

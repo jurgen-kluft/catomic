@@ -7,9 +7,9 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\private\x_allocator.h"
-#include "xmulticore\x_barrier.h"
-#include "xmulticore\x_compiler.h"
+#include "xatomic\private\x_allocator.h"
+#include "xatomic\x_barrier.h"
+#include "xatomic\x_compiler.h"
 
 namespace xcore
 {

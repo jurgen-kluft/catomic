@@ -1,21 +1,23 @@
 /**
- * @file xmulticore\private\x_atomic_ppc_wii.h
+ * @file xatomic\private\x_atomic_ppc_wii.h
  * Wii PPC 32 bit specific implementation of the atomic operations.
- * @warning Do not include this header file directly. Include "xmulticore\x_atomic.h" instead.
+ * @warning Do not include this header file directly. Include "xatomic\x_atomic.h" instead.
  */
 #include <revolution/os.h>
+
 
 namespace xcore
 {
 	namespace atomic
 	{
+		// 32 and 64 bit interlocked compare and exchange functions for a 32 bit ppc cpu
 		namespace cpu_ppc_wii
 		{
 			inline static u32 sInterlockedCompareExchange(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
 				s32 wasEnabled = OSDisableInterrupts();
 				u32 old = *dest;
-				if (*dest == comperand)
+				if (old == comperand)
 					*dest = exchange;
 				OSRestoreInterrupts(wasEnabled);
 				return old;
@@ -24,21 +26,18 @@ namespace xcore
 			inline static bool sInterlockedSetIfEqual(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
 				s32 wasEnabled = OSDisableInterrupts();
-				if (*dest == comperand)
-				{
+				u32 old = *dest;
+				if (old == comperand)
 					*dest = exchange;
-					OSRestoreInterrupts(wasEnabled);
-					return true;
-				}
 				OSRestoreInterrupts(wasEnabled);
-				return false;
+				return true;
 			}
 
 			inline static u64 sInterlockedCompareExchange64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
 				s32 wasEnabled = OSDisableInterrupts();
 				u64 old = *dest;
-				if (*dest == comperand)
+				if (old == comperand)
 					*dest = exchange;
 				OSRestoreInterrupts(wasEnabled);
 				return old;
@@ -49,169 +48,133 @@ namespace xcore
 			inline static bool sInterlockedSetIfEqual64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
 				s32 wasEnabled = OSDisableInterrupts();
-				if (*dest == comperand)
-				{
+				u64 old = *dest;
+				if (old == comperand)
 					*dest = exchange;
-					OSRestoreInterrupts(wasEnabled);
-					return true;
-				}
 				OSRestoreInterrupts(wasEnabled);
-				return false;
+				return true;
 			}
 		}
 
-		/**
-		 * 32-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old if equal update it with _new.
-		 * @param mem pointer to memory that needs to be updated
-		 * @param old old value
-		 * @param n new value
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas32(volatile s32 *mem, s32 old, s32 n)
+		//-------------------------------------------------------------------------------------
+		// 32 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint32_t : public integer_base<s32, s16>
 		{
-			return cpu_ppc_wii::sInterlockedSetIfEqual((volatile u32*)mem, old, n);
+		public:
+			inline			aint32_t() : integer_base<s32,s16>(0)						{ }
+			inline			aint32_t(s32 i) : integer_base<s32,s16>(i)					{ }
+		};
+
+		template<>
+		inline s32			integer_base<s32,s16>::read(vo_int* p)
+		{
+			return *p;
 		}
 
-		/**
-		 * 64-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old (low + high) if equal update it with new (low + high).
-		 * @param mem pointer to memory that needs to be updated
-		 * @param ol old value (low)
-		 * @param ol old value (high)
-		 * @param nl new value (low)
-		 * @param nh new value (high)
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas64(volatile s64 *mem, s64 old, s64 n)
+		template<>
+		inline void			integer_base<s32,s16>::write(vo_int* p, s32 v)
 		{
-			return cpu_ppc_wii::sInterlockedSetIfEqual64((volatile u64*)mem, old, n);
+			*p = v;
 		}
 
-		static inline s64 read64(s64 volatile* p)
+		template<>
+		inline bool			integer_base<s32,s16>::cas(vo_int* mem, s32 old, s32 n)
 		{
-			s32 wasEnabled = OSDisableInterrupts();
-			s64 r = *p;
-			OSRestoreInterrupts(wasEnabled);
-			return r;
-		}
-
-		// Swap and return old value
-		inline s32 int32::swap(s32 i)
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			s32 old = _data;
-			_data = i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
-		}
-
-		// Increment
-		inline void int32::incr()
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			_data++;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
-		}
-
-		// Decrement, return true if non-zero
-		inline bool int32::testAndDecr()
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			s32 old = _data;
-			if (old == 0)
-				return false;
-			--_data;
-			OSRestoreInterrupts(wasEnabled);
-			return old!=0;
-		}
-
-		// Decrement, return true if non-zero
-		inline void	int32::decr()
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			--_data;
-			OSRestoreInterrupts(wasEnabled);
-		}
-
-		// Add
-		inline void int32::add(s32 i)
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			_data += i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
-		}
-
-		// Subtract
-		inline void int32::sub(s32 i)
-		{
-			s32 wasEnabled = OSDisableInterrupts();
-			_data -= i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
+			s32 r = (s32)cpu_ppc_wii::sInterlockedCompareExchange((u32 volatile*)mem, (u32)n, (u32)old);
+			return r == old;
 		}
 
 
-
-
-
-		// Swap and return old value
-		inline s64 int64::swap(s64 i)
+		//-------------------------------------------------------------------------------------
+		// 32 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint32_t : public integer_base<u32,u16>
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			s64 old = _data;
-			_data = i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
+		public:
+			inline			auint32_t() : integer_base<u32,u16>(0)						{ }
+			inline			auint32_t(u32 i) : integer_base<u32,u16>(i)					{ }
+		};
+
+		template<>
+		inline u32			integer_base<u32,u16>::read(vo_int* p)
+		{
+			return *p;
 		}
 
-		// Increment
-		inline void int64::incr()
+		template<>
+		inline void			integer_base<u32,u16>::write(vo_int* p, u32 v)
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			_data++;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
+			*p = v;
 		}
 
-		// Decrement, return true if non-zero
-		inline bool int64::testAndDecr()
+		template<>
+		inline bool			integer_base<u32,u16>::cas(vo_int* mem, u32 old, u32 n)
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			s64 old = _data;
-			if (old == 0)
-				return false;
-			--_data;
-			OSRestoreInterrupts(wasEnabled);
-			return old!=0;
+			u32 r = cpu_ppc_wii::sInterlockedCompareExchange(mem, n, old);
+			return r == old;
 		}
 
-		// Decrement, return true if non-zero
-		inline void	int64::decr()
+
+		//-------------------------------------------------------------------------------------
+		// 64 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint64_t : public integer_base<s64,s32>
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			--_data;
-			OSRestoreInterrupts(wasEnabled);
+		public:
+			inline			aint64_t() : integer_base<s64,s32>(0)						{ }
+			inline			aint64_t(s64 i) : integer_base<s64,s32>(i)					{ }
+		};
+
+		template<>
+		inline s64			integer_base<s64,s32>::read(vo_int* p)
+		{
+			return cpu_ppc_wii::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
 		}
 
-		// Add
-		inline void int64::add(s64 i)
+		template<>
+		inline void			integer_base<s64,s32>::write(vo_int* p, s64 v)
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			_data += i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
+			*p = v;
 		}
 
-		// Subtract
-		inline void int64::sub(s64 i)
+		template<>
+		inline bool			integer_base<s64,s32>::cas(vo_int* mem, s64 old, s64 n)
 		{
-			s64 wasEnabled = OSDisableInterrupts();
-			_data -= i;
-			OSRestoreInterrupts(wasEnabled);
-			return old;
+			s64 r = (s64)cpu_ppc_wii::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
 		}
+
+
+		//-------------------------------------------------------------------------------------
+		// 64 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint64_t : public integer_base<u64,u32>
+		{
+		public:
+			inline			auint64_t() : integer_base<u64,u32>(0)						{ }
+			inline			auint64_t(u64 i) : integer_base<u64,u32>(i)					{ }
+		};
+
+		template<>
+		inline u64			integer_base<u64,u32>::read(vo_int* p)
+		{
+			return cpu_ppc_wii::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
+		}
+
+		template<>
+		inline void			integer_base<u64,u32>::write(vo_int* p, u64 v)
+		{
+			*p = v;
+		}
+
+		template<>
+		inline bool			integer_base<u64,u32>::cas(vo_int* mem, u64 old, u64 n)
+		{
+			u64 r = (u64)cpu_ppc_wii::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
+		}
+
+
 	}
 }

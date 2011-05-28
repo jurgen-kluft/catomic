@@ -1,9 +1,9 @@
 #include "xbase\x_string_std.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_mbufpool.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_mbufpool.h"
 
-#include "xmulticore\private\x_allocator.h"
+#include "xatomic\private\x_allocator.h"
 
 namespace xcore
 {

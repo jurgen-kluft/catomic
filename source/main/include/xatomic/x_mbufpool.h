@@ -7,8 +7,8 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_mempool.h"
-#include "xmulticore\x_mbuf.h"
+#include "xatomic\x_mempool.h"
+#include "xatomic\x_mbuf.h"
 
 namespace xcore
 {

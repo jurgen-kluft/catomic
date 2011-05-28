@@ -1,8 +1,8 @@
 #include "xbase\x_integer.h"
 #include "xbase\x_memory_std.h"
 
-#include "xmulticore\x_atomic.h"
-#include "xmulticore\x_mempool.h"
+#include "xatomic\x_atomic.h"
+#include "xatomic\x_mempool.h"
 
 namespace xcore
 {

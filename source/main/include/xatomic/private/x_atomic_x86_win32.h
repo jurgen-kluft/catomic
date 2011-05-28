@@ -1,7 +1,7 @@
 /**
- * @file xmulticore\private\atomic-x86.h
+ * @file xatomic\private\atomic-x86.h
  * X86 (32 and 64 bit) specific implementation of the atomic operations.
- * @warning Do not include this header file directly. Include "xmulticore\atomic.h" instead.
+ * @warning Do not include this header file directly. Include "xatomic\atomic.h" instead.
  */
 
 // Windows includes first
@@ -96,217 +96,125 @@ namespace xcore
 			#pragma warning(default:4035)
 		}
 
-		/**
-		 * 32-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old if equal update it with _new.
-		 * @param mem pointer to memory that needs to be updated
-		 * @param old old value
-		 * @param n new value
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas32(volatile s32 *mem, s32 old, s32 n)
+		//-------------------------------------------------------------------------------------
+		// 32 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint32_t : public integer_base<s32, s16>
 		{
-			s32 r = cpu_x86_32::sInterlockedCompareExchange((u32 volatile*)mem, (u32)n, (u32)old);
+		public:
+			inline			aint32_t() : integer_base<s32,s16>(0)						{ }
+			inline			aint32_t(s32 i) : integer_base<s32,s16>(i)					{ }
+		};
+
+		template<>
+		inline s32			integer_base<s32,s16>::read(vo_int* p)
+		{
+			return *p;
+		}
+
+		template<>
+		inline void			integer_base<s32,s16>::write(vo_int* p, s32 v)
+		{
+			*p = v;
+		}
+
+		template<>
+		inline bool			integer_base<s32,s16>::cas(vo_int* mem, s32 old, s32 n)
+		{
+			s32 r = (s32)cpu_x86_32::sInterlockedCompareExchange((u32 volatile*)mem, (u32)n, (u32)old);
 			return r == old;
 		}
 
-		static inline bool cas32(volatile u32 *mem, u32 old, u32 n)
+
+		//-------------------------------------------------------------------------------------
+		// 32 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint32_t : public integer_base<u32,u16>
+		{
+		public:
+			inline			auint32_t() : integer_base<u32,u16>(0)						{ }
+			inline			auint32_t(u32 i) : integer_base<u32,u16>(i)					{ }
+		};
+
+		template<>
+		inline u32			integer_base<u32,u16>::read(vo_int* p)
+		{
+			return *p;
+		}
+
+		template<>
+		inline void			integer_base<u32,u16>::write(vo_int* p, u32 v)
+		{
+			*p = v;
+		}
+
+		template<>
+		inline bool			integer_base<u32,u16>::cas(vo_int* mem, u32 old, u32 n)
 		{
 			u32 r = cpu_x86_32::sInterlockedCompareExchange(mem, n, old);
 			return r == old;
 		}
 
-		/**
-		 * 64-bit atomic CAS (Compare And Swap).
-		 * Compare mem with old if equal update it with new.
-		 * @param mem pointer to memory that needs to be updated
-		 * @param old old value
-		 * @param n new value
-		 * @return non zero if update was successful
-		 */
-		static inline bool cas64(volatile s64 *mem, s64 old, s64 n)
-		{
-			s64 r = cpu_x86_32::sInterlockedCompareExchange64((u64 volatile*)mem, n, old);
-			return r == old;
-		}
 
-		static inline bool cas64(volatile s64 *mem, s32 oh, s32 ol, s32 nh, s32 nl)
+		//-------------------------------------------------------------------------------------
+		// 64 bit signed integer
+		//-------------------------------------------------------------------------------------
+		class aint64_t : public integer_base<s64,s32>
 		{
-			s64 old = oh; old = old << 32; old = old | ol;
-			s64 n   = nh; n   = n   << 32; n   = n   | nl;
-			return cas64(mem, old, n);
-		}
+		public:
+			inline			aint64_t() : integer_base<s64,s32>(0)						{ }
+			inline			aint64_t(s64 i) : integer_base<s64,s32>(i)					{ }
+		};
 
-		static inline bool cas64(volatile u64 *mem, u64 old, u64 n)
-		{
-			u64 r = cpu_x86_32::sInterlockedCompareExchange64((u64 volatile*)mem, (s64)n, (s64)old);
-			return r == old;
-		}
-
-		static inline bool cas64(volatile u64 *mem, u32 oh, u32 ol, u32 nh, u32 nl)
-		{
-			u64 old = oh; old = old << 32; old = old | ol;
-			u64 n   = nh; n   = n   << 32; n   = n   | nl;
-			return cas64((volatile u64*)mem, old, n);
-		}
-
-		static inline s64 read64(s64 volatile* p)
+		template<>
+		inline s64			integer_base<s64,s32>::read(vo_int* p)
 		{
 			return cpu_x86_32::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
 		}
 
-		// Swap and return old value
-		inline s32 int32::swap(s32 i)
+		template<>
+		inline void			integer_base<s64,s32>::write(vo_int* p, s64 v)
 		{
-			// Automatically locks when doing this op with a memory operand.
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, i) == false);
-			return old;
+			*p = v;
 		}
 
-		// Increment
-		inline void int32::incr()
+		template<>
+		inline bool			integer_base<s64,s32>::cas(vo_int* mem, s64 old, s64 n)
 		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old + 1) == false);
-		}
-
-		// Test for zero and decrement if non-zero
-		inline bool int32::testAndDecr()
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-				if (old == 0)
-					return false;
-			} while (cas32(&_data, old, old - 1) == false);
-			return true;
-		}
-
-		// Decrement and test for non zero
-		inline bool int32::decrAndTest()
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - 1) == false);
-			return (old-1) != 0;
-		}
-
-		// Decrement, return true if non-zero
-		inline void	int32::decr()
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - 1) == false);
-		}
-
-		// Add
-		inline void int32::add(s32 i)
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old + i) == false);
-		}
-
-		// Subtract
-		inline void int32::sub(s32 i)
-		{
-			register s32 old;
-			do
-			{
-				old = _data;
-			} while (cas32(&_data, old, old - i) == false);
+			s64 r = (s64)cpu_x86_32::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
 		}
 
 
-
-		// Swap and return old value
-		inline s64 int64::swap(s64 i)
+		//-------------------------------------------------------------------------------------
+		// 64 bit unsigned integer
+		//-------------------------------------------------------------------------------------
+		class auint64_t : public integer_base<u64,u32>
 		{
-			// Automatically locks when doing this op with a memory operand.
-			register s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64(&_data, i, old) == false);
-			return old;
+		public:
+			inline			auint64_t() : integer_base<u64,u32>(0)						{ }
+			inline			auint64_t(u64 i) : integer_base<u64,u32>(i)					{ }
+		};
+
+		template<>
+		inline u64			integer_base<u64,u32>::read(vo_int* p)
+		{
+			return cpu_x86_32::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
 		}
 
-		// Increment
-		inline void int64::incr()
+		template<>
+		inline void			integer_base<u64,u32>::write(vo_int* p, u64 v)
 		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64((volatile LONGLONG*)&_data, old, old + 1) == false);
+			*p = v;
 		}
 
-		// Decrement, return true if non-zero
-		inline bool int64::testAndDecr()
+		template<>
+		inline bool			integer_base<u64,u32>::cas(vo_int* mem, u64 old, u64 n)
 		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-				if (old == 0)
-					return false;
-			} while (cas64((volatile LONGLONG*)&_data, old, old - 1) == false);
-			return true;
+			u64 r = (u64)cpu_x86_32::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
+			return r == old;
 		}
 
-		// Decrement, return true if non-zero
-		inline bool int64::decrAndTest()
-		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64((volatile LONGLONG*)&_data, old, old - 1) == false);
-			return (old-1) != 0;
-		}
 
-		// Decrement, return true if non-zero
-		inline void	int64::decr()
-		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64((volatile LONGLONG*)&_data, old, old - 1) == false);
-		}
-
-		// Add
-		inline void int64::add(s64 i)
-		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64((volatile LONGLONG*)&_data, old, old + i) == false);
-		}
-
-		// Subtract
-		inline void int64::sub(s64 i)
-		{
-			s64 old;
-			do
-			{
-				old = read64(&_data);
-			} while (cas64((volatile LONGLONG*)&_data, old, old - i) == false);
-		}
 	}
 }

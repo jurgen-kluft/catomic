@@ -1,7 +1,7 @@
 #include "xbase\x_types.h"
 #include "xunittest\xunittest.h"
 
-#include "xmulticore\x_fifo.h"
+#include "xatomic\x_fifo.h"
 
 UNITTEST_SUITE_BEGIN(fifo)
 {

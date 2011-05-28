@@ -7,9 +7,9 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\x_lifo.h"
-#include "xmulticore\x_mempool.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\x_lifo.h"
+#include "xatomic\x_mempool.h"
 
 namespace xcore
 {

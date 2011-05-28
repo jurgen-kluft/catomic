@@ -7,8 +7,8 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_compiler.h"
-#include "xmulticore\private\x_bitfield_base.h"
+#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_bitfield_base.h"
 
 namespace xcore
 {

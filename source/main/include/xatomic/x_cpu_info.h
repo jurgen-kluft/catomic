@@ -12,14 +12,6 @@ namespace xcore
 {
 	namespace cpu
 	{
-		// Functions that start with double underscore are processor specific
-
-		#if (defined(TARGET_PC))
-			#include "xmulticore\private\x_cpu_x86_win32.h"
-		#else
-			#error Unsupported CPU
-		#endif
-
 		/** 
 		* Get current value of the CPU cycle counter.
 		* Non serializing version. i.e. may complete sooner than previous
@@ -29,6 +21,7 @@ namespace xcore
 		*    u64 tsc = cpu::tsc();
 		*    @endcode
 		*/
+		extern u64 __tsc();
 		static inline u64 tsc(void)
 		{
 			return __tsc();
@@ -184,5 +177,13 @@ namespace xcore
 		};
 	}
 }
+
+#if (defined(TARGET_PC))
+	#include "xatomic\private\x_cpu_x86_win32.h"
+#elif (defined(TARGET_PS3))
+	#include "xatomic\private\x_cpu_ppc_ps3.h"
+#else
+	#error Unsupported CPU
+#endif
 
 #endif // __XMULTICORE_CPUINFO_H__

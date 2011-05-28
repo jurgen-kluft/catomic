@@ -7,8 +7,8 @@
 
 #include "xbase\x_types.h"
 
-#include "xmulticore\x_atomic.h"
-#include "xmulticore\x_compiler.h"
+#include "xatomic\x_atomic.h"
+#include "xatomic\x_compiler.h"
 
 namespace xcore
 {
@@ -53,7 +53,9 @@ namespace xcore
 			// 	u64 ffz(u64 d);
 
 			#if defined(TARGET_PC)
-				#include "xmulticore\private\x_bitfield_x86_win32.h"
+				#include "xatomic\private\x_bitfield_x86_win32.h"
+			#elif defined(TARGET_PS3)
+				#include "xatomic\private\x_bitfield_ppc_ps3.h"
 			#else
 				#error Unsupported CPU
 			#endif
@@ -65,15 +67,15 @@ namespace xcore
 			// Clear a bit
 			static inline void clear(u32 n, value_type *addr)						{ __clear(n, addr); }
 			// Test a bit
-			static inline bool test(u32 n, value_type *addr)						{ __test(n, addr); }
+			static inline bool test(u32 n, value_type *addr)						{ return __test(n, addr); }
 			// Test and set
-			static inline bool tas(u32 n, value_type *addr)							{ __tas(n, addr); }
+			static inline bool tas(u32 n, value_type *addr)							{ return __tas(n, addr); }
 			// Test and clear
-			static inline bool tac(u32 n, value_type *addr)							{ __tac(n, addr); }
+			static inline bool tac(u32 n, value_type *addr)							{ return __tac(n, addr); }
 			// Atomic test and set
-			static inline bool atas(u32 n, volatile value_type *addr)				{ __atas(n, addr); }
+			static inline bool atas(u32 n, volatile value_type *addr)				{ return __atas(n, addr); }
 			// Atomic test and clear
-			static inline bool atac(u32 n, volatile value_type *addr)				{ __atac(n, addr); }
+			static inline bool atac(u32 n, volatile value_type *addr)				{ return __atac(n, addr); }
 			// Find first non-zero bit
 			static inline value_type ffs(value_type d)								{ return __ffs(d); }
 			// Find first zero bit
