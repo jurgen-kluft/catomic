@@ -3,10 +3,16 @@
  * WII specific part of the CPU library.
  * @see xatomic\x_cpu.h
  */
+#include <revolution/os.h>
 
-
-static inline u64 __tsc(void)
+namespace xcore
 {
-	OSTick ticks = OSGetTick();
-	return (u64)ticks;
+	namespace cpu
+	{
+		static inline u64 __tsc(void)
+		{
+			OSTick ticks = OSGetTick();
+			return (u64)ticks;
+		}
+	}
 }

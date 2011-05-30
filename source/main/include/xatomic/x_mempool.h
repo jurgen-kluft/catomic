@@ -12,6 +12,8 @@
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_barrier.h"
 
+#include "xatomic\private\x_allocator.h"
+
 namespace xcore
 {
 	namespace atomic
@@ -150,6 +152,8 @@ namespace xcore
 			*/
 			void*		operator new(xcore::xsize_t num_bytes, void* mem)			{ return mem; }
 			void		operator delete(void* mem, void* )							{ }
+			void*		operator new(xcore::xsize_t num_bytes)						{ return get_heap_allocator()->allocate(num_bytes, X_ALIGNMENT_DEFAULT); }
+			void		operator delete(void* mem)									{ get_heap_allocator()->deallocate(mem); }
 
 			/**
 			* Validate mempool.

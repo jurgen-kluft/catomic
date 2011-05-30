@@ -11,24 +11,37 @@ namespace xcore
 {
 	namespace atomic
 	{
-		class aint32_t;
-		class auint32_t;
-		class aint64_t;
-		class auint64_t;
+		class atom_s32;
+		class atom_u32;
+		class atom_s64;
+		class atom_u64;
 
+		static s32		read_s32(s32 volatile* p);
+		static void		write_s32(s32 volatile* p, s32 v);
+		static bool		cas_s32(s32 volatile* mem, s32 old, s32 n);
+		static bool		cas_s32(s32 volatile* mem, s16 ol, s16 oh, s16 nl, s16 nh);
 
-		typedef		aint32_t				int32;
-		typedef		auint32_t				uint32;
+		static u32		read_u32(u32 volatile* p);
+		static void		write_u32(u32 volatile* p, u32 v);
+		static bool		cas_u32(u32 volatile* mem, u32 old, u32 n);
+		static bool		cas_u32(u32 volatile* mem, u16 ol, u16 oh, u16 nl, u16 nh);
 
-		typedef		aint64_t				int64;
-		typedef		auint64_t				uint64;
+		static s64		read_s64(s64 volatile* p);
+		static void		write_s64(s64 volatile* p, s64 v);
+		static bool		cas_s64(s64 volatile* mem, s64 old, s64 n);
+		static bool		cas_s64(s64 volatile* mem, s32 ol, s32 oh, s32 nl, s32 nh);
+
+		static u64		read_u64(u64 volatile* p);
+		static void		write_u64(u64 volatile* p, u64 v);
+		static bool		cas_u64(u64 volatile* mem, u64 old, u64 n);
+		static bool		cas_u64(u64 volatile* mem, u32 ol, u32 oh, u32 nl, u32 nh);
 
 
 		//-------------------------------------------------------------------------------------
 		// atomic integer public base
 		//-------------------------------------------------------------------------------------
-		template<class T, class U>
-		class integer_base
+		template<class T>
+		class atom_int_type
 		{
 		public:
 			typedef			volatile T			vo_int;
@@ -37,28 +50,35 @@ namespace xcore
 			vo_int			_data;
 
 		public:
-			static T		read(vo_int* p);
-			static void		write(vo_int* p, T v);
-			static bool		cas(vo_int* mem, T old, T n);
-			static bool		cas(vo_int* mem, U ol, U oh, U nl, U nh);
-
 			T				get() const;
 			void			set(T v);
 
 			T				swap(T i);
 
 			void			incr();
-
-			bool			testAndDecr();
-			bool			decrAndTest();
 			void			decr();
+
+			bool			test_decr();
+			bool			decr_test();
 
 			void			add(T i);
 			void			sub(T i);
 
-			inline			integer_base()													{ set(0); }
-			inline			integer_base(const integer_base& i)								{ set(i.get()); }
-			inline			integer_base(T i)												{ set(i); }
+			void			bit_or(T i);
+			void			bit_xor(T i);
+			void			bit_and(T i);
+
+			void			bit_set(u32 n);
+			void			bit_clr(u32 n);
+			void			bit_chg(u32 n);
+
+			bool			bit_test_set(u32 n);
+			bool			bit_test_clr(u32 n);
+			bool			bit_test_chg(u32 n);
+
+			inline			atom_int_type()													{ set(0); }
+			inline			atom_int_type(const atom_int_type& i)							{ set(i.get()); }
+			inline			atom_int_type(T i)												{ set(i); }
 		};
 	}
 }
@@ -75,119 +95,6 @@ namespace xcore
 	#error Unsupported CPU
 #endif
 
-namespace xcore
-{
-	namespace atomic
-	{
 
-		//-------------------------------------------------------------------------------------
-		// atomic integer base function implementations
-		//-------------------------------------------------------------------------------------
-
-		template<class T, class U>
-		inline bool		integer_base<T,U>::cas(vo_int* mem, U ol, U oh, U nl, U nh)
-		{
-			T old = oh; old = old << (sizeof(T)*4); old = old | ol;
-			T n   = nh; n   = n   << (sizeof(T)*4); n   = n   | nl;
-			return integer_base<T,U>::cas(mem, old, n);
-		}	
-
-		template<class T, class U>
-		inline T		integer_base<T,U>::get() const
-		{
-			return read((vo_int*)&_data); 
-		}
-
-		template<class T, class U>
-		inline void		integer_base<T,U>::set(T v)
-		{
-			write(&_data, v); 
-		}
-
-		// Swap and return old value
-		template<class T, class U>
-		inline T		integer_base<T,U>::swap(T i)
-		{
-			// Automatically locks when doing this op with a memory operand.
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, i) == false);
-			return old;
-		}
-
-		// Increment
-		template<class T, class U>
-		inline void		integer_base<T,U>::incr()
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, old + 1) == false);
-		}
-
-		// Test for zero and decrement if non-zero
-		template<class T, class U>
-		inline bool		integer_base<T,U>::testAndDecr()
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-				if (old == 0)
-					return false;
-			} while (cas(&_data, old, old - 1) == false);
-			return true;
-		}
-
-		// Decrement and test for non zero
-		template<class T, class U>
-		inline bool		integer_base<T,U>::decrAndTest()
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, old - 1) == false);
-			return (old-1) != 0;
-		}
-
-		// Decrement, return true if non-zero
-		template<class T, class U>
-		inline void		integer_base<T,U>::decr()
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, old - 1) == false);
-		}
-
-		// Add
-		template<class T, class U>
-		inline void		integer_base<T,U>::add(T i)
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, old + i) == false);
-		}
-
-		// Subtract
-		template<class T, class U>
-		inline void		integer_base<T,U>::sub(T i)
-		{
-			register T old;
-			do
-			{
-				old = read((vo_int*)&_data);
-			} while (cas(&_data, old, old - i) == false);
-		}
-
-	} // namespace atomic
-} // namespace xcore
 
 #endif // __XMULTICORE_ATOMIC_H__

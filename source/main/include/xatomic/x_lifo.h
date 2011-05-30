@@ -177,7 +177,7 @@ namespace xcore
 				// We need write barrier here to make sure that _chain[i].next
 				// is visible on all CPUs before it's linked in.
 				barrier::memw();
-			} while (!uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, h.next_salt32.salt + 1));
+			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, h.next_salt32.salt + 1));
 
 			return true;
 		}
@@ -197,7 +197,7 @@ namespace xcore
 					return false;
 
 				n = _chain[h.next_salt32.next].next;
-			} while (!uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1));
+			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1));
 
 			i = h.next_salt32.next;
 

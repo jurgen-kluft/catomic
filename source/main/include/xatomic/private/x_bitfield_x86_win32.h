@@ -127,7 +127,7 @@ static inline bool __atas(u32 n, volatile value_type *addr)
 		old = *addr;
 		bit = (old & (1<<n)) != 0;
 		old |= (1 << n);
-	} while (int32::cas(addr, old, n) == false);
+	} while (cas_s32(addr, old, n) == false);
 	return bit;
 }
 

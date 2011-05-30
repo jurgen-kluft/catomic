@@ -184,7 +184,7 @@ namespace xcore
 				if (n == LAST) 
 				{
 					// Try to link this element to the tail element
-					if (uint32::cas((xcore::u32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
+					if (cas_u32((xcore::u32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
 						break;
 				} 
 				else
@@ -192,13 +192,13 @@ namespace xcore
 					// Tail element was not the last, try to fix it up.
 					// This is done to take care of the races were another 
 					// writer got preempted before completing the push.
-					uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
+					cas_u64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
 				}
 			}
 
 			// Complete the push.
 			// Try to point tail to this element.
-			uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, i, t.next_salt32.salt + 1);
+			cas_u64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, i, t.next_salt32.salt + 1);
 
 			return true;
 		}
@@ -225,7 +225,7 @@ namespace xcore
 
 					// Tail is pointing to the head in the non empty fifo,
 					// try to fix it up.
-					uint64::cas(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
+					cas_u64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, n, t.next_salt32.salt + 1);
 					continue;
 				}
 
@@ -233,7 +233,7 @@ namespace xcore
 				{
 					// Head points to the usable element.
 					// Try to re point it to the next element
-					if (uint64::cas(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1))
+					if (cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1))
 						break;
 				}
 			}

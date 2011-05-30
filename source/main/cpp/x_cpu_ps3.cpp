@@ -1,9 +1,9 @@
 #include "xbase\x_target.h"
-#include "xbase\x_limits.h"
 #if defined(TARGET_PS3)
 
 #include <cell/rtc.h>
 
+#include "xbase\x_limits.h"
 #include "xbase\x_string_std.h"
 #include "xbase\x_memory_std.h"
 
@@ -327,6 +327,5 @@ namespace xcore
 
 	}
 }
-
 
 #endif

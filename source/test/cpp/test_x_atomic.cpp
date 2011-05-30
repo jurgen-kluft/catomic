@@ -5,12 +5,12 @@
 
 UNITTEST_SUITE_BEGIN(atomic)
 {
-    UNITTEST_FIXTURE(int32)
+    UNITTEST_FIXTURE(atom_s32)
     {
         UNITTEST_FIXTURE_SETUP() {}
         UNITTEST_FIXTURE_TEARDOWN() {}
 
-		typedef xcore::atomic::int32	aint;
+		typedef xcore::atomic::atom_s32		aint;
 
 		UNITTEST_TEST(construct)
 		{
@@ -73,28 +73,28 @@ UNITTEST_SUITE_BEGIN(atomic)
 			}
 		}
 
-		UNITTEST_TEST(testAndDecr)
+		UNITTEST_TEST(test_decr)
 		{
 			aint i(0);
-			CHECK_FALSE(i.testAndDecr());
+			CHECK_FALSE(i.test_decr());
 
 			i.set(1);
-			CHECK_TRUE(i.testAndDecr());
+			CHECK_TRUE(i.test_decr());
 
 			i.set(2);
-			CHECK_TRUE(i.testAndDecr());
+			CHECK_TRUE(i.test_decr());
 		}
 
-		UNITTEST_TEST(decrAndTest)
+		UNITTEST_TEST(decr_test)
 		{
 			aint i(1);
-			CHECK_FALSE(i.decrAndTest());
+			CHECK_FALSE(i.decr_test());
 
 			i.set(2);
-			CHECK_TRUE(i.decrAndTest());
+			CHECK_TRUE(i.decr_test());
 
 			i.set(2);
-			CHECK_TRUE(i.decrAndTest());
+			CHECK_TRUE(i.decr_test());
 		}
 
 		UNITTEST_TEST(add)
@@ -122,12 +122,12 @@ UNITTEST_SUITE_BEGIN(atomic)
 		}
 	}
 	
-	UNITTEST_FIXTURE(int64)
+	UNITTEST_FIXTURE(atom_s64)
 	{
 		UNITTEST_FIXTURE_SETUP() {}
 		UNITTEST_FIXTURE_TEARDOWN() {}
 
-		typedef xcore::atomic::int64	aint;
+		typedef xcore::atomic::atom_s64	aint;
 
 		UNITTEST_TEST(construct)
 		{
@@ -190,16 +190,16 @@ UNITTEST_SUITE_BEGIN(atomic)
 			}
 		}
 
-		UNITTEST_TEST(decrAndTest)
+		UNITTEST_TEST(decr_test)
 		{
 			aint i(1);
-			CHECK_FALSE(i.decrAndTest());
+			CHECK_FALSE(i.decr_test());
 
 			i.set(2);
-			CHECK_TRUE(i.decrAndTest());
+			CHECK_TRUE(i.decr_test());
 
 			i.set(2);
-			CHECK_TRUE(i.decrAndTest());
+			CHECK_TRUE(i.decr_test());
 		}
 
 		UNITTEST_TEST(add)

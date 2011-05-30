@@ -4,6 +4,8 @@
 #include "xatomic\x_atomic.h"
 #include "xatomic\x_mempool.h"
 
+#include "xatomic\private\x_allocator.h"
+
 namespace xcore
 {
 	namespace atomic
@@ -30,7 +32,7 @@ namespace xcore
 			chunk_size = (1 << order);
 
 			_extern = false;
-			_buffer = new u8 [chunk_size * size];
+			_buffer = (u8*)get_heap_allocator()->allocate(chunk_size * size, 4);
 			x_memset(_buffer, 0, chunk_size * size);
 
 			// Caller will have to do the delete anyway. Let the
@@ -68,13 +70,14 @@ namespace xcore
 		mempool::~mempool()
 		{
 			if (!_extern)
-				delete [] _buffer;
+				get_heap_allocator()->deallocate(_buffer);
 		}
 
 		bool mempool::valid()
 		{
 			if (_lifo.size() && _buffer)
 				return true;
+
 			return false;
 		}
 

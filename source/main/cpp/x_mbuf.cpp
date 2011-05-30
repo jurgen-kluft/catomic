@@ -14,7 +14,7 @@ namespace xcore
 
 			head* allocator::alloc_head(void)
 			{
-				return (head*) get_heap_allocator()->allocate(sizeof(head), 4);
+				return (head *) get_heap_allocator()->allocate(sizeof(head), 4);
 			}
 
 			void allocator::free_head(head *h)
@@ -24,7 +24,7 @@ namespace xcore
 
 			bool allocator::alloc_data(head *h, u32 size)
 			{
-				h->_buf = (u8*) get_heap_allocator()->allocate(size + sizeof(mbuf::shared), 4);
+				h->_buf = (u8 *) get_heap_allocator()->allocate(size + sizeof(mbuf::shared), 4);
 				if (h->_buf == NULL)
 					return false;
 

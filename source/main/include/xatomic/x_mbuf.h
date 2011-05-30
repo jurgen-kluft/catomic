@@ -22,27 +22,35 @@ namespace xcore
 			class head;
 
 			/**
-			* MBuf allocator. Responsible for allocating head and data. 
+			* mbuf allocator. Responsible for allocating head and data. 
 			* If you want to allocate mbufs using your own memory pool or something 
 			* this allocator is your friend.
 			*/ 
 			class allocator
 			{
 			public:
-				virtual ~allocator() {}
+								allocator()										{ }
+				virtual			~allocator()									{ }
+
+				/**
+				* Allocate both the head and the data buffer.
+				* @param The size of the data buffer to be allocated.
+				* @return pointer to the newly allocated head object.
+				*/
+				head*			alloc(u32 size = 128);
 
 				/**
 				* Allocate head object (structure).
 				* Structure should not be initialized.
 				* @param self self pointer
 				*/
-				virtual head* alloc_head();
+				inline head*	allocate_head()									{ return alloc_head(); }
 
 				/**
 				* Free head object.
 				* @param m pointer to the head to free.
 				*/
-				virtual void free_head(head *m);
+				void			deallocate_head(head *m)						{ free_head(m); }
 
 				/**
 				* Allocate data and shared areas.
@@ -51,21 +59,21 @@ namespace xcore
 				* @param m pointer to the head.
 				* @param size size of the data buffer
 				*/
-				virtual bool alloc_data(head *m, u32 size);
+				bool			allocate_data(head *m, u32 size)				{ return alloc_data(m, size); }
 
 				/**
 				* Free data and shared areas.
 				* This callback is supposed to free p->buf and p->shared areas.
 				* @param m pointer to the head.
 				*/
-				virtual void free_data(head *m);
+				void			deallocate_data(head *m)						{ free_data(m); }
+			
+			protected:
+				virtual head*	alloc_head();
+				virtual void	free_head(head *m);
+				virtual bool	alloc_data(head *m, u32 size);
+				virtual void	free_data(head *m);
 
-				/**
-				* Allocate both the head and the data buffer.
-				* @param The size of the data buffer to be allocated.
-				* @return pointer to the newly allocated head object.
-				*/
-				head *alloc(u32 size = 128);
 			};
 
 			/**
@@ -101,7 +109,7 @@ namespace xcore
 			{
 				u64				timestamp;					/** Timestamp */
 				u32				context;					/** Context. Owned by exclusive head owner. */
-				atomic::int32	refcnt;						/** Data refcount. Used for cloning */
+				atom_s32		refcnt;						/** Data refcount. Used for cloning */
 
 				/**
 				* Placement new/delete pair
@@ -123,7 +131,7 @@ namespace xcore
 
 				u8*				_buf;					// Pointer to the memory buffer
 				shared*			_shared;				// Pointer to the shared area
-				atomic::int32	_refcnt;				// The number of references to this object
+				atom_s32		_refcnt;				// The number of references to this object
 				u32				_size;					// Size of the buffer
 				u32				_data;					// Data offset
 				u32				_len;					// Data length
@@ -173,7 +181,7 @@ namespace xcore
 				* @param flag The flag that is to be retrieved
 				* @param val The value the flag should be set to. 
 				*/ 
-				bool			flags_test(u16 mask)							{ return _flags & mask; }
+				bool			flags_test(u16 mask)							{ return (_flags & mask) != 0; }
 
 				/** Set tag */
 				void			tag(u16 tag)									{ _tag = tag; }
@@ -241,13 +249,13 @@ namespace xcore
 				*/ 
 				void			free()
 				{
-					if (_refcnt.decrAndTest())
+					if (_refcnt.decr_test())
 						return;
 
-					if (!_shared->refcnt.decrAndTest())
-						_allocator->free_data(this);
+					if (!_shared->refcnt.decr_test())
+						_allocator->deallocate_data(this);
 
-					_allocator->free_head(this);
+					_allocator->deallocate_head(this);
 				}
 
 				/**
@@ -256,15 +264,15 @@ namespace xcore
 				*/ 
 				void			free_chain()
 				{
-					if (_refcnt.decrAndTest())
+					if (_refcnt.decr_test())
 						return;
 
 					head *n, *m = this->next();
 
-					if (!_shared->refcnt.decrAndTest())
-						_allocator->free_data(this);
+					if (!_shared->refcnt.decr_test())
+						_allocator->deallocate_data(this);
 
-					_allocator->free_head(this);
+					_allocator->deallocate_head(this);
 
 					while ((n = m))
 					{
@@ -288,7 +296,7 @@ namespace xcore
 				*/
 				head*			clone()
 				{
-					head *mb = _allocator->alloc_head();
+					head *mb = _allocator->allocate_head();
 					if (likely(mb != 0))
 					{
 						x_memcpy(mb, this, sizeof(*this));
@@ -309,7 +317,7 @@ namespace xcore
 				bool			cloned() const 
 				{ 
 					u32 c = _shared->refcnt.get();
-					return (c - 1);
+					return (c - 1) != 0;
 				}
 
 				/**

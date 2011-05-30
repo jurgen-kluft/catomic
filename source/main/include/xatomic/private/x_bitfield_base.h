@@ -56,6 +56,10 @@ namespace xcore
 				#include "xatomic\private\x_bitfield_x86_win32.h"
 			#elif defined(TARGET_PS3)
 				#include "xatomic\private\x_bitfield_ppc_ps3.h"
+			#elif defined(TARGET_360)
+				#include "xatomic\private\x_bitfield_ppc_360.h"
+			#elif defined(TARGET_WII)
+				#include "xatomic\private\x_bitfield_ppc_wii.h"
 			#else
 				#error Unsupported CPU
 			#endif

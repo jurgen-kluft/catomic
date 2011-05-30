@@ -21,7 +21,7 @@ namespace xcore
 		*    u64 tsc = cpu::tsc();
 		*    @endcode
 		*/
-		extern u64 __tsc();
+		static u64	__tsc();
 		static inline u64 tsc(void)
 		{
 			return __tsc();
@@ -180,8 +180,12 @@ namespace xcore
 
 #if (defined(TARGET_PC))
 	#include "xatomic\private\x_cpu_x86_win32.h"
+#elif (defined(TARGET_360))
+	#include "xatomic\private\x_cpu_ppc_360.h"
 #elif (defined(TARGET_PS3))
 	#include "xatomic\private\x_cpu_ppc_ps3.h"
+#elif (defined(TARGET_WII))
+	#include "xatomic\private\x_cpu_ppc_wii.h"
 #else
 	#error Unsupported CPU
 #endif

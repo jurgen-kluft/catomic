@@ -54,7 +54,25 @@
 		<Type>Package</Type>
 	</Dependency>
 	
-	<Project Name="${Name}" Language="${Language}" Location="source\main\cpp" Scope="Public" DependsOn="xbase:xbase;sdk_ps3:sdk_ps3">
+	<Dependency Package="sdk_360" Platform="Xbox 360">
+		<Group>com.virtuos.sdk</Group>
+		<Version>[1.0,)</Version>
+		<Type>Package</Type>
+	</Dependency>
+
+	<Dependency Package="sdk_wii" Platform="WII">
+		<Group>com.virtuos.sdk</Group>
+		<Version>[1.0,)</Version>
+		<Type>Package</Type>
+	</Dependency>
+
+	<Dependency Package="sdk_3ds" Platform="N3DS">
+		<Group>com.virtuos.sdk</Group>
+		<Version>[1.0,)</Version>
+		<Type>Package</Type>
+	</Dependency>	
+	
+	<Project Name="${Name}" Language="${Language}" Location="source\main\cpp" Scope="Public" DependsOn="xbase:xbase;sdk_wii:sdk_wii;sdk_3ds:sdk_3ds;sdk_ps3:sdk_ps3;sdk_360:sdk_360">
 		<ProjectFile>
 			<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 				<PropertyGroup Label="Globals">
