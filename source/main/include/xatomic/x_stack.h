@@ -22,8 +22,8 @@ namespace xcore
 		class stack
 		{
 		private:
-			mempool _items;
-			lifo    _lifo;
+			mempool		_items;
+			lifo		_lifo;
 
 		public:
 			/**
@@ -46,6 +46,11 @@ namespace xcore
 			*/
 			bool		empty() const												{ return _lifo.empty(); }
 
+			/**
+			* Number of unused elements.
+			* @return approximate number of unused elements
+			* @warning this method is slow and inefficient
+			*/
 			u32			room() const												{ return _lifo.room(); }
 
 			// ---- POP interface ----

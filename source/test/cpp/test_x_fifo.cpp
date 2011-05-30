@@ -22,6 +22,25 @@ UNITTEST_SUITE_BEGIN(fifo)
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(15, f.room());
 		}
+		
+		UNITTEST_TEST(fill)
+		{
+			xcore::atomic::fifo f(16);
+			f.fill();
+
+			xcore::s32 ii = 1;
+			xcore::s32 rr = 0;
+			for (xcore::s32 x=0; !f.empty(); ++x)
+			{
+				CHECK_EQUAL(x, f.room());
+				xcore::u32 i,r;
+				CHECK_EQUAL(true, f.pop(i, r));
+				CHECK_EQUAL(ii, i);
+				CHECK_EQUAL(rr, r);
+				++ii;
+				++rr;
+			}
+		}
 
 		UNITTEST_TEST(push1_pop1)
 		{

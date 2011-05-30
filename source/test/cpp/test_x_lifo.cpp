@@ -23,6 +23,28 @@ UNITTEST_SUITE_BEGIN(lifo)
 			CHECK_EQUAL(16, f.room());
 		}
 
+		UNITTEST_TEST(fill)
+		{
+			xcore::atomic::lifo f(16);
+			f.fill();
+
+			CHECK_EQUAL(false, f.empty());
+			CHECK_EQUAL(0, f.room());
+
+			xcore::u32 ii = 0;
+			xcore::u32 rr = 0;
+			for (xcore::s32 x=0; !f.empty(); ++x)
+			{
+				CHECK_EQUAL(x, f.room());
+				xcore::u32 i,r;
+				CHECK_EQUAL(true, f.pop(i, r));
+				CHECK_EQUAL(ii, i);
+				CHECK_EQUAL(rr, r);
+				++ii;
+				++rr;
+			}
+		}
+
 		UNITTEST_TEST(push1_pop1)
 		{
 			xcore::u32 i, r;

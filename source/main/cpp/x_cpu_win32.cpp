@@ -7,7 +7,7 @@
 // Include Windows header files.
 #include <windows.h>
 
-#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_cpu.h"
 
 namespace xcore
 {

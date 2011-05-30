@@ -25,10 +25,10 @@ namespace xcore
 			bool allocator::alloc_data(head *h, u32 size)
 			{
 				h->_buf = (u8*) get_heap_allocator()->allocate(size + sizeof(mbuf::shared), 4);
-				if (!h->_buf)
+				if (h->_buf == NULL)
 					return false;
-				h->_size = size;
 
+				h->_size = size;
 				h->_shared = (mbuf::shared *) (h->_buf + size);
 				return true;
 			}

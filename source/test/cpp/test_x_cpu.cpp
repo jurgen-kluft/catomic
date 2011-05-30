@@ -1,7 +1,7 @@
 #include "xbase\x_types.h"
 #include "xunittest\xunittest.h"
 
-#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_cpu.h"
 
 UNITTEST_SUITE_BEGIN(cpu_info)
 {

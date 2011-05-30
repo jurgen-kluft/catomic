@@ -1,12 +1,12 @@
 #include "xbase\x_target.h"
-#if defined(TARGET_360)
+#if defined(TARGET_WII)
 
-#include <Xtl.h>
+#include <revolution/os.h>
 
 #include "xbase\x_string_std.h"
 #include "xbase\x_memory_std.h"
 
-#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_cpu.h"
 
 namespace xcore
 {
@@ -16,15 +16,11 @@ namespace xcore
 
 		static void initialize()
 		{
-			LARGE_INTEGER TicksPerSecond;
-			::QueryPerformanceFrequency( &TicksPerSecond );
-			u64 tps = TicksPerSecond.QuadPart;
-
 			// Various scale factors used for conversions.
-			_scale.tsc2nsec = (       tps << TSC2NSEC_SCALE_SHIFT) /    1000ULL;
-			_scale.tsc2usec = (       tps << TSC2USEC_SCALE_SHIFT) / 1000000ULL;
-			_scale.nsec2tsc = (   1000ULL << NSEC2TSC_SCALE_SHIFT) / tps;
-			_scale.usec2tsc = (1000000ULL << USEC2TSC_SCALE_SHIFT) / tps;
+			_scale.tsc2nsec = ( 1000000000ULL << TSC2NSEC_SCALE_SHIFT) / OS_TIMER_CLOCK;
+			_scale.tsc2usec = (    1000000ULL << TSC2USEC_SCALE_SHIFT) / OS_TIMER_CLOCK;
+			_scale.nsec2tsc = (OS_TIMER_CLOCK << NSEC2TSC_SCALE_SHIFT) /     1000000000;
+			_scale.usec2tsc = (OS_TIMER_CLOCK << USEC2TSC_SCALE_SHIFT) /        1000000;
 		}
 	}
 
@@ -120,7 +116,7 @@ namespace xcore
 			ChipID.Revision = 0x0501;
 			ChipID.ExtendedFamily = 0;
 			ChipID.ExtendedModel = 0;
-			x_strcpy(ChipID.ProcessorName, sizeof(ChipID.ProcessorName), "IBM PowerPC \"Xenon\"");
+			x_strcpy(ChipID.ProcessorName, sizeof(ChipID.ProcessorName), "IBM PowerPC \"Broadway\"");
 			x_strcpy(ChipID.Vendor, sizeof(ChipID.Vendor), "IBM");
 			x_strcpy(ChipID.SerialNumber, sizeof(ChipID.SerialNumber), "");
 
@@ -137,9 +133,9 @@ namespace xcore
 			Features.HasACPI = false;
 			Features.HasSerial = false;
 			Features.HasThermal = false;
-			Features.CPUSpeed = 3200;
+			Features.CPUSpeed = 729;
 			Features.L1CacheSize = 64 * 1024;
-			Features.L2CacheSize = 1024 * 1024;
+			Features.L2CacheSize = 256 * 1024;
 			Features.L3CacheSize = -1;
 			
 			Features.ExtendedFeatures.Has3DNow = false;
@@ -148,8 +144,8 @@ namespace xcore
 			Features.ExtendedFeatures.HasMMXPlus = false;
 			Features.ExtendedFeatures.HasSSEMMX = false;
 			Features.ExtendedFeatures.SupportsHyperthreading = false;
-			Features.ExtendedFeatures.NumCores = 3;
-			Features.ExtendedFeatures.LogicalProcessorsPerPhysical = 2;
+			Features.ExtendedFeatures.NumCores = 1;
+			Features.ExtendedFeatures.LogicalProcessorsPerPhysical = 1;
 			Features.ExtendedFeatures.APIC_ID = 0;
 
 			Features.ExtendedFeatures.PowerManagement.HasVoltageID = false;
@@ -309,7 +305,7 @@ namespace xcore
 	//
 	// --------------------------------------------------------
 
-	static u64 sCPUSpeedInkHz = 3200 * 1000; 
+	static u64 sCPUSpeedInkHz = 729 * 1000; 
 
 	xcpu_speed::xcpu_speed ()
 	{

@@ -54,8 +54,8 @@ namespace xcore
 			_tail.next_salt32.next = i; 
 			_head.next_salt32.next = 0;
 
-			_tail.next_salt32.salt = 0;
-			_head.next_salt32.salt = _size;
+			_tail.next_salt32.salt = _size;
+			_head.next_salt32.salt = 0;
 		}
 
 		bool fifo::push(u32 i)

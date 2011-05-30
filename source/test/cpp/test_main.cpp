@@ -4,7 +4,7 @@
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_allocator.h"
-#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_cpu.h"
 
 UNITTEST_SUITE_LIST(xMultiCoreUnitTest);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, cpu_info);

@@ -6,6 +6,8 @@
 #endif
 
 #include "xbase\x_types.h"
+#include "xbase\x_string_std.h"
+#include "xbase\x_memory_std.h"
 
 namespace xcore
 {
@@ -14,7 +16,7 @@ namespace xcore
 	* Simple histogram.
 	* @param Td type used for data variables (min/max, etc)
 	* @param Tc type used for counter variables
-	* @param HIGH uppder bound
+	* @param HIGH upper bound
 	* @param LOW lower bound
 	* @param _NBINS number of bins. Note that two additional bins are added.
 	* @param SCALE number of scaler bits used for divisions
@@ -35,12 +37,14 @@ namespace xcore
 		Td		_factor;
 		Tc		_count[NUM_BINS];
 
-		Td		step() const
+		static inline
+		Td		step()
 		{
 			return (HIGH - LOW) / (Td) _NBINS;
 		}
 
-		u32		v2b(Td v) const
+		static inline
+		u32		v2b(Td v, const Td& factor)
 		{
 			if (v <= (Td) LOW)
 				return FIRST_BIN;
@@ -48,10 +52,11 @@ namespace xcore
 				return LAST_BIN;
 
 			v -= LOW;
-			return 1 + ((v * _factor) >> SCALE);
+			return 1 + ((v * factor) >> SCALE);
 		}
 
-		Td		b2v(u32 i) const 
+		static inline
+		Td		b2v(u32 i)
 		{
 			return step() * i + LOW;
 		}
@@ -85,7 +90,7 @@ namespace xcore
 		{
 			if (v < _min) _min = v;
 			if (v > _max) _max = v;
-			++_count[v2b(v)];
+			++_count[v2b(v, _factor)];
 		}
 
 		/**
@@ -136,7 +141,7 @@ namespace xcore
 		* @param[out] count number of hits for the bin
 		* @return false if iteration is done, true otherwise
 		*/
-		bool iterate(u32& i, char* bin, Tc& count) const
+		bool iterate(u32& i, char* bin, u32 binSize, Tc& count) const
 		{
 			if (i >= NUM_BINS)
 				return false;
@@ -144,13 +149,13 @@ namespace xcore
 			switch (i)
 			{
 			case FIRST_BIN:
-				sprintf(bin, "<%lu", LOW);
+				x_sprintf(bin, binSize, "<%lu", LOW);
 				break;
 			case LAST_BIN:
-				sprintf(bin, ">%lu", HIGH);
+				x_sprintf(bin, binSize, ">%lu", HIGH);
 				break;
 			default:
-				sprintf(bin, " %u", b2v(i));
+				x_sprintf(bin, binSize, " %u", b2v(i));
 				break;
 			}
 

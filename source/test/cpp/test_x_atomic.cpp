@@ -72,6 +72,54 @@ UNITTEST_SUITE_BEGIN(atomic)
 				i.decr();
 			}
 		}
+
+		UNITTEST_TEST(testAndDecr)
+		{
+			aint i(0);
+			CHECK_FALSE(i.testAndDecr());
+
+			i.set(1);
+			CHECK_TRUE(i.testAndDecr());
+
+			i.set(2);
+			CHECK_TRUE(i.testAndDecr());
+		}
+
+		UNITTEST_TEST(decrAndTest)
+		{
+			aint i(1);
+			CHECK_FALSE(i.decrAndTest());
+
+			i.set(2);
+			CHECK_TRUE(i.decrAndTest());
+
+			i.set(2);
+			CHECK_TRUE(i.decrAndTest());
+		}
+
+		UNITTEST_TEST(add)
+		{
+			aint i(0);
+			CHECK_EQUAL(0, i.get());
+
+			for (xcore::s32 x=0; x<32; ++x)
+			{
+				CHECK_EQUAL(x*3, i.get());
+				i.add(3);
+			}
+		}
+
+		UNITTEST_TEST(sub)
+		{
+			aint i(32*159);
+			CHECK_EQUAL(32*159, i.get());
+
+			for (xcore::s32 x=32*159; x>0; x-=159)
+			{
+				CHECK_EQUAL(x, i.get());
+				i.sub(159);
+			}
+		}
 	}
 	
 	UNITTEST_FIXTURE(int64)
@@ -139,6 +187,42 @@ UNITTEST_SUITE_BEGIN(atomic)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.decr();
+			}
+		}
+
+		UNITTEST_TEST(decrAndTest)
+		{
+			aint i(1);
+			CHECK_FALSE(i.decrAndTest());
+
+			i.set(2);
+			CHECK_TRUE(i.decrAndTest());
+
+			i.set(2);
+			CHECK_TRUE(i.decrAndTest());
+		}
+
+		UNITTEST_TEST(add)
+		{
+			aint i(0);
+			CHECK_EQUAL(0, i.get());
+
+			for (xcore::s32 x=0; x<32; ++x)
+			{
+				CHECK_EQUAL(x*3, i.get());
+				i.add(3);
+			}
+		}
+
+		UNITTEST_TEST(sub)
+		{
+			aint i(32*159);
+			CHECK_EQUAL(32*159, i.get());
+
+			for (xcore::s32 x=32*159; x>0; x-=159)
+			{
+				CHECK_EQUAL(x, i.get());
+				i.sub(159);
 			}
 		}
 	}

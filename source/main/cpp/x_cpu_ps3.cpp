@@ -7,7 +7,7 @@
 #include "xbase\x_string_std.h"
 #include "xbase\x_memory_std.h"
 
-#include "xatomic\x_cpu_info.h"
+#include "xatomic\x_cpu.h"
 
 namespace xcore
 {
