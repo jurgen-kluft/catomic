@@ -76,9 +76,9 @@ namespace xcore
 			bool			bit_test_clr(u32 n);
 			bool			bit_test_chg(u32 n);
 
-			inline			atom_int_type()													{ set(0); }
-			inline			atom_int_type(const atom_int_type& i)							{ set(i.get()); }
-			inline			atom_int_type(T i)												{ set(i); }
+							atom_int_type();
+							atom_int_type(const atom_int_type& i);
+							atom_int_type(T i);
 		};
 	}
 }
@@ -91,6 +91,8 @@ namespace xcore
 	#include "xatomic\private\x_atomic_ppc_ps3.h"
 #elif defined(TARGET_WII)
 	#include "xatomic\private\x_atomic_ppc_wii.h"
+#elif defined(TARGET_3DS)
+	#include "xatomic\private\x_atomic_arm_3ds.h"
 #else
 	#error Unsupported CPU
 #endif

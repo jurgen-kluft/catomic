@@ -24,17 +24,17 @@ namespace xcore
 			class pool : public allocator
 			{
 			protected:
-				head*		alloc_head(void);
-				bool		alloc_data(head *m, u32 size);
-				void		free_head(head *m);
-				void		free_data(head *m);
+				virtual head*	allocate_head(void);
+				virtual bool	allocate_data(head *m, u32 size);
+				virtual void	deallocate_head(head *m);
+				virtual void	deallocate_data(head *m);
 
-				mempool*	_head;
-				mempool*	_data;
-				shared*		_shared;
+				mempool*		_head;
+				mempool*		_data;
+				shared*			_shared;
 
 				// External buffer
-				bool		_extern;
+				bool			_extern;
 
 			public:
 				/**

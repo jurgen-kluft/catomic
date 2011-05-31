@@ -11,12 +11,12 @@ namespace xcore
 	{
 		namespace mbuf
 		{
-			head* pool::alloc_head(void)
+			head* pool::allocate_head(void)
 			{
 				return (head *) _head->get();
 			}
 
-			void pool::free_head(head *h)
+			void pool::deallocate_head(head *h)
 			{
 				_head->put((u8 *) h);
 			}
@@ -27,7 +27,7 @@ namespace xcore
 				friend class pool;
 			};
 
-			bool pool::alloc_data(head *h, u32 size)
+			bool pool::allocate_data(head *h, u32 size)
 			{
 				MB *m = static_cast <MB *> (h);
 
@@ -42,7 +42,7 @@ namespace xcore
 				return true;
 			}
 
-			void pool::free_data(head *h)
+			void pool::deallocate_data(head *h)
 			{
 				MB *m = static_cast <MB *> (h);
 				_data->put(m->_buf);

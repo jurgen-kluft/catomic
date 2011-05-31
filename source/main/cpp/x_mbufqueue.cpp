@@ -10,18 +10,25 @@ namespace xcore
 		{
 			void queue::tag(u16 tag)
 			{
-				mbuf::head *m;
 				queue::iterator i(this);
-				while ((m = i.next()))
+
+				mbuf::head *m = i.next();
+				while (m!=NULL)
+				{
 					m->tag(tag);
+					m = i.next();
+				}
 			}
 
 			bool queue::merge(mbuf::head *mbuf)
 			{
-				mbuf::head *m;
 				queue::iterator i(this);
-				while ((m = i.next()))
+				mbuf::head *m = i.next();
+				while (m!=NULL)
+				{
 					mbuf->put(m);
+					m = i.next();
+				}
 
 				return true;
 			}

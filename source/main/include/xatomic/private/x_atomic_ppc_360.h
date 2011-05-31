@@ -88,18 +88,18 @@ namespace xcore
 		class atom_s32 : public atom_int_type<s32>
 		{
 		public:
-			inline			atom_s32() : atom_int_type<s32>(0)						{ }
-			inline			atom_s32(s32 i) : atom_int_type<s32>(i)					{ }
+			atom_s32();
+			atom_s32(s32 i);
 		};
 
 		static inline s32	read_s32(s32 volatile* p)
 		{
-			return *p;
+			return cpu_interlocked::sRead((u32 volatile*)p);
 		}
 
 		static inline void	write_s32(s32 volatile* p, s32 v)
 		{
-			*p = v;
+			cpu_interlocked::sWrite((u32 volatile*)p, (u32)v);
 		}
 
 		static inline bool	cas_s32(s32 volatile* mem, s32 old, s32 n)
@@ -308,24 +308,34 @@ namespace xcore
 			return (old & (1<<n)) != 0;
 		}
 
+		template <>
+		inline			atom_int_type<s32>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<s32>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<s32>::atom_int_type(s32 i)					{ set(i); }
+
+		inline			atom_s32::atom_s32() : atom_int_type<s32>(0)				{ }
+		inline			atom_s32::atom_s32(s32 i) : atom_int_type<s32>(i)			{ }
+
 		//-------------------------------------------------------------------------------------
 		// 32 bit unsigned integer
 		//-------------------------------------------------------------------------------------
 		class atom_u32 : public atom_int_type<u32>
 		{
 		public:
-			inline			atom_u32() : atom_int_type<u32>(0)						{ }
-			inline			atom_u32(u32 i) : atom_int_type<u32>(i)					{ }
+			atom_u32();
+			atom_u32(u32 i);
 		};
 
 		static inline u32	read_u32(u32 volatile* p)
 		{
-			return *p;
+			return cpu_interlocked::sRead((u32 volatile*)p);
 		}
 
 		static inline void	write_u32(u32 volatile* p, u32 v)
 		{
-			*p = v;
+			cpu_interlocked::sWrite((u32 volatile*)p, (u32)v);
 		}
 
 		static inline bool	cas_u32(u32 volatile* mem, u32 old, u32 n)
@@ -341,6 +351,10 @@ namespace xcore
 			u32 r = (u32)cpu_interlocked::sInterlockedCompareExchange((u32 volatile*)mem, (u32)n, (u32)old);
 			return r == old;
 		}
+
+		//-------------------------------------------------------------------------------------
+		// atomic integer base function implementations
+		//-------------------------------------------------------------------------------------
 
 		template <>
 		inline u32		atom_int_type<u32>::get() const
@@ -530,24 +544,34 @@ namespace xcore
 			return (old & (1<<n)) != 0;
 		}
 
+		template <>
+		inline			atom_int_type<u32>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<u32>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<u32>::atom_int_type(u32 i)					{ set(i); }
+
+		inline			atom_u32::atom_u32() : atom_int_type<u32>(0)				{ }
+		inline			atom_u32::atom_u32(u32 i) : atom_int_type<u32>(i)			{ }
+
 		//-------------------------------------------------------------------------------------
 		// 64 bit signed integer
 		//-------------------------------------------------------------------------------------
 		class atom_s64 : public atom_int_type<s64>
 		{
 		public:
-			inline			atom_s64() : atom_int_type<s64>(0)						{ }
-			inline			atom_s64(s64 i) : atom_int_type<s64>(i)					{ }
+			atom_s64();
+			atom_s64(s64 i);
 		};
 
 		static inline s64	read_s64(s64 volatile* p)
 		{
-			return cpu_interlocked::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
+			return cpu_interlocked::sRead64((volatile u64*)p);
 		}
 
 		static inline void	write_s64(s64 volatile* p, s64 v)
 		{
-			*p = v;
+			cpu_interlocked::sWrite64((volatile u64*)p, (u64)v);
 		}
 
 		static inline bool	cas_s64(s64 volatile* mem, s64 old, s64 n)
@@ -563,6 +587,10 @@ namespace xcore
 			s64 r = (s64)cpu_interlocked::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
 			return r == old;
 		}
+
+		//-------------------------------------------------------------------------------------
+		// atomic integer base function implementations
+		//-------------------------------------------------------------------------------------
 
 		template <>
 		inline s64		atom_int_type<s64>::get() const
@@ -692,71 +720,75 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<s64>::bit_set(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old | i) == false);
+			} while (cas_s64(&_data, old, old | (1<<n)) == false);
 		}
 
 		template <>
 		inline void		atom_int_type<s64>::bit_clr(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old ^ i) == false);
+			} while (cas_s64(&_data, old, old ^ (1<<n)) == false);
 		}
 
 		template <>
 		inline void		atom_int_type<s64>::bit_chg(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old ^ i) == false);
+			} while (cas_s64(&_data, old, old ^ (1<<n)) == false);
 		}
 
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_set(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old | i) == false);
-			return (old & i) != 0;
+			} while (cas_s64(&_data, old, old | (1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
 
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_clr(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old & ~i) == false);
-			return (old & i) != 0;
+			} while (cas_s64(&_data, old, old & ~(1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
 
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_chg(u32 n)
 		{
-			s64 i = (1<<n);
 			register s64 old;
 			do
 			{
 				old = read_s64((s64 volatile*)&_data);
-			} while (cas_s64(&_data, old, old ^ i) == false);
-			return (old & i) != 0;
+			} while (cas_s64(&_data, old, old ^ (1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
+
+		template <>
+		inline			atom_int_type<s64>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<s64>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<s64>::atom_int_type(s64 i)					{ set(i); }
+
+		inline			atom_s64::atom_s64() : atom_int_type<s64>(0)				{ }
+		inline			atom_s64::atom_s64(s64 i) : atom_int_type<s64>(i)			{ }
 
 		//-------------------------------------------------------------------------------------
 		// 64 bit unsigned integer
@@ -764,18 +796,18 @@ namespace xcore
 		class atom_u64 : public atom_int_type<u64>
 		{
 		public:
-			inline			atom_u64() : atom_int_type<u64>(0)							{ }
-			inline			atom_u64(u64 i) : atom_int_type<u64>(i)						{ }
+			atom_u64();
+			atom_u64(u64 i);
 		};
 
 		static inline u64	read_u64(volatile u64* p)
 		{
-			return cpu_interlocked::sInterlockedCompareExchange64((volatile u64*)p, 0, 0);
+			return cpu_interlocked::sRead64((volatile u64*)p);
 		}
 
 		static inline void	write_u64(volatile u64* p, u64 v)
 		{
-			*p = v;
+			cpu_interlocked::sWrite64((volatile u64*)p, (u64)v);
 		}
 
 		static inline bool	cas_u64(volatile u64* mem, u64 old, u64 n)
@@ -791,6 +823,10 @@ namespace xcore
 			u64 r = (u64)cpu_interlocked::sInterlockedCompareExchange64((u64 volatile*)mem, (u64)n, (u64)old);
 			return r == old;
 		}
+
+		//-------------------------------------------------------------------------------------
+		// atomic integer base function implementations
+		//-------------------------------------------------------------------------------------
 
 		template <>
 		inline u64		atom_int_type<u64>::get() const
@@ -920,71 +956,75 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<u64>::bit_set(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old | i) == false);
+			} while (cas_u64(&_data, old, old | (1<<n)) == false);
 		}
 
 		template <>
 		inline void		atom_int_type<u64>::bit_clr(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old ^ i) == false);
+			} while (cas_u64(&_data, old, old ^ (1<<n)) == false);
 		}
 
 		template <>
 		inline void		atom_int_type<u64>::bit_chg(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old ^ i) == false);
+			} while (cas_u64(&_data, old, old ^ (1<<n)) == false);
 		}
 
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_set(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old | i) == false);
-			return (old & i) != 0;
+			} while (cas_u64(&_data, old, old | (1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
 
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_clr(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old & ~i) == false);
-			return (old & i) != 0;
+			} while (cas_u64(&_data, old, old & ~(1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
 
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_chg(u32 n)
 		{
-			u64 i = (1<<n);
 			register u64 old;
 			do
 			{
 				old = read_u64((u64 volatile*)&_data);
-			} while (cas_u64(&_data, old, old ^ i) == false);
-			return (old & i) != 0;
+			} while (cas_u64(&_data, old, old ^ (1<<n)) == false);
+			return (old & (1<<n)) != 0;
 		}
+
+		template <>
+		inline			atom_int_type<u64>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<u64>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<u64>::atom_int_type(u64 i)					{ set(i); }
+
+		inline			atom_u64::atom_u64() : atom_int_type<u64>(0)				{ }
+		inline			atom_u64::atom_u64(u64 i) : atom_int_type<u64>(i)			{ }
 
 	}
 }

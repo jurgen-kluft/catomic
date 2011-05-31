@@ -267,17 +267,17 @@ namespace xcore
 					if (_refcnt.decr_test())
 						return;
 
-					head *n, *m = this->next();
-
+					head *m = this->next();
 					if (!_shared->refcnt.decr_test())
 						_allocator->deallocate_data(this);
-
 					_allocator->deallocate_head(this);
 
-					while ((n = m))
+					head *n = m;
+					while (n!=0)
 					{
 						m = n->next();
 						n->free();
+						n = m;
 					}
 				}
 

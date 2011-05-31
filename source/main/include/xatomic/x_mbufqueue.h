@@ -130,9 +130,12 @@ namespace xcore
 				*/ 
 				void		purge()
 				{
-					mbuf::head *mb;
-					while ((mb = deque()))
+					mbuf::head *mb = deque();
+					while (mb!=NULL)
+					{
 						mb->free();
+						mb = deque();
+					}
 				}
 
 				/** Set tag  for all heads in the queue */

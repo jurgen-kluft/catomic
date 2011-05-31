@@ -26,7 +26,7 @@ namespace xcore
 
 			inline static u32 sRead(volatile u32 *src)
 			{
-				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::LoadRexEx((s32 volatile*)src);
+				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::LoadRegEx((s32 volatile*)src);
 				return v;
 			}
 
@@ -34,7 +34,7 @@ namespace xcore
 			{
 				for (;;)
 				{
-					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::StoreRexEx((s32)v, (s32 volatile*)src)!=0)
+					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::StoreRegEx((s32)v, (s32 volatile*)dest)!=0)
 						return;
 				}
 			}
@@ -55,15 +55,15 @@ namespace xcore
 
 			inline static u64 sRead64(volatile u64 *src)
 			{
-				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::LoadRexEx(src);
+				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::LoadRegEx((s64 volatile*)src);
 				return v;
 			}
 
-			inline static void sWrite64(volatile u64 *src, u64 v)
+			inline static void sWrite64(volatile u64 *dest, u64 v)
 			{
 				for (;;)
 				{
-					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::StoreRexEx((s64)v, (s64 volatile*)src)!=0)
+					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::StoreRegEx((s64)v, (s64 volatile*)dest)!=0)
 						return;
 				}
 			}
@@ -77,8 +77,8 @@ namespace xcore
 		class atom_s32 : public atom_int_type<s32>
 		{
 		public:
-			inline			atom_s32() : atom_int_type<s32>(0)						{ }
-			inline			atom_s32(s32 i) : atom_int_type<s32>(i)					{ }
+							atom_s32();
+							atom_s32(s32 i);
 		};
 
 		static inline s32	read_s32(s32 volatile* p)
@@ -297,14 +297,24 @@ namespace xcore
 			return (old & (1<<n)) != 0;
 		}
 
+		template <>
+		inline			atom_int_type<s32>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<s32>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<s32>::atom_int_type(s32 i)					{ set(i); }
+
+		inline			atom_s32::atom_s32() : atom_int_type<s32>(0)				{ }
+		inline			atom_s32::atom_s32(s32 i) : atom_int_type<s32>(i)			{ }
+			
 		//-------------------------------------------------------------------------------------
 		// 32 bit unsigned integer
 		//-------------------------------------------------------------------------------------
 		class atom_u32 : public atom_int_type<u32>
 		{
 		public:
-			inline			atom_u32() : atom_int_type<u32>(0)						{ }
-			inline			atom_u32(u32 i) : atom_int_type<u32>(i)					{ }
+							atom_u32();
+							atom_u32(u32 i);
 		};
 
 		static inline u32	read_u32(u32 volatile* p)
@@ -523,14 +533,24 @@ namespace xcore
 			return (old & (1<<n)) != 0;
 		}
 
+		template <>
+		inline			atom_int_type<u32>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<u32>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<u32>::atom_int_type(u32 i)					{ set(i); }
+
+		inline			atom_u32::atom_u32() : atom_int_type<u32>(0)				{ }
+		inline			atom_u32::atom_u32(u32 i) : atom_int_type<u32>(i)			{ }
+
 		//-------------------------------------------------------------------------------------
 		// 64 bit signed integer
 		//-------------------------------------------------------------------------------------
 		class atom_s64 : public atom_int_type<s64>
 		{
 		public:
-			inline			atom_s64() : atom_int_type<s64>(0)						{ }
-			inline			atom_s64(s64 i) : atom_int_type<s64>(i)					{ }
+							atom_s64();
+							atom_s64(s64 i);
 		};
 
 		static inline s64	read_s64(s64 volatile* p)
@@ -749,14 +769,24 @@ namespace xcore
 			return (old & (1<<n)) != 0;
 		}
 
+		template <>
+		inline			atom_int_type<s64>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<s64>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<s64>::atom_int_type(s64 i)					{ set(i); }
+
+		inline			atom_s64::atom_s64() : atom_int_type<s64>(0)				{ }
+		inline			atom_s64::atom_s64(s64 i) : atom_int_type<s64>(i)			{ }
+
 		//-------------------------------------------------------------------------------------
 		// 64 bit unsigned integer
 		//-------------------------------------------------------------------------------------
 		class atom_u64 : public atom_int_type<u64>
 		{
 		public:
-			inline			atom_u64() : atom_int_type<u64>(0)							{ }
-			inline			atom_u64(u64 i) : atom_int_type<u64>(i)						{ }
+							atom_u64();
+							atom_u64(u64 i);
 		};
 
 		static inline u64	read_u64(volatile u64* p)
@@ -974,5 +1004,16 @@ namespace xcore
 			} while (cas_u64(&_data, old, old ^ (1<<n)) == false);
 			return (old & (1<<n)) != 0;
 		}
+
+		template <>
+		inline			atom_int_type<u64>::atom_int_type()							{ set(0); }
+		template <>
+		inline			atom_int_type<u64>::atom_int_type(const atom_int_type& i)	{ set(i.get()); }
+		template <>
+		inline			atom_int_type<u64>::atom_int_type(u64 i)					{ set(i); }
+
+		inline			atom_u64::atom_u64() : atom_int_type<u64>(0)				{ }
+		inline			atom_u64::atom_u64(u64 i) : atom_int_type<u64>(i)			{ }
+
 	}
 }
