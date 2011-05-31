@@ -4,10 +4,17 @@
  * @warning do not include directly. @see xatomic\x_barrier.h
  */
 
-// Memory barriers
-// This version requires SSE capable CPU.
-force_inline void barrier::comp()		{ __asm { }; }
+namespace xcore
+{
+	// We're using inline function here instead of #defines to avoid name space clashes.
+	namespace barrier
+	{
+		// Memory barriers
+		// This version requires SSE capable CPU.
+		force_inline void barrier::comp()		{ __asm { }; }
 
-force_inline void barrier::memr()		{ __asm { __asm lfence }; }
-force_inline void barrier::memw()		{ __asm { __asm sfence }; }
-force_inline void barrier::memrw()		{ __asm { __asm mfence }; }
+		force_inline void barrier::memr()		{ __asm { __asm lfence }; }
+		force_inline void barrier::memw()		{ __asm { __asm sfence }; }
+		force_inline void barrier::memrw()		{ __asm { __asm mfence }; }
+	}
+}

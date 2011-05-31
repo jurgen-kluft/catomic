@@ -5,7 +5,7 @@
 // Set a bit
 static inline void __set(u32 n, s64 *addr)
 {
-	*addr |= 1 << n;
+   	*addr |= 1 << n;
 }
 
 // Clear a bit
@@ -17,8 +17,8 @@ static inline void __clear(u32 n, s64 *addr)
 // Test a bit
 static inline bool __test(u32 n, s64 *addr)
 {
-	bool bit = (*addr & (1 << n)) != 0;
-	return bit;
+   	bool bit = (*addr & (1 << n)) != 0;
+   	return bit;
 }
 
 // Test and set
@@ -26,7 +26,7 @@ static inline bool __tas(u32 n, s64 *addr)
 {
 	bool bit = (*addr & (1 << n)) != 0;
 	*addr |= (1 << n);
-	return bit;
+   	return bit;
 }
 
 // Test and clear

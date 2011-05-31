@@ -14,6 +14,20 @@ namespace xcore
 {
 	namespace atomic
 	{
+		#if defined(TARGET_PC)
+			#define X_WORDSIZE	64
+		#elif defined(TARGET_PS3)
+			#define X_WORDSIZE	64
+		#elif defined(TARGET_360)
+			#define X_WORDSIZE	64
+		#elif defined(TARGET_WII)
+			#define X_WORDSIZE	64
+		#elif defined(TARGET_3DS)
+			#define X_WORDSIZE	64
+		#else
+			#error Unsupported CPU
+		#endif
+
 		/**
 		* Internal bitfield functions
 		*/

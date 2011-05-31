@@ -4,9 +4,16 @@
  * @warning do not include directly. @see xatomic\x_barrier.h
  */
 
-// Memory barriers
-force_inline void barrier::comp()		{  }
+namespace xcore
+{
+	// We're using inline function here instead of #defines to avoid name space clashes.
+	namespace barrier
+	{
+		// Memory barriers
+		force_inline void barrier::comp()		{  }
 
-force_inline void barrier::memr()		{ __lwsync(); }
-force_inline void barrier::memw()		{ __lwsync(); }
-force_inline void barrier::memrw()		{ __sync(); }
+		force_inline void barrier::memr()		{ __lwsync(); }
+		force_inline void barrier::memw()		{ __lwsync(); }
+		force_inline void barrier::memrw()		{ __sync(); }
+	}
+}
