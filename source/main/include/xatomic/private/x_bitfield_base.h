@@ -83,23 +83,23 @@ namespace xcore
 		public:
 
 			// Set a bit
-			static inline void set(u32 n, value_type *addr)							{ __set(n, addr); }
+			static inline void	set(u32 n, value_type *addr)							{ __set(n, addr); }
 			// Clear a bit
-			static inline void clear(u32 n, value_type *addr)						{ __clear(n, addr); }
+			static inline void	clear(u32 n, value_type *addr)							{ __clear(n, addr); }
 			// Test a bit
-			static inline bool test(u32 n, value_type *addr)						{ return __test(n, addr); }
+			static inline bool	test(u32 n, value_type *addr)							{ return __test(n, addr); }
 			// Test and set
-			static inline bool tas(u32 n, value_type *addr)							{ return __tas(n, addr); }
+			static inline bool	tas(u32 n, value_type *addr)							{ return __tas(n, addr); }
 			// Test and clear
-			static inline bool tac(u32 n, value_type *addr)							{ return __tac(n, addr); }
+			static inline bool	tac(u32 n, value_type *addr)							{ return __tac(n, addr); }
 			// Atomic test and set
-			static inline bool atas(u32 n, volatile value_type *addr)				{ return __atas(n, addr); }
+			static inline bool	atas(u32 n, volatile value_type *addr)					{ return __atas(n, addr); }
 			// Atomic test and clear
-			static inline bool atac(u32 n, volatile value_type *addr)				{ return __atac(n, addr); }
+			static inline bool	atac(u32 n, volatile value_type *addr)					{ return __atac(n, addr); }
 			// Find first non-zero bit
-			static inline value_type ffs(value_type d)								{ return __ffs(d); }
+			static inline s32	ffs(value_type d)										{ return __ffs(d); }
 			// Find first zero bit
-			static inline value_type ffz(value_type d)								{ return __ffz(d); }
+			static inline s32	ffz(value_type d)										{ return __ffz(d); }
 
 			/*
 			* Generic version of the popular parallel bit counting 
@@ -116,7 +116,7 @@ namespace xcore
 				n = __W_COUNT(n, 2);
 				return n;
 			}
-			static u32 weight(s8 n)	{ return weight((u8)n); }
+			static u32 weight(s8 n)		{ return weight((u8)n); }
 
 			static u32 weight(u16 n)
 			{

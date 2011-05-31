@@ -759,6 +759,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<s64>::bit_chg(u32 n)
 		{
+			s64 const i = (1<<n);
 			register s64 old;
 			do
 			{
@@ -775,7 +776,7 @@ namespace xcore
 			{
 				old = read_s64((s64 volatile*)&_data);
 			} while (cas_s64(&_data, old, old | i) == false);
-			return (old & (1<<n)) != 0;
+			return (old & i) != 0;
 		}
 
 		template <>
