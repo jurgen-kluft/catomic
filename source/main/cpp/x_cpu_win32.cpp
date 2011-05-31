@@ -8,6 +8,7 @@
 #include <windows.h>
 
 #include "xatomic\x_cpu.h"
+#include "xatomic\private\x_cpu_features.h"
 
 namespace xcore
 {

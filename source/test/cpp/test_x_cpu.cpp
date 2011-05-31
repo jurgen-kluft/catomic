@@ -9,7 +9,7 @@ UNITTEST_SUITE_BEGIN(cpu_info)
     {
         UNITTEST_FIXTURE_SETUP() 
 		{
-			xcore::cpu::xinfo::initialize();
+			xcore::cpu::xinfo info;
 		}
 
         UNITTEST_FIXTURE_TEARDOWN() {}
