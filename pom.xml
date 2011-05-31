@@ -132,7 +132,7 @@
 					</ClCompile>
 					<Link>
 						<AdditionalLibraryDirectories>#$(${Name}_TargetDir)libs</AdditionalLibraryDirectories>
-						<AdditionalDependencies>#${Name}_DevDebug_$(Platform).lib</AdditionalDependencies>
+						<AdditionalDependencies>librtc_stub.a;#${Name}_DevDebug_$(Platform).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|PS3'">
@@ -141,7 +141,7 @@
 					</ClCompile>
 					<Link>
 						<AdditionalLibraryDirectories>#$(${Name}_TargetDir)libs</AdditionalLibraryDirectories>
-						<AdditionalDependencies>#${Name}_DevRelease_$(Platform).lib</AdditionalDependencies>
+						<AdditionalDependencies>librtc_stub.a;#${Name}_DevRelease_$(Platform).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevFinal|PS3'">
@@ -150,7 +150,7 @@
 					</ClCompile>
 					<Link>
 						<AdditionalLibraryDirectories>#$(${Name}_TargetDir)libs</AdditionalLibraryDirectories>
-						<AdditionalDependencies>#${Name}_DevFinal_$(Platform).lib</AdditionalDependencies>
+						<AdditionalDependencies>librtc_stub.a;#${Name}_DevFinal_$(Platform).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|PS3'">
@@ -159,7 +159,7 @@
 					</ClCompile>
 					<Link>
 						<AdditionalLibraryDirectories>#$(${Name}_TargetDir)libs</AdditionalLibraryDirectories>
-						<AdditionalDependencies>#${Name}_TestDebug_$(Platform).lib</AdditionalDependencies>
+						<AdditionalDependencies>librtc_stub.a;#${Name}_TestDebug_$(Platform).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|PS3'">
@@ -168,7 +168,7 @@
 					</ClCompile>
 					<Link>
 						<AdditionalLibraryDirectories>#$(${Name}_TargetDir)libs</AdditionalLibraryDirectories>
-						<AdditionalDependencies>#${Name}_TestRelease_$(Platform).lib</AdditionalDependencies>
+						<AdditionalDependencies>librtc_stub.a;#${Name}_TestRelease_$(Platform).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevDebug|Xbox 360'">

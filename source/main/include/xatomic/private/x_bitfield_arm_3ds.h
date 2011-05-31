@@ -3,44 +3,44 @@
 // 64bit ops
 
 // Set a bit
-static inline void __set(u32 n, s64 *addr)
+static inline void __set(u32 n, value_type *addr)
 {
-   	*addr |= 1 << n;
+	*addr |= (s64)1 << n;
 }
 
 // Clear a bit
-static inline void __clear(u32 n, s64 *addr)
+static inline void __clear(u32 n, value_type *addr)
 {
-	*addr &= ~(1 << n);
+	*addr &= ~((s64)1 << n);
 }
 
 // Test a bit
-static inline bool __test(u32 n, s64 *addr)
+static inline bool __test(u32 n, value_type *addr)
 {
-   	bool bit = (*addr & (1 << n)) != 0;
-   	return bit;
+	bool bit = (*addr & ((s64)1 << n)) != 0;
+	return bit;
 }
 
 // Test and set
-static inline bool __tas(u32 n, s64 *addr)
+static inline bool __tas(u32 n, value_type *addr)
 {
-	bool bit = (*addr & (1 << n)) != 0;
-	*addr |= (1 << n);
-   	return bit;
+	bool bit = (*addr & ((s64)1 << n)) != 0;
+	*addr |= ((s64)1 << n);
+	return bit;
 }
 
 // Test and clear
-static inline bool __tac(u32 n, s64 *addr)
+static inline bool __tac(u32 n, value_type *addr)
 {
-	bool bit = (*addr & (1 << n)) != 0;
-	*addr &= ~(1 << n);
+	bool bit = (*addr & ((s64)1 << n)) != 0;
+	*addr &= ~((s64)1 << n);
 	return bit;
 }
 
 // Atomic test and set
-static inline bool __atas(u32 n, volatile s64 *addr)
+static inline bool __atas(u32 n, volatile value_type *addr)
 {
-	s64 bit = (1 << n);
+	s64 bit = ((s64)1 << n);
 	s64 old;
 	do
 	{
@@ -50,9 +50,9 @@ static inline bool __atas(u32 n, volatile s64 *addr)
 }
 
 // Atomic test and clear
-static inline bool __atac(u32 n, volatile s64 *addr)
+static inline bool __atac(u32 n, volatile value_type *addr)
 {
-	s64 bit = (1 << n);
+	s64 bit = ((s64)1 << n);
 	s64 old;
 	do
 	{
@@ -62,7 +62,7 @@ static inline bool __atac(u32 n, volatile s64 *addr)
 }
 
 // Find first non-zero bit
-static inline s64 __ffs(s64 d)
+static inline s32 __ffs(value_type d)
 {
 	if (d == 0)
 		return -1;
@@ -70,7 +70,7 @@ static inline s64 __ffs(s64 d)
 	// 64-bit word input to count zero bits on right
 	s64 v = d & X_CONSTANT_64(0x7fffffffffffffff);
 
-	u32 c = 63;				// c will be the number of zero bits on the right
+	s32 c = 63;				// c will be the number of zero bits on the right
 	if (v & X_CONSTANT_64(0x00000000FFFFFFFF)) c -= 32;
 	if (v & X_CONSTANT_64(0x0000FFFF0000FFFF)) c -= 16;
 	if (v & X_CONSTANT_64(0x00FF00FF00FF00FF)) c -= 8;
@@ -82,7 +82,7 @@ static inline s64 __ffs(s64 d)
 }
 
 // Find first zero bit
-static inline s64 __ffz(s64 d)
+static inline s32 __ffz(value_type d)
 {
 	d = ~d;
 	return ffs(d);
@@ -93,26 +93,26 @@ static inline s64 __ffz(s64 d)
 // 32bit ops
 
 // Set a bit
-static inline void __set(u32 n, s32 *addr)
+static inline void __set(u32 n, value_type *addr)
 {
 	*addr |= (1 << n);
 }
 
 // Clear a bit
-static inline void __clear(u32 n, s32 *addr)
+static inline void __clear(u32 n, value_type *addr)
 {
 	*addr &= ~(1 << n);
 }
 
 // Test a bit
-static inline bool __test(u32 n, s32 *addr)
+static inline bool __test(u32 n, value_type *addr)
 {
 	bool bit = (*addr & (1<<n)) != 0;
 	return bit;
 }
 
 // Test and set
-static inline bool __tas(u32 n, s32 *addr)
+static inline bool __tas(u32 n, value_type *addr)
 {
 	bool bit = (*addr & (1<<n)) != 0;
 	*addr |= (1 << n);
@@ -120,7 +120,7 @@ static inline bool __tas(u32 n, s32 *addr)
 }
 
 // Test and clear
-static inline bool __tac(u32 n, s32 *addr)
+static inline bool __tac(u32 n, value_type *addr)
 {
 	bool bit = (*addr & (1<<n)) != 0;
 	*addr &= ~(1 << n);
@@ -128,7 +128,7 @@ static inline bool __tac(u32 n, s32 *addr)
 }
 
 // Atomic test and set
-static inline bool __atas(u32 n, volatile s32 *addr)
+static inline bool __atas(u32 n, volatile value_type *addr)
 {
 	s32 bit = (1 << n);
 	s32 old;
@@ -140,7 +140,7 @@ static inline bool __atas(u32 n, volatile s32 *addr)
 }
 
 // Atomic test and clear
-static inline bool __atac(u32 n, volatile s32 *addr)
+static inline bool __atac(u32 n, volatile value_type *addr)
 {
 	s32 bit = (1 << n);
 	s32 old;
@@ -152,7 +152,7 @@ static inline bool __atac(u32 n, volatile s32 *addr)
 }
 
 // Find first non-zero bit
-static inline s32 __ffs(s32 d)
+static inline s32 __ffs(value_type d)
 {
 	if (d == 0)
 		return -1;
@@ -171,7 +171,7 @@ static inline s32 __ffs(s32 d)
 }
 
 // Find first zero bit
-static inline s32 __ffz(s32 d)
+static inline s32 __ffz(value_type d)
 {
 	d = ~d;
 	return ffs(d);

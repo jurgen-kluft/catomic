@@ -167,7 +167,7 @@ namespace xcore
 		//
 		// --------------------------------------------------------
 
-		void xinfo::initialize()
+		xinfo::xinfo()
 		{
 			sInitialize();
 		}
