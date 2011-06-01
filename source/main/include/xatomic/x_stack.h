@@ -53,7 +53,7 @@ namespace xcore
 			*/
 			u32			room() const												{ return _lifo.room(); }
 
-			// ---- POP interface ----
+			// ---- PUSH interface ----
 
 			/**
 			* Begin push transaction. Get free item from the pool.
@@ -78,7 +78,7 @@ namespace xcore
 			{
 				u32 i = _items.c2i((u8 *) p);
 				bool lp = _lifo.push(i);
-				ASSERT(lp && "Corrupted state");
+				ASSERTS(lp, "Corrupted state");
 			}
 
 			/**
@@ -86,7 +86,7 @@ namespace xcore
 			* One shot push.
 			* @param[in] data data to push
 			*/
-			bool		push(T *data)
+			bool		push(T const& inData)
 			{
 				// Open coded push_begin() -> copy -> push_commit()
 				// transaction
@@ -97,15 +97,13 @@ namespace xcore
 				if (unlikely(!p))
 					return false;
 
-				*p = *data;
+				*p = inData;
 
 				bool lp = _lifo.push(i);
-				ASSERT(lp && "Corrupted state");
+				ASSERTS(lp, "Corrupted state");
 
 				return true;
 			}
-
-			bool		push(T data)											{ return push(&data); }
 
 			// ---- POP interface ----
 
@@ -133,7 +131,7 @@ namespace xcore
 			* @param[out] pointer to the data
 			* @return true on success, false otherwise
 			*/
-			bool		pop(T *data)
+			bool		pop(T& outData)
 			{
 				// Open coded pop_begin() -> copy -> pop_finish()
 				// transaction.
@@ -143,7 +141,7 @@ namespace xcore
 					return false;
 
 				T *p = (T *) _items.i2c(i);
-				*data = *p;
+				outData = *p;
 
 				_items.put(i);
 				return true;
