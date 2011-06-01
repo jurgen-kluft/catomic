@@ -383,6 +383,10 @@
 						<AdditionalDependencies>${Name}_$(Configuration)_$(Platform).lib</AdditionalDependencies>
 						<AdditionalLibraryDirectories>$(SolutionDir)target\${Name}\outdir\${Name}_$(Configuration)_$(Platform)\</AdditionalLibraryDirectories>
 					</Link>
+					<PostBuildEvent>
+						<Command>make_fself "$(TargetPath)" "$(TargetDir)$(TargetName).self"
+						</Command>
+					</PostBuildEvent>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|PS3'">
 					<ClCompile>
@@ -392,6 +396,10 @@
 						<AdditionalDependencies>${Name}_$(Configuration)_$(Platform).lib</AdditionalDependencies>
 						<AdditionalLibraryDirectories>$(SolutionDir)target\${Name}\outdir\${Name}_$(Configuration)_$(Platform)\</AdditionalLibraryDirectories>
 					</Link>
+					<PostBuildEvent>
+						<Command>make_fself "$(TargetPath)" "$(TargetDir)$(TargetName).self"
+						</Command>
+					</PostBuildEvent>
 				</ItemDefinitionGroup>
 				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|Xbox 360'">
 					<ClCompile>

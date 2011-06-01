@@ -13,7 +13,7 @@ namespace xcore
 		static inline u64 __tsc(void)
 		{
 			CellRtcTick tick;
-			cellRtcGetCurrentTick(&tick);
+			cellRtcGetCurrentTickUtc(&tick);
 			return (u64)tick.tick;
 		}
 	}

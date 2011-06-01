@@ -24,13 +24,13 @@ namespace xcore
 
 			inline static u32 sInterlockedCompareExchange(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
-				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)exchange, (std::uint32_t)comperand);
+				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)comperand, (std::uint32_t)exchange);
 				return r;
 			}
 
 			inline static bool sInterlockedSetIfEqual(volatile u32 *dest, u32 exchange, u32 comperand)
 			{
-				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)exchange, (std::uint32_t)comperand) == comperand;
+				std::uint32_t r = cellAtomicCompareAndSwap32((std::uint32_t*)dest, (std::uint32_t)comperand, (std::uint32_t)exchange);
 				return r == comperand;
 			}
 
@@ -46,7 +46,7 @@ namespace xcore
 
 			inline static u64 sInterlockedCompareExchange64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
-				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)exchange, (std::uint64_t)comperand);
+				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)comperand, (std::uint64_t)exchange);
 				return r;
 			}
 
@@ -54,7 +54,7 @@ namespace xcore
 			// It's more efficient to use the z flag than to do another compare
 			inline static bool sInterlockedSetIfEqual64(volatile u64 *dest, u64 exchange, u64 comperand) 
 			{
-				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)exchange, (std::uint64_t)comperand);
+				std::uint64_t r = cellAtomicCompareAndSwap64((std::uint64_t*)dest, (std::uint64_t)comperand, (std::uint64_t)exchange);
 				return r == comperand;
 			}
 		}
