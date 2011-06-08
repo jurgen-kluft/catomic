@@ -3,6 +3,7 @@
 
 #include <nn/os/os_Tick.h>
 
+#include "xbase\x_limits.h"
 #include "xbase\x_string_std.h"
 #include "xbase\x_memory_std.h"
 
@@ -18,10 +19,10 @@ namespace xcore
 		static void initialize()
 		{
 			// Various scale factors used for conversions.
-			_scale.tsc2nsec = (         1000000000ULL << TSC2NSEC_SCALE_SHIFT) / NN_HW_TICKS_PER_SECOND;
-			_scale.tsc2usec = (            1000000ULL << TSC2USEC_SCALE_SHIFT) / NN_HW_TICKS_PER_SECOND;
-			_scale.nsec2tsc = (NN_HW_TICKS_PER_SECOND << NSEC2TSC_SCALE_SHIFT) /             1000000000;
-			_scale.usec2tsc = (NN_HW_TICKS_PER_SECOND << USEC2TSC_SCALE_SHIFT) /                1000000;
+			_scale.tsc2nsec = ((u64)            1000000000 << TSC2NSEC_SCALE_SHIFT) / (u64)NN_HW_TICKS_PER_SECOND;
+			_scale.tsc2usec = ((u64)               1000000 << TSC2USEC_SCALE_SHIFT) / (u64)NN_HW_TICKS_PER_SECOND;
+			_scale.nsec2tsc = ((u64)NN_HW_TICKS_PER_SECOND << NSEC2TSC_SCALE_SHIFT) / (u64)            1000000000;
+			_scale.usec2tsc = ((u64)NN_HW_TICKS_PER_SECOND << USEC2TSC_SCALE_SHIFT) / (u64)               1000000;
 		}
 
 		#define CHIPNAME_STRING_LENGTH		(48 + 1)
@@ -37,12 +38,12 @@ namespace xcore
 		{
 			typedef struct tagID
 			{
-				int Type;
-				int Family;
-				int Model;
-				int Revision;
-				int ExtendedFamily;
-				int ExtendedModel;
+				s32 Type;
+				s32 Family;
+				s32 Model;
+				s32 Revision;
+				s32 ExtendedFamily;
+				s32 ExtendedModel;
 				char ProcessorName[CHIPNAME_STRING_LENGTH];
 				char Vendor[VENDOR_STRING_LENGTH];
 				char SerialNumber[SERIALNUMBER_STRING_LENGTH];
@@ -63,9 +64,9 @@ namespace xcore
 				bool HasMMXPlus;
 				bool HasSSEMMX;
 				bool SupportsHyperthreading;
-				int NumCores;
-				int LogicalProcessorsPerPhysical;
-				int APIC_ID;
+				s32 NumCores;
+				s32 LogicalProcessorsPerPhysical;
+				s32 APIC_ID;
 				CPUPowerManagement PowerManagement;
 			} CPUExtendedFeatures;	
 
@@ -84,10 +85,10 @@ namespace xcore
 				bool HasACPI;
 				bool HasSerial;
 				bool HasThermal;
-				int CPUSpeed;
-				int L1CacheSize;
-				int L2CacheSize;
-				int L3CacheSize;
+				s32 CPUSpeed;
+				s32 L1CacheSize;
+				s32 L2CacheSize;
+				s32 L3CacheSize;
 				CPUExtendedFeatures ExtendedFeatures;
 			} CPUFeatures;
 
@@ -247,7 +248,7 @@ namespace xcore
 			// Return the processor clock frequency.
 			u64 s = Speed.getCPUSpeedInMHz();
 			if (s == 0)
-				return -1;
+				return X_U64_MAX;
 			return s;
 		}
 

@@ -62,7 +62,7 @@ namespace xcore
 			static bool sRetrieveClassicalCPUCacheDetails ();
 			static bool sRetrieveCPUClockSpeed ();
 			static bool sRetrieveClassicalCPUClockSpeed ();
-			static bool sRetrieveCPUExtendedLevelSupport (int);
+			static bool sRetrieveCPUExtendedLevelSupport (s32);
 			static bool sRetrieveExtendedCPUFeatures ();
 			static bool sRetrieveProcessorSerialNumber ();
 			static bool sRetrieveCPUPowerManagement ();
@@ -105,12 +105,12 @@ namespace xcore
 
 			typedef struct tagID
 			{
-				int Type;
-				int Family;
-				int Model;
-				int Revision;
-				int ExtendedFamily;
-				int ExtendedModel;
+				s32 Type;
+				s32 Family;
+				s32 Model;
+				s32 Revision;
+				s32 ExtendedFamily;
+				s32 ExtendedModel;
 				char ProcessorName[CHIPNAME_STRING_LENGTH];
 				char Vendor[VENDOR_STRING_LENGTH];
 				char SerialNumber[SERIALNUMBER_STRING_LENGTH];
@@ -131,9 +131,9 @@ namespace xcore
 				bool HasMMXPlus;
 				bool HasSSEMMX;
 				bool SupportsHyperthreading;
-				int NumCores;
-				int LogicalProcessorsPerPhysical;
-				int APIC_ID;
+				s32 NumCores;
+				s32 LogicalProcessorsPerPhysical;
+				s32 APIC_ID;
 				CPUPowerManagement PowerManagement;
 			} CPUExtendedFeatures;	
 
@@ -152,10 +152,10 @@ namespace xcore
 				bool HasACPI;
 				bool HasSerial;
 				bool HasThermal;
-				int CPUSpeed;
-				int L1CacheSize;
-				int L2CacheSize;
-				int L3CacheSize;
+				s32 CPUSpeed;
+				s32 L1CacheSize;
+				s32 L2CacheSize;
+				s32 L3CacheSize;
 				CPUExtendedFeatures ExtendedFeatures;
 			} CPUFeatures;
 
@@ -325,9 +325,9 @@ namespace xcore
 					return false;
 
 				// Process the returned information.
-				x_memcpy (ChipID.Vendor, &(CPUVendor[0]), sizeof (int));
-				x_memcpy (&(ChipID.Vendor[4]), &(CPUVendor[1]), sizeof (int));
-				x_memcpy (&(ChipID.Vendor[8]), &(CPUVendor[2]), sizeof (int));
+				x_memcpy (ChipID.Vendor, &(CPUVendor[0]), sizeof (s32));
+				x_memcpy (&(ChipID.Vendor[4]), &(CPUVendor[1]), sizeof (s32));
+				x_memcpy (&(ChipID.Vendor[8]), &(CPUVendor[2]), sizeof (s32));
 				ChipID.Vendor[12] = '\0';
 
 				// Attempt to retrieve the manufacturer from the vendor string.
@@ -647,8 +647,8 @@ namespace xcore
 					return false;
 
 				// Now we have to check the level wanted vs level returned...
-				int nLevelWanted = (CPULevelToCheck & 0x7FFFFFFF);
-				int nLevelReturn = (MaxCPUExtendedLevel & 0x7FFFFFFF);
+				s32 nLevelWanted = (CPULevelToCheck & 0x7FFFFFFF);
+				s32 nLevelReturn = (MaxCPUExtendedLevel & 0x7FFFFFFF);
 
 				// Check to see if the level provided is supported...
 				if (nLevelWanted > nLevelReturn) 
@@ -767,24 +767,24 @@ namespace xcore
 					return false;
 
 				// Process the returned information.
-				x_memcpy (ChipID.ProcessorName, &(CPUExtendedIdentity[0]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[4]), &(CPUExtendedIdentity[1]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[8]), &(CPUExtendedIdentity[2]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[12]), &(CPUExtendedIdentity[3]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[16]), &(CPUExtendedIdentity[4]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[20]), &(CPUExtendedIdentity[5]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[24]), &(CPUExtendedIdentity[6]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[28]), &(CPUExtendedIdentity[7]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[32]), &(CPUExtendedIdentity[8]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[36]), &(CPUExtendedIdentity[9]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[40]), &(CPUExtendedIdentity[10]), sizeof (int));
-				x_memcpy (&(ChipID.ProcessorName[44]), &(CPUExtendedIdentity[11]), sizeof (int));
+				x_memcpy (ChipID.ProcessorName, &(CPUExtendedIdentity[0]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[4]), &(CPUExtendedIdentity[1]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[8]), &(CPUExtendedIdentity[2]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[12]), &(CPUExtendedIdentity[3]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[16]), &(CPUExtendedIdentity[4]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[20]), &(CPUExtendedIdentity[5]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[24]), &(CPUExtendedIdentity[6]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[28]), &(CPUExtendedIdentity[7]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[32]), &(CPUExtendedIdentity[8]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[36]), &(CPUExtendedIdentity[9]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[40]), &(CPUExtendedIdentity[10]), sizeof (s32));
+				x_memcpy (&(ChipID.ProcessorName[44]), &(CPUExtendedIdentity[11]), sizeof (s32));
 				ChipID.ProcessorName[48] = '\0';
 
 				// Because some manufacturers (<cough>Intel</cough>) have leading white space - we have to post-process the name.
 				if (ChipManufacturer == Intel)
 				{
-					for (int nCounter = 0; nCounter < CHIPNAME_STRING_LENGTH; nCounter ++)
+					for (s32 nCounter = 0; nCounter < CHIPNAME_STRING_LENGTH; nCounter ++)
 					{
 						// There will either be NULL (\0) or spaces ( ) as the leading characters.
 						if ((ChipID.ProcessorName[nCounter] != '\0') && (ChipID.ProcessorName[nCounter] != ' ')) 
@@ -1086,7 +1086,7 @@ namespace xcore
 
 			bool sDoesCPUSupportCPUID ()
 			{
-				int CPUIDPresent = 0;
+				s32 CPUIDPresent = 0;
 
 				if (!sCpuID(0, NULL, NULL, NULL, NULL))
 					CPUIDPresent = 1;

@@ -38,12 +38,12 @@ namespace xcore
 		{
 			typedef struct tagID
 			{
-				int Type;
-				int Family;
-				int Model;
-				int Revision;
-				int ExtendedFamily;
-				int ExtendedModel;
+				s32 Type;
+				s32 Family;
+				s32 Model;
+				s32 Revision;
+				s32 ExtendedFamily;
+				s32 ExtendedModel;
 				char ProcessorName[CHIPNAME_STRING_LENGTH];
 				char Vendor[VENDOR_STRING_LENGTH];
 				char SerialNumber[SERIALNUMBER_STRING_LENGTH];
@@ -64,9 +64,9 @@ namespace xcore
 				bool HasMMXPlus;
 				bool HasSSEMMX;
 				bool SupportsHyperthreading;
-				int NumCores;
-				int LogicalProcessorsPerPhysical;
-				int APIC_ID;
+				s32 NumCores;
+				s32 LogicalProcessorsPerPhysical;
+				s32 APIC_ID;
 				CPUPowerManagement PowerManagement;
 			} CPUExtendedFeatures;	
 
@@ -85,10 +85,10 @@ namespace xcore
 				bool HasACPI;
 				bool HasSerial;
 				bool HasThermal;
-				int CPUSpeed;
-				int L1CacheSize;
-				int L2CacheSize;
-				int L3CacheSize;
+				s32 CPUSpeed;
+				s32 L1CacheSize;
+				s32 L2CacheSize;
+				s32 L3CacheSize;
 				CPUExtendedFeatures ExtendedFeatures;
 			} CPUFeatures;
 
