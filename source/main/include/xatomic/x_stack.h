@@ -7,7 +7,7 @@
 
 #include "xbase\x_types.h"
 
-#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_compiler.h"
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_mempool.h"
 

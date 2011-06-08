@@ -1,4 +1,4 @@
-#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_compiler.h"
 #include "xatomic\x_mbuf.h"
 #include "xatomic\private\x_mbufqueue.h"
 

@@ -7,7 +7,7 @@
 
 #include "xbase\x_types.h"
 
-#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_compiler.h"
 
 #if defined(TARGET_360)
 #include <PPCIntrinsics.h>

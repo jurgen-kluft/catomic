@@ -8,7 +8,7 @@
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
 
-#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_compiler.h"
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_barrier.h"
 
