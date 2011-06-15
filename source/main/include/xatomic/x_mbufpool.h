@@ -29,6 +29,7 @@ namespace xcore
 				virtual void	deallocate_head(head *m);
 				virtual void	deallocate_data(head *m);
 
+				x_iallocator*	_allocator;
 				mempool*		_head;
 				mempool*		_data;
 				shared*			_shared;
@@ -43,7 +44,7 @@ namespace xcore
 				* @param size number of data buffers
 				* @param factor a factor applied to count for total number heads.
 				*/
-							pool(u32 dsize, u32 size, unsigned char factor = 4U);
+							pool(x_iallocator* allocator, u32 dsize, u32 size, unsigned char factor = 4U);
 
 				/**
 				* Convert existing chunk of memory into mbuf::pool.
@@ -52,13 +53,13 @@ namespace xcore
 				* @param bsize size of the external buffer
 				* @param factor a factor applied to count for total number heads.
 				*/
-							pool(u32 dsize, u8 *buf, u32 bsize, unsigned char factor = 4U);
+							pool(x_iallocator* allocator, u32 dsize, u8 *buf, u32 bsize, unsigned char factor = 4U);
 
 				/**
 				* Convert existing memory pool into mbuf::pool.
 				* @param factor a factor applied to count for total number heads.
 				*/
-							pool(mempool *mp, unsigned char factor = 4U);
+							pool(x_iallocator* allocator, mempool *mp, unsigned char factor = 4U);
 
 				/**
 				* Destruct memory pool

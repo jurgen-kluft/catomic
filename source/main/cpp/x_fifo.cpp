@@ -1,4 +1,5 @@
-#include "xatomic\private\x_allocator.h"
+#include "xbase\x_allocator.h"
+
 #include "xatomic\x_fifo.h"
 
 namespace xcore
@@ -10,16 +11,16 @@ namespace xcore
 			clear();
 		}
 
-		bool fifo::init(u32 size)
+		bool fifo::init(x_iallocator* allocator, u32 size)
 		{
 			_size = 0;
 
 			size += 1;
-			_allocated_chain = get_heap_allocator()->allocate(sizeof(link) * size, 4);
-			_chain = (link*)_allocated_chain;
+			_chain = (link*)allocator->allocate(sizeof(link) * size, 4);
 			if (_chain!=NULL)
 			{
 				_size = size - 1;
+				_allocator = allocator;
 				reset();
 				return true;
 			}
@@ -30,7 +31,7 @@ namespace xcore
 		{
 			_size = 0;
 
-			_allocated_chain = NULL;
+			_allocator = NULL;
 			_chain = pChain;
 			if (_chain!=NULL)
 			{
@@ -43,10 +44,10 @@ namespace xcore
 
 		void fifo::clear()
 		{
-			if (_allocated_chain!=NULL)
+			if (_allocator!=NULL)
 			{
-				get_heap_allocator()->deallocate(_allocated_chain);
-				_allocated_chain = NULL;
+				_allocator->deallocate(_chain);
+				_allocator = NULL;
 			}
 			_chain = NULL;
 			_size = 0;

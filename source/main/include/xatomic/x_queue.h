@@ -27,6 +27,7 @@ namespace xcore
 		class queue
 		{
 		private:
+			x_iallocator*	_allocator;
 			mempool			_pool;
 			fifo			_fifo;
 #ifdef X_ATOMIC_QUEUE_REF_CNT
@@ -60,7 +61,7 @@ namespace xcore
 			* allocations where successful or not.
 			* @param size number of items for the queue
 			*/
-			bool		init(u32 size);
+			bool		init(x_iallocator* allocator, u32 size);
 
 			/**
 			* Init.
@@ -76,10 +77,11 @@ namespace xcore
 			{
 				_pool.clear();
 				_fifo.clear();
+
 #ifdef X_ATOMIC_QUEUE_REF_CNT
 				if (_ref != NULL)
 				{
-					get_heap_allocator()->deallocate(_ref);
+					_allocator->deallocate(_ref);
 					_ref = NULL;
 				}
 #endif
@@ -311,22 +313,24 @@ namespace xcore
 
 
 		template <typename T>
-		bool		queue<T>::init(u32 size)
+		bool		queue<T>::init(x_iallocator* allocator, u32 size)
 		{
-			if (!_pool.init(sizeof(T), size))
+			_allocator = allocator;
+
+			if (!_pool.init(allocator, sizeof(T), size))
 			{
 				clear();
 				return false;
 			}
 
-			if (!_fifo.init(size))
+			if (!_fifo.init(allocator, size))
 			{
 				clear();
 				return false;
 			}
 
 #ifdef X_ATOMIC_QUEUE_REF_CNT
-			_ref = (atom_s32*)get_heap_allocator()->allocate(sizeof(atom_s32) * size, 4);
+			_ref = (atom_s32*)allocator->allocate(sizeof(atom_s32) * size, 4);
 #endif
 			if (!valid())
 			{

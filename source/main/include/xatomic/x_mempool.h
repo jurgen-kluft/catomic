@@ -12,10 +12,10 @@
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_barrier.h"
 
-#include "xatomic\private\x_allocator.h"
-
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		/** 
@@ -27,6 +27,7 @@ namespace xcore
 		class mempool
 		{
 		protected:
+			x_iallocator* _allocator;
 			lifo		_lifo;
 			xbyte*		_buffer;
 			u32			_csize;
@@ -50,7 +51,7 @@ namespace xcore
 			* @param mempool_esize size of an element (chunk)
 			* @param size number of chunks in the pool
 			*/
-			bool		init(u32 mempool_esize, u32 size);
+			bool		init(x_iallocator* allocator, u32 mempool_esize, u32 size);
 
 			/**
 			* Init.
@@ -60,7 +61,7 @@ namespace xcore
 			* @param mempool_buf pointer to an existing buffer
 			* @param mempool_size size of the buffer
 			*/
-			bool		init(u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
+			bool		init(x_iallocator* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
 
 			/**
 			* Init.
@@ -176,8 +177,6 @@ namespace xcore
 			*/
 			void*		operator new(xcore::xsize_t num_bytes, void* mem)			{ return mem; }
 			void		operator delete(void* mem, void* )							{ }
-			void*		operator new(xcore::xsize_t num_bytes)						{ return get_heap_allocator()->allocate(num_bytes, X_ALIGNMENT_DEFAULT); }
-			void		operator delete(void* mem)									{ get_heap_allocator()->deallocate(mem); }
 
 			/**
 			* Validate mempool.

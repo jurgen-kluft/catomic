@@ -1,10 +1,9 @@
+#include "xbase\x_allocator.h"
 #include "xbase\x_integer.h"
 #include "xbase\x_memory_std.h"
 
 #include "xatomic\x_atomic.h"
 #include "xatomic\x_mempool.h"
-
-#include "xatomic\private\x_allocator.h"
 
 namespace xcore
 {
@@ -12,21 +11,24 @@ namespace xcore
 	{
 		mempool::mempool()
 		{
+			_allocator = NULL;
 			_buffer = NULL;
 			_csize = 0;
 			_extern = false;
 		}
 
-		bool mempool::init(u32 mempool_esize, u32 size)
+		bool mempool::init(x_iallocator* allocator, u32 mempool_esize, u32 size)
 		{
+			_allocator = allocator;
+
 			// Initialize the lifo first
-			if (!_lifo.init(size))
+			if (!_lifo.init(allocator, size))
 				return false;
 
 			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
 			_extern = false;
-			_buffer = (xbyte*)get_heap_allocator()->allocate(csize * size, 4);
+			_buffer = (xbyte*)allocator->allocate(csize * size, 4);
 			x_memset(_buffer, 0, csize * size);
 
 			// Caller will have to do the delete anyway. Let the
@@ -40,14 +42,14 @@ namespace xcore
 			return true;
 		}
 
-		bool mempool::init(u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
+		bool mempool::init(x_iallocator* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
 		{
 			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
 			u32 size = mempool_size / mempool_esize;
 
 			// Initialize the lifo first
-			if (!_lifo.init(size))
+			if (!_lifo.init(allocator, size))
 				return false;
 
 			// Attach to an external buffer 
@@ -83,7 +85,7 @@ namespace xcore
 			if (!_extern)
 			{
 				if (_buffer != NULL)
-					get_heap_allocator()->deallocate(_buffer);
+					_allocator->deallocate(_buffer);
 				_buffer = NULL;
 			}
 			_lifo.clear();

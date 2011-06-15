@@ -1,3 +1,4 @@
+#include "xbase\x_allocator.h"
 #include "xbase\x_string_std.h"
 
 #include "xatomic\private\x_compiler.h"
@@ -54,45 +55,54 @@ namespace xcore
 				x_printf("Available buffers %u\n", _data->avail());
 			}
 
-			pool::pool(u32 data_size, u32 size, unsigned char factor)
+			pool::pool(x_iallocator* allocator, u32 data_size, u32 size, unsigned char factor)
+				: allocator(allocator)
 			{
-				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), size * factor);
+				_allocator = allocator;
+
+				void * head_mem = allocate_object<mempool>(allocator);				// new mempool(sizeof(head), size * factor);
 				_head = new (head_mem) mempool();
-				_head->init(sizeof(head), size * factor);
+				_head->init(allocator, sizeof(head), size * factor);
 
-				void * data_mem = allocate_object<mempool>();				// new mempool(data_size, size);
+				void * data_mem = allocate_object<mempool>(allocator);				// new mempool(data_size, size);
 				_data   = new (data_mem) mempool();
-				_data->init(data_size, size);
+				_data->init(allocator, data_size, size);
 
-				_shared = allocate_array<mbuf::shared>(size);				// new mbuf::shared [size] ();
+				_shared = allocate_array<mbuf::shared>(allocator, size);			// new mbuf::shared [size] ();
 
 				_extern = false;
 			}
 
-			pool::pool(u32 data_size, u8 *buf, u32 bsize, unsigned char factor)
+			pool::pool(x_iallocator* allocator, u32 data_size, u8 *buf, u32 bsize, unsigned char factor)
+				: allocator(allocator)
 			{
+				_allocator = allocator;
+
 				u32 size = bsize / data_size;
 
-				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), size * factor);
+				void * head_mem = allocate_object<mempool>(allocator);				// new mempool(sizeof(head), size * factor);
 				_head = new (head_mem) mempool();
-				_head->init(sizeof(head), size * factor);
+				_head->init(allocator, sizeof(head), size * factor);
 
-				void * data_mem = allocate_object<mempool>();				// new mempool(data_size, buf, size);
+				void * data_mem = allocate_object<mempool>(allocator);				// new mempool(data_size, buf, size);
 				_data   = new (data_mem) mempool();
-				_data->init(data_size, buf, size);
+				_data->init(allocator, data_size, buf, size);
 
-				_shared = allocate_array<mbuf::shared>(size);				// new mbuf::shared [size] ();
+				_shared = allocate_array<mbuf::shared>(allocator, size);			// new mbuf::shared [size] ();
 
 				_extern = false;
 			}
 
-			pool::pool(mempool *mp, unsigned char factor)
+			pool::pool(x_iallocator* allocator, mempool *mp, unsigned char factor)
+				: allocator(allocator)
 			{
-				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), mp->size() * factor);
-				_head = new (head_mem) mempool();
-				_head->init(sizeof(head), mp->max_size() * factor);
+				_allocator = allocator;
 
-				_shared = allocate_array<mbuf::shared>(mp->max_size());			// new mbuf::shared [mp->size()] ();
+				void * head_mem = allocate_object<mempool>(allocator);				// new mempool(sizeof(head), mp->size() * factor);
+				_head = new (head_mem) mempool();
+				_head->init(allocator, sizeof(head), mp->max_size() * factor);
+
+				_shared = allocate_array<mbuf::shared>(allocator, mp->max_size());	// new mbuf::shared [mp->size()] ();
 
 				_data   = mp;
 				_extern = true;
@@ -100,11 +110,11 @@ namespace xcore
 
 			pool::~pool()
 			{
-				deallocate_array(_shared, _data->max_size());
-				destruct_object(_head);
+				deallocate_array(_allocator, _shared, _data->max_size());
+				destruct_object(_allocator, _head);
 
 				if (!_extern)
-					destruct_object(_data);
+					destruct_object(_allocator, _data);
 			}
 
 			bool pool::valid()

@@ -13,6 +13,8 @@
 
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		/**
@@ -32,11 +34,11 @@ namespace xcore
 			* Init. Allocates the stack.
 			* @param size number of items in the stack
 			*/
-			bool		init(u32 size) 
+			bool		init(x_iallocator* allocator, u32 size) 
 			{
 				bool r = false;
-				if (_items.init(sizeof(T), size))
-					r = _lifo.init(size); 
+				if (_items.init(allocator, sizeof(T), size))
+					r = _lifo.init(allocator, size); 
 				return r;
 			}
 

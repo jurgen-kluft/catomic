@@ -10,21 +10,19 @@ namespace xcore
 	{
 		namespace mbuf
 		{
-			allocator def_allocator;
-
 			head* allocator::alloc_head(void)
 			{
-				return (head *) get_heap_allocator()->allocate(sizeof(head), 4);
+				return (head *) _allocator->allocate(sizeof(head), 4);
 			}
 
 			void allocator::free_head(head *h)
 			{
-				get_heap_allocator()->deallocate(h);
+				_allocator->deallocate(h);
 			}
 
 			bool allocator::alloc_data(head *h, u32 size)
 			{
-				h->_buf = (u8 *) get_heap_allocator()->allocate(size + sizeof(mbuf::shared), 4);
+				h->_buf = (u8 *) _allocator->allocate(size + sizeof(mbuf::shared), 4);
 				if (h->_buf == NULL)
 					return false;
 
@@ -35,7 +33,7 @@ namespace xcore
 
 			void allocator::free_data(head *h)
 			{
-				get_heap_allocator()->deallocate(h->_buf);
+				_allocator->deallocate(h->_buf);
 			}
 
 			head *allocator::alloc(u32 size)

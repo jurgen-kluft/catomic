@@ -1,4 +1,6 @@
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
+
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_fifo.h"
@@ -12,6 +14,7 @@ struct xnode_dll
 	xcore::u32		mData;
 };
 
+extern xcore::x_iallocator* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(fifo)
 {
@@ -28,7 +31,7 @@ UNITTEST_SUITE_BEGIN(fifo)
 		UNITTEST_TEST(construct2)
 		{
 			xcore::atomic::fifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
@@ -38,7 +41,7 @@ UNITTEST_SUITE_BEGIN(fifo)
 		UNITTEST_TEST(fill)
 		{
 			xcore::atomic::fifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			f.fill();
 
 			xcore::s32 ii = 1;
@@ -59,7 +62,7 @@ UNITTEST_SUITE_BEGIN(fifo)
 		{
 			xcore::u32 i, r;
 			xcore::atomic::fifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			f.reset(0);	// dummy
 
@@ -94,7 +97,7 @@ UNITTEST_SUITE_BEGIN(fifo)
 		{
 			xcore::u32 i, r;
 			xcore::atomic::fifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			f.reset(0);	// dummy
 			f._head.next_salt32.salt += 0xffffffec;

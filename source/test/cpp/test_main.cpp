@@ -3,7 +3,6 @@
 #include "xbase\x_allocator.h"
 #include "xunittest\xunittest.h"
 
-#include "xatomic\x_allocator.h"
 #include "xatomic\x_cpu.h"
 
 UNITTEST_SUITE_LIST(xMultiCoreUnitTest);
@@ -87,6 +86,7 @@ public:
 };
 
 xcore::x_iallocator* gSystemAllocator = NULL;
+xcore::x_iallocator* gAtomicAllocator = NULL;
 
 bool gRunUnitTest(UnitTest::TestReporter& reporter)
 {
@@ -95,7 +95,7 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 	UnitTest::SetAllocator(&unittestAllocator);
 
 	xcore::TestHeapAllocator threadHeapAllocator(gSystemAllocator);
-	xcore::atomic::set_heap_allocator(&threadHeapAllocator);
+	gAtomicAllocator = &threadHeapAllocator;
 	
 	int r = UNITTEST_SUITE_RUN(reporter, xMultiCoreUnitTest);
 	if (unittestAllocator.mNumAllocations!=0)
@@ -109,7 +109,7 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 		r = -1;
 	}
 
-	xcore::atomic::set_heap_allocator(NULL);
+	gAtomicAllocator = NULL;
 
 	UnitTest::SetAllocator(NULL);
 	gSystemAllocator->release();

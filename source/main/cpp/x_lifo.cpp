@@ -1,5 +1,6 @@
+#include "xbase\x_allocator.h"
+
 #include "xatomic\x_lifo.h"
-#include "xatomic\private\x_allocator.h"
 
 namespace xcore
 {
@@ -11,18 +12,18 @@ namespace xcore
 			clear();
 		}
 
-		bool lifo::init(u32 size)
+		bool lifo::init(x_iallocator* allocator, u32 size)
 		{
-			link* c = (link*)get_heap_allocator()->allocate(sizeof(link) * size, 4);
+			link* c = (link*)allocator->allocate(sizeof(link) * size, 4);
 			bool res = init(c, size);
-			_allocated_chain = c;
+			_allocator = allocator;
 			return res;
 		}
 
 		bool lifo::init(link* chain, u32 size)
 		{
+			_allocator = NULL;
 			_max_size = 0;
-			_allocated_chain = NULL;
 			_chain = chain;
 			if (_chain!=NULL)
 			{
@@ -35,10 +36,10 @@ namespace xcore
 
 		void lifo::clear()
 		{
-			if (_allocated_chain!=NULL)
+			if (_allocator!=NULL)
 			{
-				get_heap_allocator()->deallocate(_allocated_chain);
-				_allocated_chain = NULL;
+				_allocator->deallocate(_chain);
+				_allocator = NULL;
 			}
 			_chain = NULL;
 			_max_size = 0;

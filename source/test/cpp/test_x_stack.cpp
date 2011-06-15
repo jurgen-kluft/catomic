@@ -1,7 +1,11 @@
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
+
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_stack.h"
+
+extern xcore::x_iallocator* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(stack)
 {
@@ -13,7 +17,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(construct1)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(1);
+			f.init(gAtomicAllocator, 1);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
@@ -24,7 +28,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(construct2)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
@@ -35,7 +39,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_begin)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
@@ -56,7 +60,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_cancel)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
@@ -83,7 +87,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_commit)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
@@ -113,7 +117,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push)
 		{
 			xcore::atomic::stack<xcore::s32> f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());

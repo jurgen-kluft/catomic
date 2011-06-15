@@ -1,7 +1,11 @@
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
+
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_lifo.h"
+
+extern xcore::x_iallocator* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(lifo)
 {
@@ -18,7 +22,7 @@ UNITTEST_SUITE_BEGIN(lifo)
 		UNITTEST_TEST(construct2)
 		{
 			xcore::atomic::lifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
@@ -27,7 +31,7 @@ UNITTEST_SUITE_BEGIN(lifo)
 		UNITTEST_TEST(fill)
 		{
 			xcore::atomic::lifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 			f.fill();
 
 			CHECK_EQUAL(false, f.empty());
@@ -51,7 +55,7 @@ UNITTEST_SUITE_BEGIN(lifo)
 		{
 			xcore::u32 i, r;
 			xcore::atomic::lifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
@@ -76,7 +80,7 @@ UNITTEST_SUITE_BEGIN(lifo)
 		{
 			xcore::u32 i, r;
 			xcore::atomic::lifo f;
-			f.init(16);
+			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());

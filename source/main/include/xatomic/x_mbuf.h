@@ -15,6 +15,8 @@
 
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		namespace mbuf
@@ -28,8 +30,10 @@ namespace xcore
 			*/ 
 			class allocator
 			{
+				x_iallocator*	_allocator;
 			public:
-								allocator()										{ }
+								allocator(x_iallocator* allocator) : _allocator(allocator)	{ }
+
 				virtual			~allocator()									{ }
 
 				/**
@@ -77,16 +81,11 @@ namespace xcore
 			};
 
 			/**
-			* Default allocator which just provides wrappers to regular alloc and frees.
-			*/ 
-			extern allocator def_allocator;
-
-			/**
 			* Allocate new mbuf.
 			* @param al Allocator to use to allocate the new object.
 			* @return newly allocated mbuf.
 			*/
-			static inline head *allocate(allocator *al = &def_allocator)
+			static inline head *allocate(allocator *al)
 			{
 				return al->alloc();
 			}
@@ -97,7 +96,7 @@ namespace xcore
 			* @param al Allocator to use to allocate the new object.
 			* @return newly allocated head object.
 			*/ 
-			static inline head *allocate(u32 size, allocator *al = &def_allocator)
+			static inline head *allocate(u32 size, allocator *al)
 			{
 				return al->alloc(size);
 			}

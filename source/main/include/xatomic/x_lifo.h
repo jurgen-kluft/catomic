@@ -13,6 +13,8 @@
 
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		/*
@@ -65,8 +67,8 @@ namespace xcore
 
 			state		_head;
 			link*		_chain;
-			link*		_allocated_chain;
 			u32			_max_size;
+			x_iallocator* _allocator;
 
 			inline u32	increase_push(u32 salt)
 			{
@@ -87,8 +89,8 @@ namespace xcore
 			*/
 						lifo() 
 							: _chain(NULL)
-							, _allocated_chain(NULL)
-							, _max_size(0)										{ }
+							, _max_size(0)
+							, _allocator(NULL)									{ }
 
 			/**
 			* Destructor
@@ -98,7 +100,7 @@ namespace xcore
 			/**
 			* Complete initialization.
 			*/
-			bool		init(u32 size);
+			bool		init(x_iallocator* allocator, u32 size);
 
 			/**
 			* Complete initialization.

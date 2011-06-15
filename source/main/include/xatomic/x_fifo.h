@@ -13,6 +13,8 @@
 
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		/*
@@ -69,7 +71,7 @@ namespace xcore
 			state		_tail;
 			link*		_chain;
 			u32			_size;
-			void*		_allocated_chain;
+			x_iallocator* _allocator;
 
 		public:
 			/**
@@ -78,7 +80,7 @@ namespace xcore
 						fifo() 
 							: _chain(NULL)
 							, _size(0)
-							, _allocated_chain(NULL)							{ }
+							, _allocator(NULL)									{ }
 
 			/**
 			* Destroy lifo.
@@ -88,7 +90,7 @@ namespace xcore
 			/**
 			* Complete initialization.
 			*/
-			bool		init(u32 uSize);
+			bool		init(x_iallocator* allocator, u32 uSize);
 
 			/**
 			* Create empty lifo. It can be initialized lated by calling init().
