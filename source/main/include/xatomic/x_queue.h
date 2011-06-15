@@ -354,7 +354,7 @@ namespace xcore
 		template <typename T>
 		bool		queue<T>::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
 		{
-			if (!_pool.init(mempool_buf_esize, mempool_buf, mempool_buf_size))
+			if (!_pool.init(lifo_chain, queue_lifo_fifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
 			{
 				clear();
 				return false;
