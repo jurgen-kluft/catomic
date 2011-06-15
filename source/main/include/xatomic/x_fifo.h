@@ -33,7 +33,17 @@ namespace xcore
 		*/
 		class fifo
 		{
+		public:
+			struct link
+			{
+				volatile u32 next;
+			};
+
+#ifdef TARGET_TEST
+		public:
+#else
 		protected:
+#endif
 			union state 
 			{
 				volatile u64 next_salt64;
@@ -49,33 +59,26 @@ namespace xcore
 				} next_salt32;
 			};
 
-			struct link
-			{
-				volatile u32 next;
-			};
-
 			enum
 			{
-				UNUSED = ~0U,
-				LAST   = UNUSED - 1,
+				UNUSED = 0xffffffff,
+				LAST   = 0xfffffffe,
 			};
 
 			state		_head;
 			state		_tail;
 			link*		_chain;
 			u32			_size;
+			void*		_allocated_chain;
 
 		public:
 			/**
 			* Create empty lifo. It can be initialized lated by calling init().
 			*/
-						fifo() : _chain(NULL), _size(0)							{ }
-
-			/**
-			* Create lifo.
-			* @param size number of elements
-			*/
-						fifo(u32 size)											{ init(size); }
+						fifo() 
+							: _chain(NULL)
+							, _size(0)
+							, _allocated_chain(NULL)							{ }
 
 			/**
 			* Destroy lifo.
@@ -85,26 +88,55 @@ namespace xcore
 			/**
 			* Complete initialization.
 			*/
-			bool		init(u32 size);
+			bool		init(u32 uSize);
+
+			/**
+			* Create empty lifo. It can be initialized lated by calling init().
+			*/
+			bool		init(link* pChain, u32 uSize);
+
+			/**
+			* Clear lifo. It can be initialized again by calling init().
+			*/
+			void		clear();
 
 			/**
 			* Size of the fifo.
 			* @return maximum number of elements
 			*/
-			u32			size() const											{ return _size; }
+			u32			max_size() const
+			{
+				return _size;
+			}
 
 			/**
-			* Number of unused elements.
-			* @return approximate number of unused elements
+			* Size left of the fifo.
+			* @return unused elements
 			*/
 			u32			room() const
 			{
-				// head.salt is incremented for each pop()
-				// tail.salt is incremented for each push()
-				u32 used = (_tail.next_salt32.salt - _head.next_salt32.salt);
+				u32 const h = _head.next_salt32.salt;
+				u32 const t = _tail.next_salt32.salt;
+
+				u32 used = (h < t) ? (t - h) : (h - t);
 				if (used > _size)
-					return _size;
+					used = _size;
 				return _size - used;
+			}
+
+			/**
+			* Size of the fifo.
+			* @return used elements
+			*/
+			u32			size() const
+			{
+				u32 const h = _head.next_salt32.salt;
+				u32 const t = _tail.next_salt32.salt;
+
+				u32 used = (h < t) ? (t - h) : (h - t);
+				if (used > _size)
+					used = _size;
+				return used;
 			}
 
 			/**
@@ -113,10 +145,25 @@ namespace xcore
 			*/
 			bool		empty() const
 			{
-				u32 h = _head.next_salt32.next;
-				u32 t = _tail.next_salt32.next;
-				u32 n = _chain[h].next;
-				return (t == h && n == LAST);
+				u32 hs = _head.next_salt32.salt;
+				u32 ts = _tail.next_salt32.salt;
+				return (ts == hs);
+			}
+
+			/**
+			* Check if cursor shows that items is still in the fifo
+			* @return -1 if cursor is not in the queue, 0 for in the queue, 1 for being added to the queue
+			*/
+			bool		inside(u32 cursor) const
+			{
+				u64 c = cursor;
+				u64 h = _head.next_salt32.salt;	// pop
+				u64 t = _tail.next_salt32.salt;	// push
+
+				if (t < h)
+					t += X_CONSTANT_U64(0x0000000100000000);
+
+				return (c>=h && c<t);
 			}
 
 			/**
@@ -137,6 +184,7 @@ namespace xcore
 			* @param[in] i index of the element
 			* @return false if push failed, true otherwise
 			*/
+			bool		push(u32 i, u32& outCursor);
 			bool		push(u32 i);
 
 			/**
@@ -151,7 +199,7 @@ namespace xcore
 			* Inline version of the @see push().
 			* Most people should use regular version.
 			*/
-			bool		ipush(u32 i);
+			bool		ipush(u32 i, u32& outCursor);
 
 			/**
 			* Inline version of the @see pop().
@@ -160,7 +208,7 @@ namespace xcore
 			bool		ipop(u32 &i, u32 &r);
 		};
 
-		inline bool fifo::ipush(u32 i)
+		inline bool fifo::ipush(u32 i, u32& outCursor)
 		{
 			u32 n;
 			state t;
@@ -199,6 +247,8 @@ namespace xcore
 			// Complete the push.
 			// Try to point tail to this element.
 			cas_u64(&_tail.next_salt64, t.next_salt32.next, t.next_salt32.salt, i, t.next_salt32.salt + 1);
+
+			outCursor = t.next_salt32.salt;
 
 			return true;
 		}

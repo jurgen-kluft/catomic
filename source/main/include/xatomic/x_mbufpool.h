@@ -72,7 +72,7 @@ namespace xcore
 				*/
 				head*		get()													{ return allocator::alloc(); }
 				u32			data_size() const										{ return _data->chunk_size(); }
-				u32			size()  const											{ return _data->size(); }
+				u32			max_size()  const										{ return _data->max_size(); }
 				u32			avail() const											{ return _data->avail(); }
 
 				/**

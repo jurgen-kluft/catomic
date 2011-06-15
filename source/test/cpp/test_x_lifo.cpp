@@ -17,7 +17,8 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(construct2)
 		{
-			xcore::atomic::lifo f(16);
+			xcore::atomic::lifo f;
+			f.init(16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
@@ -25,7 +26,8 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(fill)
 		{
-			xcore::atomic::lifo f(16);
+			xcore::atomic::lifo f;
+			f.init(16);
 			f.fill();
 
 			CHECK_EQUAL(false, f.empty());
@@ -48,7 +50,8 @@ UNITTEST_SUITE_BEGIN(lifo)
 		UNITTEST_TEST(push1_pop1)
 		{
 			xcore::u32 i, r;
-			xcore::atomic::lifo f(16);
+			xcore::atomic::lifo f;
+			f.init(16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
@@ -72,7 +75,8 @@ UNITTEST_SUITE_BEGIN(lifo)
 		UNITTEST_TEST(push2_pop2)
 		{
 			xcore::u32 i, r;
-			xcore::atomic::lifo f(16);
+			xcore::atomic::lifo f;
+			f.init(16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());

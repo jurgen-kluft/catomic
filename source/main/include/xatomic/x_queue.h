@@ -9,7 +9,7 @@
 #include "xbase\x_debug.h"
 
 #include "xatomic\private\x_allocator.h"
-#include "xatomic\x_compiler.h"
+#include "xatomic\private\x_compiler.h"
 #include "xatomic\x_fifo.h"
 #include "xatomic\x_mempool.h"
 #include "xatomic\x_atomic.h"
@@ -18,6 +18,8 @@ namespace xcore
 {
 	namespace atomic
 	{
+		//#define X_ATOMIC_QUEUE_REF_CNT
+
 		/**
 		* Multi-reader, multi-writer lock-free queue.
 		*/
@@ -27,8 +29,9 @@ namespace xcore
 		private:
 			mempool			_pool;
 			fifo			_fifo;
-			int32*			_ref;
-
+#ifdef X_ATOMIC_QUEUE_REF_CNT
+			atom_s32*		_ref;
+#endif
 			/**
 			* Put an item back into the pool.
 			* Item must have been obtained via get() or pop().
@@ -36,32 +39,34 @@ namespace xcore
 			*/
 			void			release(u32 i)
 			{
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				if (!_ref[i].dec())
+#endif
 					_pool.put(i);
 			}
 
 		public:
 			/**
-			* Constructor. Allocates the queue.
-			* @param size number of items in the queue
+			* Constructor.
 			*/
-			queue(u32 size) 
-				: _pool(sizeof(T), size)
-				, _fifo(size)
+			queue() 
 			{
-				_ref = (int32*)get_heap_allocator()->allocate(sizeof(int32) * size, 4);
-				if (!valid())
-					return;
-
-				// Fifo requires a dummy item
-				u32 i;
-				u8 *p = _pool.get(i);
-
-				ASSERT(p && "Something is busted");
-
-				_fifo.reset(i);
-				_ref[i].set(1);
 			}
+
+			/**
+			* Init.
+			* Allocates memory pool and fifo.
+			* Use 'size() != 0' to check whether 
+			* allocations where successful or not.
+			* @param size number of items for the queue
+			*/
+			bool		init(u32 size);
+
+			/**
+			* Init.
+			* Memory pool, lifo, fifo and type buffer are supplied by the user.
+			*/
+			bool		init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize);
 
 			/**
 				* Destructor. Releases the queue.
@@ -76,15 +81,46 @@ namespace xcore
 			* Queue size.
 			* @return number of items
 			*/
-			u32				size() const											{ return _fifo.size(); }
+			u32				max_size() const
+			{
+				return _fifo.max_size(); 
+			}
 
 			/**
 			* Check if queue is empty.
 			* @return true if stack is empty, false otherwise
 			*/
-			bool			empty() const											{ return _fifo.empty(); }
+			bool			empty() const
+			{
+				return _fifo.empty(); 
+			}
 
-			u32				room() const											{ return _fifo.room(); }
+			/**
+			* Check how much items we can still push into the queue
+			* @return the number of items that can still be added to the queue
+			*/
+			u32				room() const
+			{
+				return _fifo.room(); 
+			}
+
+			/**
+			* Check how many items are in the queue
+			* @return the number of items in the queue
+			*/
+			u32				size() const
+			{
+				return _fifo.size(); 
+			}
+
+			/**
+			* Check if the cursor the user supplies is still in the queue
+			* @return True if the cursor still is in the queue
+			*/
+			bool			inside(u32 cursor) const
+			{
+				return _fifo.inside(cursor);
+			}
 
 			// ---- PUSH interface ----
 
@@ -99,7 +135,9 @@ namespace xcore
 				u8 *p = _pool.get(i);
 				if (unlikely(!p))
 					return 0;
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				_ref[i].set(1);
+#endif
 				return (T *) p;
 			}
 
@@ -119,15 +157,22 @@ namespace xcore
 			* @warning Item must have been obtained via push_begin().
 			* @param[in] item pointer to an item
 			*/
-			void			push_commit(T *p)
+			void			push_commit(T *p, u32& outCursor)
 			{
 				u32 i = _pool.c2i((u8 *) p);
 				ASSERT(i < _pool.size() && "Invalid index");
 
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				_ref[i].inc();
-
-				bool fp = _fifo.push(i);
+#endif
+				bool fp = _fifo.push(i, outCursor);
 				ASSERT(fp && "Corrupted state");
+			}
+
+			void			push_commit(T *p)
+			{
+				u32 cursor;
+				push_commit(p, cursor);
 			}
 
 			/**
@@ -135,7 +180,7 @@ namespace xcore
 			* One shot push.
 			* @param[in] data data to push
 			*/
-			bool			push(T *data)
+			bool			push(T *inData, u32 &outCursor)
 			{
 				// Open coded push_begin() -> copy -> push_commit()
 				// transaction.
@@ -145,20 +190,25 @@ namespace xcore
 				if (unlikely(!p))
 					return false;
 
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				// Holding two references. One for the queue itself 
 				// and one for the user.
 				// Same as in push_begin() -> push_commit() transaction.
 				_ref[i].set(2);
+#endif
+				*(T *)p = *inData;
 
-				*(T *)p = *data;
-
-				bool fp = _fifo.push(i);
+				bool fp = _fifo.push(i, outCursor);
 				ASSERT(fp && "Corrupted state");
 
 				return true;
 			}
 
-			bool			push(T data)										{ return push(&data); }
+			bool			push(T *inData)
+			{
+				u32 cursor;
+				return push(inData, cursor);
+			}
 
 			// ---- POP interface ----
 
@@ -184,7 +234,9 @@ namespace xcore
 			void			pop_finish(T *p)
 			{
 				u32 i = _pool.c2i((u8 *) p);
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				release(i);
+#endif
 			}
 
 			/**
@@ -205,7 +257,9 @@ namespace xcore
 				T *p = (T *) _pool.i2c(i);
 				*data = *p;
 
+#ifdef X_ATOMIC_QUEUE_REF_CNT
 				release(i);
+#endif
 				return true;
 			}
 
@@ -215,9 +269,48 @@ namespace xcore
 			*/
 			bool			valid()
 			{
-				return (_ref && _fifo.size() != 0 && _pool.valid());
+#ifdef X_ATOMIC_QUEUE_REF_CNT
+				if (ref == NULL)
+					return false;
+#endif
+				return (_fifo.size() != 0 && _pool.valid());
 			}
 		};
+
+
+		template <typename T>
+		bool		queue::init(u32 size)
+		{
+			_pool.init(sizeof(T), size);
+			_fifo.init(size);
+
+#ifdef X_ATOMIC_QUEUE_REF_CNT
+			_ref = (atom_s32*)get_heap_allocator()->allocate(sizeof(atom_s32) * size, 4);
+#endif
+			if (!valid())
+				return;
+
+			// FIFO requires a dummy item
+			u32 i;
+			u8 *p = _pool.get(i);
+
+			ASSERT(p && "Something is busted");
+
+			_fifo.reset(i);
+#ifdef X_ATOMIC_QUEUE_REF_CNT
+			_ref[i].set(1);
+#endif
+
+		}
+
+		template <typename T>
+		bool		queue::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
+		{
+			_pool.init(mempool_buf_esize, mempool_buf, mempool_buf_size);
+			_fifo.init(fifo_chain, queue_lifo_fifo_size);
+		}
+
+
 	} // namespace atomic
 } // namespace xcore
 

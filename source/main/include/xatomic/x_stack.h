@@ -26,19 +26,34 @@ namespace xcore
 			lifo		_lifo;
 
 		public:
+						stack() {}
+
 			/**
-			* Constructor. Allocates the stack.
+			* Init. Allocates the stack.
 			* @param size number of items in the stack
 			*/
-						stack(u32 size) 
-							: _items(sizeof(T), size)
-							, _lifo(size)											{ }
+			bool		init(u32 size) 
+			{
+				bool r = false;
+				if (_items.init(sizeof(T), size))
+					r = _lifo.init(size); 
+				return r;
+			}
+
+			/**
+			* Clear stack, deallocates all memory, need to call init again.
+			*/
+			void		clear()
+			{
+				_items.clear();
+				_lifo.clear();
+			}
 
 			/**
 			* Stack size.
 			* @return number of items
 			*/
-			u32			size() const												{ return _lifo.size(); }
+			u32			max_size() const											{ return _lifo.max_size(); }
 
 			/**
 			* Check if stack is empty.
@@ -52,6 +67,12 @@ namespace xcore
 			* @warning this method is slow and inefficient
 			*/
 			u32			room() const												{ return _lifo.room(); }
+
+			/**
+			* Number of used elements.
+			* @return approximate number of used elements
+			*/
+			u32			size() const												{ return _lifo.size(); }
 
 			// ---- PUSH interface ----
 

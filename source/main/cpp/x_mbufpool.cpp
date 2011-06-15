@@ -57,10 +57,12 @@ namespace xcore
 			pool::pool(u32 data_size, u32 size, unsigned char factor)
 			{
 				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), size * factor);
-				_head = new (head_mem) mempool(sizeof(head), size * factor);
+				_head = new (head_mem) mempool();
+				_head->init(sizeof(head), size * factor);
 
 				void * data_mem = allocate_object<mempool>();				// new mempool(data_size, size);
-				_data   = new (data_mem) mempool(data_size, size);
+				_data   = new (data_mem) mempool();
+				_data->init(data_size, size);
 
 				_shared = allocate_array<mbuf::shared>(size);				// new mbuf::shared [size] ();
 
@@ -72,10 +74,12 @@ namespace xcore
 				u32 size = bsize / data_size;
 
 				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), size * factor);
-				_head = new (head_mem) mempool(sizeof(head), size * factor);
+				_head = new (head_mem) mempool();
+				_head->init(sizeof(head), size * factor);
 
 				void * data_mem = allocate_object<mempool>();				// new mempool(data_size, buf, size);
-				_data   = new (data_mem) mempool(data_size, buf, size);
+				_data   = new (data_mem) mempool();
+				_data->init(data_size, buf, size);
 
 				_shared = allocate_array<mbuf::shared>(size);				// new mbuf::shared [size] ();
 
@@ -85,9 +89,10 @@ namespace xcore
 			pool::pool(mempool *mp, unsigned char factor)
 			{
 				void * head_mem = allocate_object<mempool>();				// new mempool(sizeof(head), mp->size() * factor);
-				_head = new (head_mem) mempool(sizeof(head), mp->size() * factor);
+				_head = new (head_mem) mempool();
+				_head->init(sizeof(head), mp->max_size() * factor);
 
-				_shared = allocate_array<mbuf::shared>(mp->size());			// new mbuf::shared [mp->size()] ();
+				_shared = allocate_array<mbuf::shared>(mp->max_size());			// new mbuf::shared [mp->size()] ();
 
 				_data   = mp;
 				_extern = true;
@@ -95,7 +100,7 @@ namespace xcore
 
 			pool::~pool()
 			{
-				deallocate_array(_shared, _data->size());
+				deallocate_array(_shared, _data->max_size());
 				destruct_object(_head);
 
 				if (!_extern)

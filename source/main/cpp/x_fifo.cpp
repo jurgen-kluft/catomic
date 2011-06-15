@@ -5,11 +5,17 @@ namespace xcore
 {
 	namespace atomic
 	{
+		fifo::~fifo()
+		{
+			clear();
+		}
+
 		bool fifo::init(u32 size)
 		{
 			_size = 0;
 
-			_chain = (link*)get_heap_allocator()->allocate(sizeof(link) * size, 4);
+			_allocated_chain = get_heap_allocator()->allocate(sizeof(link) * size, 4);
+			_chain = (link*)_allocated_chain;
 			if (_chain!=NULL)
 			{
 				_size = size - 1;
@@ -19,19 +25,35 @@ namespace xcore
 			return false;
 		}
 
-		fifo::~fifo()
+		bool fifo::init(link* pChain, u32 uSize)
 		{
+			_size = 0;
+
+			_allocated_chain = NULL;
+			_chain = pChain;
 			if (_chain!=NULL)
 			{
-				get_heap_allocator()->deallocate(_chain);
-				_chain = NULL;
+				_size = uSize - 1;
+				reset();
+				return true;
 			}
+			return false;
+		}
+
+		void fifo::clear()
+		{
+			if (_allocated_chain!=NULL)
+			{
+				get_heap_allocator()->deallocate(_allocated_chain);
+				_allocated_chain = NULL;
+			}
+			_chain = NULL;
+			_size = 0;
 		}
 
 		void fifo::reset(u32 d)
 		{
-			u32 i;
-			for (i=0; i <= _size; i++)
+			for (u32 i=0; i <= _size; i++)
 				_chain[i].next = UNUSED;
 
 			// Link in the dummy node
@@ -58,9 +80,15 @@ namespace xcore
 			_head.next_salt32.salt = 0;
 		}
 
+		bool fifo::push(u32 i, u32& outCursor)
+		{
+			return ipush(i, outCursor);
+		}
+
 		bool fifo::push(u32 i)
 		{
-			return ipush(i);
+			u32 cursor;
+			return push(i, cursor);
 		}
 
 		bool fifo::pop(u32 &i, u32 &r)

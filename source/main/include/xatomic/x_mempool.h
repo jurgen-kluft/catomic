@@ -27,14 +27,56 @@ namespace xcore
 		class mempool
 		{
 		protected:
-						mempool();
-
 			lifo		_lifo;
-			u8*			_buffer;
+			xbyte*		_buffer;
 			u8			_order;
 			bool		_extern;
 
 		public:
+			/**
+			* Constructor.
+			*/
+						mempool();
+
+			/**
+			* Destructor
+			*/
+						~mempool();
+
+			/**
+			* Init.
+			* Allocates memory pool. Use 'size() != 0' to check whether 
+			* allocation was successful or not.
+			* @param mempool_esize size of an element (chunk)
+			* @param size number of chunks in the pool
+			*/
+			bool		init(u32 mempool_esize, u32 size);
+
+			/**
+			* Init.
+			* Allocates data for fifo but memory pool is supplied by user
+			* Use 'size() != 0' to check whether creation was successful or not.
+			* @param mempool_esize size of an element (chunk)
+			* @param mempool_buf pointer to an existing buffer
+			* @param mempool_size size of the buffer
+			*/
+			bool		init(u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
+
+			/**
+			* Init.
+			* Allocates data for fifo but memory pool is supplied by user
+			* Use 'size() != 0' to check whether creation was successful or not.
+			*/
+			bool		init(lifo::link* lifo_chain, u32 lifo_size, u32 mempool_esize, u8 *mempool_buf, u32 mempool_size);
+
+			/**
+			* Exit.
+			* Allocates data for fifo but memory pool is supplied by user
+			* Use 'size() != 0' to check whether creation was successful or not.
+
+			*/
+			void		clear();
+
 			/**
 			* Get chunk size.
 			* @return chunk size
@@ -43,6 +85,12 @@ namespace xcore
 
 			/**
 			* Get total number of chunks in the pool.
+			* @return number of chunks
+			*/
+			u32			max_size() const											{ return _lifo.max_size(); }
+
+			/**
+			* Get number of used chunks in the pool.
 			* @return number of chunks
 			*/
 			u32			size() const												{ return _lifo.size(); }
@@ -122,30 +170,6 @@ namespace xcore
 				u32 i = c2i(chunk);
 				put(i);
 			}
-
-			/**
-			* Constructor.
-			* Allocates memory pool. Use 'size() != 0' to check whether 
-			* allocation was successful or not.
-			* @param csize size of the chunk in bytes
-			* @param size number of chunks in the pool
-			*/
-						mempool(u32 csize, u32 size);
-
-			/**
-			* Constructor.
-			* Create memory pool and attach it to an existing buffer.
-			* Use 'size() != 0' to check whether creation was successful or not.
-			* @param csize size of the chunk in bytes
-			* @param buf pointer to an existing buffer
-			* @param bsize size of the buffer
-			*/
-						mempool(u32 csize, u8 *buf, u32 bsize);
-
-			/**
-			* Destructor
-			*/
-						~mempool();
 
 			/**
 			* Placement new/delete pair

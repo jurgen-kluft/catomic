@@ -29,46 +29,66 @@ namespace xcore
 		* to guaranty atomicity and thread safety.
 		* Singly linked list of 32bit indices (instead of pointers) is used to 
 		* keep track of the pushed elements.
-		* @see mfifo
+		* Maximum number of elements < 65535
+		* @see stack, fifo
 		*/
 		class lifo 
 		{
+		public:
+			struct link 
+			{
+				volatile u32	next;
+			};
+
 		protected:
+			typedef		volatile u32	vu32;
 			union state
 			{
 				volatile u64 next_salt64;
 				struct
 				{
 #ifdef X_LITTLE_ENDIAN
-					volatile u32 next;
-					volatile u32 salt;
+					vu32	next;
+					vu32	salt;
 #else
-					volatile u32 salt;
-					volatile u32 next;
+					vu32	salt;
+					vu32	next;
 #endif
 				} next_salt32;
 			};
 
-			struct link 
+			enum
 			{
-				volatile u32 next;
+				UNUSED = 0xffffffff,
+				LAST   = 0xfffffffe,
 			};
 
 			state		_head;
 			link*		_chain;
-			u32			_size;
+			link*		_allocated_chain;
+			u32			_max_size;
+
+			inline u32	increase_push(u32 salt)
+			{
+				u32 const cnt = ((salt & 0x0000ffff) + 0x00000001) & 0x0000ffff;
+				return (salt & 0xffff0000) | cnt;
+			}
+
+			inline u32	increase_pop(u32 salt)
+			{
+				u32 const cnt = ((salt & 0xffff0000) + 0x00010000) & 0xffff0000;
+				return (salt & 0x0000ffff) | cnt;
+			}
 
 		public:
+
 			/**
 			* Create empty lifo. It can be initialized later by calling init().
 			*/
-						lifo() : _chain(NULL), _size(0)							{ }
-
-			/**
-			* Create lifo.
-			* @param size number of elements
-			*/
-						lifo(u32 size)											{ init(size); }
+						lifo() 
+							: _chain(NULL)
+							, _allocated_chain(NULL)
+							, _max_size(0)										{ }
 
 			/**
 			* Destructor
@@ -79,6 +99,16 @@ namespace xcore
 			* Complete initialization.
 			*/
 			bool		init(u32 size);
+
+			/**
+			* Complete initialization.
+			*/
+			bool		init(link* chain, u32 size);
+
+			/**
+			* Clear the lifo, deallocate all memory
+			*/
+			void		clear();
 
 			/**
 			* Reset lifo state.
@@ -96,7 +126,10 @@ namespace xcore
 			* Size of the lifo.
 			* @return maximum number of elements
 			*/
-			u32			size() const											{ return _size; }
+			u32			max_size() const
+			{
+				return _max_size; 
+			}
 
 			/**
 			* Number of unused elements.
@@ -105,12 +138,31 @@ namespace xcore
 			*/
 			u32			room() const
 			{
-				// head.salt is incremented before each push and pop,
-				// hence we cannot use it just like we do in the fifo.
-				u32 i, n = 0;
-				for (i=0; i<_size; i++)
-					n += (_chain[i].next == ~0U);
-				return n;
+				u32 const s = _head.next_salt32.salt;
+				u32 const h = (s & 0x0000ffff);
+				u32 const t = (s & 0xffff0000) >> 16;
+
+				u32 used = (t >= h) ? (t - h) : (h - t);
+				if (used > _max_size)
+					used = _max_size;
+				return _max_size - used;
+			}
+
+			/**
+			* Number of used elements.
+			* @return approximate number of unused elements
+			* @warning this method is slow and inefficient
+			*/
+			u32			size() const
+			{
+				u32 const s = _head.next_salt32.salt;
+				u32 const h = (s & 0x0000ffff);
+				u32 const t = (s & 0xffff0000) >> 16;
+
+				u32 used = (t >= h) ? (t - h) : (h - t);
+				if (used > _max_size)
+					used = _max_size;
+				return used;
 			}
 
 			/**
@@ -119,7 +171,7 @@ namespace xcore
 			*/
 			bool		empty() const
 			{
-				return _head.next_salt32.next == _size;
+				return size() == 0;
 			}
 
 			/**
@@ -151,7 +203,8 @@ namespace xcore
 			// Used in the unit-test
 			bool		pop(u32 &i, u32 &r)
 			{
-				bool b = pop(i); r = i;
+				bool b = pop(i);
+				r = i;
 				return b;
 			}
 		};
@@ -160,12 +213,12 @@ namespace xcore
 		{
 			state h;
 
-			if (i >= _size)
+			if (i >= _max_size)
 				return false;
 
-			// Double push trap. Thread safe because the caller still
-			// owns the element.
-			if (_chain[i].next != ~0U)
+			// Double push trap.
+			// Thread safe because the caller still owns the element.
+			if (_chain[i].next != UNUSED)
 				return false;
 
 			// Spin until push is successful 
@@ -177,7 +230,7 @@ namespace xcore
 				// We need write barrier here to make sure that _chain[i].next
 				// is visible on all CPUs before it's linked in.
 				barrier::memw();
-			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, h.next_salt32.salt + 1));
+			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, i, increase_push(h.next_salt32.salt)));
 
 			return true;
 		}
@@ -193,18 +246,17 @@ namespace xcore
 				h.next_salt64 = _head.next_salt64;
 
 				// Empty ?
-				if (h.next_salt32.next == _size)
+				if (h.next_salt32.next == _max_size)
 					return false;
 
 				n = _chain[h.next_salt32.next].next;
-			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, h.next_salt32.salt + 1));
+			} while (!cas_u64(&_head.next_salt64, h.next_salt32.next, h.next_salt32.salt, n, increase_pop(h.next_salt32.salt)));
 
 			i = h.next_salt32.next;
 
-			// Clear 'next' index so that push() could check for
-			// double push. Thread safe here because caller now owns
-			// the element.
-			_chain[h.next_salt32.next].next = ~0U;
+			// Clear 'next' index so that push() can check for double push. 
+			// Thread safe here because caller now owns the element.
+			_chain[h.next_salt32.next].next = UNUSED;
 
 			return true;
 		}

@@ -8,8 +8,8 @@
 #include "xbase\x_types.h"
 
 #include "xatomic\private\x_allocator.h"
+#include "xatomic\private\x_compiler.h"
 #include "xatomic\x_barrier.h"
-#include "xatomic\x_compiler.h"
 
 namespace xcore
 {
@@ -86,7 +86,7 @@ namespace xcore
 			* Get ring size.
 			* @return max number of ring items
 			*/
-			u32			size() const										{ return _size + 1; }
+			u32			max_size() const									{ return _size + 1; }
 
 			/**
 			* Get number of items in the ring
@@ -99,7 +99,7 @@ namespace xcore
 			* Get available room.
 			* @return number that can be ring
 			*/
-			u32			room() const										{ return (_head - _tail - 1) & _size; }
+			u32			size() const										{ return (_head - _tail - 1) & _size; }
 
 			/**
 			* Check if ring is empty.
