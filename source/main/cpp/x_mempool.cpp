@@ -10,16 +10,10 @@ namespace xcore
 {
 	namespace atomic
 	{
-		static inline u32 po2(u32 size)
-		{
-			u32 i = x_intu::ceilPower2(size);
-			return i;
-		}
-
 		mempool::mempool()
 		{
 			_buffer = NULL;
-			_order  = 0;
+			_csize = 0;
 			_extern = false;
 		}
 
@@ -29,19 +23,18 @@ namespace xcore
 			if (!_lifo.init(size))
 				return false;
 
-			u32 order = po2(mempool_esize);
-			mempool_esize = (1 << order);
+			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
 			_extern = false;
-			_buffer = (xbyte*)get_heap_allocator()->allocate(mempool_esize * size, 4);
-			x_memset(_buffer, 0, mempool_esize * size);
+			_buffer = (xbyte*)get_heap_allocator()->allocate(csize * size, 4);
+			x_memset(_buffer, 0, csize * size);
 
 			// Caller will have to do the delete anyway. Let the
 			// destructor take care of partial allocations.
 			if (!_buffer)
 				return false;
 
-			_order = order;
+			_csize = csize;
 
 			_lifo.fill();
 			return true;
@@ -49,12 +42,9 @@ namespace xcore
 
 		bool mempool::init(u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
 		{
-			u32 size, order;
+			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
-			order = po2(mempool_esize);
-			mempool_esize = 1 << order;
-
-			size = mempool_size / mempool_esize;
+			u32 size = mempool_size / mempool_esize;
 
 			// Initialize the lifo first
 			if (!_lifo.init(size))
@@ -64,20 +54,15 @@ namespace xcore
 			_buffer = mempool_buf;
 			_extern = true;
 
-			_order = order;
-
 			_lifo.fill();
 			return true;
 		}
 
 		bool	mempool::init(lifo::link* lifo_chain, u32 lifo_size, u32 mempool_esize, u8 *mempool_buf, u32 mempool_size)
 		{
-			u32 size, order;
+			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
-			order = po2(mempool_esize);
-			mempool_esize = 1 << order;
-
-			size = mempool_size / mempool_esize;
+			u32 size = mempool_size / csize;
 			if (size > lifo_size)
 				return false;
 
@@ -86,9 +71,8 @@ namespace xcore
 
 			// Attach to an external buffer 
 			_buffer = mempool_buf;
+			_csize  = csize;
 			_extern = true;
-
-			_order = order;
 
 			_lifo.fill();
 			return true;
@@ -103,6 +87,7 @@ namespace xcore
 				_buffer = NULL;
 			}
 			_lifo.clear();
+			_csize = 0;
 		}
 
 		mempool::~mempool()
@@ -112,10 +97,7 @@ namespace xcore
 
 		bool mempool::valid()
 		{
-			if (_lifo.max_size() && _buffer)
-				return true;
-
-			return false;
+			return (_lifo.max_size()>0 && _buffer!=NULL);
 		}
 
 		u32 mempool::avail() const

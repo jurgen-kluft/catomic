@@ -111,6 +111,15 @@ namespace xcore
 			void		clear();
 
 			/**
+			* Validate lifo.
+			* @return True if lifo is initialized
+			*/
+			bool		valid() const
+			{
+				return _chain!=NULL && _max_size>0;
+			}
+
+			/**
 			* Reset lifo state.
 			* @warning Not thread safe
 			*/

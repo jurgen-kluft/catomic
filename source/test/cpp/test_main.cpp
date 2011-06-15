@@ -12,6 +12,7 @@ UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, atomic);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, lifo);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, fifo);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, stack);
+UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, queue);
 
 namespace xcore
 {

@@ -31,8 +31,8 @@ UNITTEST_SUITE_BEGIN(fifo)
 			f.init(16);
 
 			CHECK_EQUAL(true, f.empty());
-			CHECK_EQUAL(15, f.room());
-			CHECK_EQUAL(15, f.max_size());
+			CHECK_EQUAL(16, f.room());
+			CHECK_EQUAL(16, f.max_size());
 		}
 		
 		UNITTEST_TEST(fill)
@@ -64,15 +64,15 @@ UNITTEST_SUITE_BEGIN(fifo)
 			f.reset(0);	// dummy
 
 			CHECK_EQUAL(true, f.empty());
-			CHECK_EQUAL(15, f.room());
+			CHECK_EQUAL(16, f.room());
 
-			xcore::s32 indices[15] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+			xcore::s32 indices[16] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 
 			xcore::s32 prev = 0;
 			xcore::s32 e = 0;
 			for (xcore::s32 y=0; y<100; ++y, ++e)
 			{
-				if (e == 15) 
+				if (e == 16) 
 					e = 0;
 
 				xcore::s32 x = indices[e];
@@ -101,16 +101,16 @@ UNITTEST_SUITE_BEGIN(fifo)
 			f._tail.next_salt32.salt += 0xffffffec;
 
 			CHECK_EQUAL(true, f.empty());
-			CHECK_EQUAL(15, f.room());
+			CHECK_EQUAL(16, f.room());
 
-			xcore::s32 indices[15] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+			xcore::s32 indices[16] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 };
 
 			xcore::s32 prev = 0;
 			xcore::s32 e = 0;
 			xcore::u32 cursor = 0;
 			for (xcore::s32 y=0; y<100; ++y, ++e)
 			{
-				if (e == 15) e = 0;
+				if (e == 16) e = 0;
 
 				xcore::s32 x = indices[e];
 

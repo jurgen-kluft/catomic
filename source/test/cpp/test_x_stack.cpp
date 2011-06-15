@@ -14,6 +14,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(1);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(1, f.max_size());
@@ -24,6 +25,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(16);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.max_size());
@@ -34,6 +36,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(16);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.max_size());
@@ -54,6 +57,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(16);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.max_size());
@@ -80,6 +84,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(16);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.max_size());
@@ -100,12 +105,16 @@ UNITTEST_SUITE_BEGIN(stack)
 			f.push_commit(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(14, f.room());
+
+			f.clear();
+			CHECK_FALSE(f.valid());
 		}
 
 		UNITTEST_TEST(push)
 		{
 			xcore::atomic::stack<xcore::s32> f;
 			f.init(16);
+			CHECK_TRUE(f.valid());
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.max_size());
@@ -134,8 +143,10 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(77, i);
 			f.pop(i);
 			CHECK_EQUAL(55, i);
-		}
 
+			f.clear();
+			CHECK_FALSE(f.valid());
+		}
 	}
 }
 UNITTEST_SUITE_END

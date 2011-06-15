@@ -101,6 +101,16 @@ namespace xcore
 			void		clear();
 
 			/**
+			* Validate fifo.
+			* @return True if fifo is initialized
+			*/
+			bool		valid() const
+			{
+				return _chain!=NULL;
+			}
+
+
+			/**
 			* Size of the fifo.
 			* @return maximum number of elements
 			*/

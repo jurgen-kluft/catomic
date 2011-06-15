@@ -29,7 +29,7 @@ namespace xcore
 		protected:
 			lifo		_lifo;
 			xbyte*		_buffer;
-			u8			_order;
+			u32			_csize;
 			bool		_extern;
 
 		public:
@@ -67,7 +67,7 @@ namespace xcore
 			* Allocates data for fifo but memory pool is supplied by user
 			* Use 'size() != 0' to check whether creation was successful or not.
 			*/
-			bool		init(lifo::link* lifo_chain, u32 lifo_size, u32 mempool_esize, u8 *mempool_buf, u32 mempool_size);
+			bool		init(lifo::link* lifo_chain, u32 lifo_size, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
 
 			/**
 			* Exit.
@@ -81,7 +81,7 @@ namespace xcore
 			* Get chunk size.
 			* @return chunk size
 			*/
-			u32			chunk_size() const											{ return 1 << _order; }
+			u32			chunk_size() const											{ return _csize; }
 
 			/**
 			* Get total number of chunks in the pool.
@@ -106,13 +106,13 @@ namespace xcore
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/
-			u32			c2i(u8 *chunk) const										{ return (chunk - _buffer) >> _order; }
+			u32			c2i(xbyte *chunk) const										{ return (chunk - _buffer) / _csize; }
 
 			/**
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/
-			u8*			i2c(u32 i) const											{ return _buffer + (i << _order); }
+			xbyte*		i2c(u32 i) const											{ return _buffer + (i * _csize); }
 
 			/**
 			* Get free chunk from the pool.
@@ -120,7 +120,7 @@ namespace xcore
 			* @return pointer to the beginning if the chunk, or 0
 			* if there is no space.
 			*/
-			u8*			get(u32 &i)
+			xbyte*		get(u32 &i)
 			{
 				if (!_lifo.pop(i))
 					return 0;
@@ -132,7 +132,7 @@ namespace xcore
 			* @return pointer to the beginning if the chunk, or 0
 			* if there is no space.
 			*/
-			u8*			get()
+			xbyte*		get()
 			{
 				u32 i;
 				return get(i);
@@ -154,7 +154,7 @@ namespace xcore
 			* @param[in] chunk pointer to the beginning of the chunk
 			* @param[out] i position (index) of the chunk
 			*/
-			void		put(u8 *chunk, u32 &i)
+			void		put(xbyte *chunk, u32 &i)
 			{
 				u32 n = c2i(chunk);
 				put(n);
@@ -165,7 +165,7 @@ namespace xcore
 			* Put chunk back into the pool.
 			* @param[in] chunk pointer to the beginning of the chunk
 			*/
-			void		put(u8 *chunk)
+			void		put(xbyte *chunk)
 			{
 				u32 i = c2i(chunk);
 				put(i);

@@ -172,7 +172,7 @@ namespace xcore
 			* Validate stack.
 			* Used for checking for constructor failures.
 			*/
-			bool		valid()														{ return (_lifo.size() != 0 && _items.valid()); }
+			bool		valid()														{ return (_lifo.valid() && _items.valid()); }
 		};
 
 	} // namespace atomic

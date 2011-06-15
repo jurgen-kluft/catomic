@@ -69,12 +69,28 @@ namespace xcore
 			bool		init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize);
 
 			/**
-				* Destructor. Releases the queue.
-				*/
+			* Clear.
+			* Invalidate this queue, deallocating any claimed memory/resources.
+			*/
+			void		clear()
+			{
+				_pool.clear();
+				_fifo.clear();
+#ifdef X_ATOMIC_QUEUE_REF_CNT
+				if (_ref != NULL)
+				{
+					get_heap_allocator()->deallocate(_ref);
+					_ref = NULL;
+				}
+#endif
+			}
+
+			/**
+			* Destructor. Releases the queue.
+			*/
 			~queue()
 			{
-				get_heap_allocator()->deallocate(_ref);
-				_ref = NULL;
+				clear();
 			}
 
 			/**
@@ -210,6 +226,12 @@ namespace xcore
 				return push(inData, cursor);
 			}
 
+			bool			push(T inData)
+			{
+				u32 cursor;
+				return push(&inData, cursor);
+			}
+
 			// ---- POP interface ----
 
 			/**
@@ -264,6 +286,16 @@ namespace xcore
 			}
 
 			/**
+			* Pop data from the queue.
+			* One shot pop.
+			* @return true on success, false otherwise
+			*/
+			bool			pop(T& data)
+			{
+				return pop(&data);
+			}
+
+			/**
 			* Validate queue.
 			* Used for checking for constructor failures.
 			*/
@@ -273,7 +305,7 @@ namespace xcore
 				if (ref == NULL)
 					return false;
 #endif
-				return (_fifo.size() != 0 && _pool.valid());
+				return (_fifo.valid() != 0 && _pool.valid());
 			}
 		};
 
@@ -281,14 +313,26 @@ namespace xcore
 		template <typename T>
 		bool		queue<T>::init(u32 size)
 		{
-			_pool.init(sizeof(T), size);
-			_fifo.init(size);
+			if (!_pool.init(sizeof(T), size))
+			{
+				clear();
+				return false;
+			}
+
+			if (!_fifo.init(size))
+			{
+				clear();
+				return false;
+			}
 
 #ifdef X_ATOMIC_QUEUE_REF_CNT
 			_ref = (atom_s32*)get_heap_allocator()->allocate(sizeof(atom_s32) * size, 4);
 #endif
 			if (!valid())
-				return;
+			{
+				clear();
+				return false;
+			}
 
 			// FIFO requires a dummy item
 			u32 i;
@@ -300,14 +344,24 @@ namespace xcore
 #ifdef X_ATOMIC_QUEUE_REF_CNT
 			_ref[i].set(1);
 #endif
-
+			return true;
 		}
 
 		template <typename T>
 		bool		queue<T>::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
 		{
-			_pool.init(mempool_buf_esize, mempool_buf, mempool_buf_size);
-			_fifo.init(fifo_chain, queue_lifo_fifo_size);
+			if (!_pool.init(mempool_buf_esize, mempool_buf, mempool_buf_size))
+			{
+				clear();
+				return false;
+			}
+			if (!_fifo.init(fifo_chain, queue_lifo_fifo_size))
+			{
+				clear();
+				return false;
+			}
+
+			return true;
 		}
 
 

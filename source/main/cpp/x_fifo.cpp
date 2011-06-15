@@ -14,6 +14,7 @@ namespace xcore
 		{
 			_size = 0;
 
+			size += 1;
 			_allocated_chain = get_heap_allocator()->allocate(sizeof(link) * size, 4);
 			_chain = (link*)_allocated_chain;
 			if (_chain!=NULL)
