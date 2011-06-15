@@ -279,7 +279,7 @@ namespace xcore
 
 
 		template <typename T>
-		bool		queue::init(u32 size)
+		bool		queue<T>::init(u32 size)
 		{
 			_pool.init(sizeof(T), size);
 			_fifo.init(size);
@@ -304,7 +304,7 @@ namespace xcore
 		}
 
 		template <typename T>
-		bool		queue::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
+		bool		queue<T>::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
 		{
 			_pool.init(mempool_buf_esize, mempool_buf, mempool_buf_size);
 			_fifo.init(fifo_chain, queue_lifo_fifo_size);
