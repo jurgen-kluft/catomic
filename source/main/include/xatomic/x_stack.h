@@ -101,7 +101,7 @@ namespace xcore
 			{
 				u32 i = _items.c2i((u8 *) p);
 				bool lp = _lifo.push(i);
-				ASSERTS(lp, "Corrupted state");
+				ASSERTS(lp, "xatomic::stack<T>: Error, state is corrupted!");
 			}
 
 			/**
@@ -123,7 +123,7 @@ namespace xcore
 				*p = inData;
 
 				bool lp = _lifo.push(i);
-				ASSERTS(lp, "Corrupted state");
+				ASSERTS(lp, "xatomic::stack<T>: Error, state is corrupted!");
 
 				return true;
 			}

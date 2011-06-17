@@ -178,13 +178,13 @@ namespace xcore
 			void			push_commit(T *p, u32& outCursor)
 			{
 				u32 i = _pool.c2i((u8 *) p);
-				ASSERT(i < _pool.size() && "Invalid index");
+				ASSERTS(i < _pool.size(), "xcore::atomic::queue<T>: Error, invalid index");
 
 #ifdef X_ATOMIC_QUEUE_REF_CNT
 				_ref[i].inc();
 #endif
 				bool fp = _fifo.push(i, outCursor);
-				ASSERT(fp && "Corrupted state");
+				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
 			}
 
 			void			push_commit(T *p)
@@ -217,7 +217,7 @@ namespace xcore
 				*(T *)p = *inData;
 
 				bool fp = _fifo.push(i, outCursor);
-				ASSERT(fp && "Corrupted state");
+				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
 
 				return true;
 			}
@@ -342,7 +342,7 @@ namespace xcore
 			u32 i;
 			u8 *p = _pool.get(i);
 
-			ASSERT(p && "Something is busted");
+			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
 #ifdef X_ATOMIC_QUEUE_REF_CNT
@@ -364,6 +364,20 @@ namespace xcore
 				clear();
 				return false;
 			}
+
+			if (!valid())
+			{
+				clear();
+				return false;
+			}
+
+			// FIFO requires a dummy item
+			u32 i;
+			u8 *p = _pool.get(i);
+
+			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
+
+			_fifo.reset(i);
 
 			return true;
 		}

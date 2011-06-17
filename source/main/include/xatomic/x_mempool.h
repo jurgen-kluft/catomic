@@ -147,7 +147,7 @@ namespace xcore
 			void		put(u32 i)
 			{
 				bool r = _lifo.push(i);
-				ASSERTS(r, "Invalid index or double free");
+				ASSERTS(r, "xcore::atomic::mempool: Error, invalid index or double free");
 			}
 
 			/**
