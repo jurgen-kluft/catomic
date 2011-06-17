@@ -230,8 +230,8 @@ namespace xcore
 			if (i > _size)
 				return false;
 
-			// Double push trap. Thread safe because the caller still
-			// owns the element.
+			// Double push trap.
+			// Thread safe because the caller still owns the element.
 			if (_chain[i].next != UNUSED)
 				return false;
 
