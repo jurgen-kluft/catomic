@@ -301,12 +301,16 @@ namespace xcore
 		{
 			_allocator = allocator;
 
-			if (!_pool.init(allocator, sizeof(T), size))
+			if (!_pool.init(allocator, sizeof(T), size + 1))
 			{
 				clear();
 				return false;
 			}
-
+			if (_pool.max_size() != size + 1)
+			{
+				clear();
+				return false;
+			}
 			if (!_fifo.init(allocator, size))
 			{
 				clear();
@@ -338,13 +342,20 @@ namespace xcore
 		template <typename T>
 		bool		queue<T>::init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
 		{
-			ASSERT(lifo_size == (fifo_size-1));
+			ASSERT(lifo_size == fifo_size);
 
 			if (!_pool.init(lifo_chain, lifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
 			{
 				clear();
 				return false;
 			}
+
+			if (_pool.max_size() != lifo_size)
+			{
+				clear();
+				return false;
+			}
+
 			if (!_fifo.init(fifo_chain, fifo_size))
 			{
 				clear();
