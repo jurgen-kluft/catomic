@@ -89,11 +89,13 @@ namespace xcore
 
 			/**
 			* Complete initialization.
+			* Note: fifo uses a dummy item, so if you want a fifo of 16 items you need to create 17 items and pass uSize=17
 			*/
 			bool		init(x_iallocator* allocator, u32 uSize);
 
 			/**
 			* Create empty lifo. It can be initialized lated by calling init().
+			* Note: fifo uses a dummy item, so if you want a fifo of 16 items you need to create 17 items and pass uSize=17
 			*/
 			bool		init(link* pChain, u32 uSize);
 

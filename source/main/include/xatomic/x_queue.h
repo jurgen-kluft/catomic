@@ -67,7 +67,7 @@ namespace xcore
 			* Init.
 			* Memory pool, lifo, fifo and type buffer are supplied by the user.
 			*/
-			bool		init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize);
+			bool		init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize);
 
 			/**
 			* Clear.
@@ -198,7 +198,7 @@ namespace xcore
 			* One shot push.
 			* @param[in] data data to push
 			*/
-			bool			push(T *inData, u32 &outCursor)
+			bool			push(T const& inData, u32 &outCursor)
 			{
 				// Open coded push_begin() -> copy -> push_commit()
 				// transaction.
@@ -214,7 +214,7 @@ namespace xcore
 				// Same as in push_begin() -> push_commit() transaction.
 				_ref[i].set(2);
 #endif
-				*(T *)p = *inData;
+				*(T *)p = inData;
 
 				bool fp = _fifo.push(i, outCursor);
 				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
@@ -222,16 +222,10 @@ namespace xcore
 				return true;
 			}
 
-			bool			push(T *inData)
+			bool			push(T const& inData)
 			{
 				u32 cursor;
 				return push(inData, cursor);
-			}
-
-			bool			push(T inData)
-			{
-				u32 cursor;
-				return push(&inData, cursor);
 			}
 
 			// ---- POP interface ----
@@ -268,7 +262,7 @@ namespace xcore
 			* One shot pop.
 			* @return true on success, false otherwise
 			*/
-			bool			pop(T *data)
+			bool			pop(T& outData)
 			{
 				// Open coded pop_begin() -> copy -> pop_finish() transaction.
 
@@ -279,22 +273,12 @@ namespace xcore
 				release(r);
 
 				T *p = (T *) _pool.i2c(i);
-				*data = *p;
+				outData = *p;
 
 #ifdef X_ATOMIC_QUEUE_REF_CNT
 				release(i);
 #endif
 				return true;
-			}
-
-			/**
-			* Pop data from the queue.
-			* One shot pop.
-			* @return true on success, false otherwise
-			*/
-			bool			pop(T& data)
-			{
-				return pop(&data);
 			}
 
 			/**
@@ -352,14 +336,16 @@ namespace xcore
 		}
 
 		template <typename T>
-		bool		queue<T>::init(fifo::link* fifo_chain, lifo::link* lifo_chain, u32 queue_lifo_fifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
+		bool		queue<T>::init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
 		{
-			if (!_pool.init(lifo_chain, queue_lifo_fifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
+			ASSERT(lifo_size == (fifo_size-1));
+
+			if (!_pool.init(lifo_chain, lifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
 			{
 				clear();
 				return false;
 			}
-			if (!_fifo.init(fifo_chain, queue_lifo_fifo_size))
+			if (!_fifo.init(fifo_chain, fifo_size))
 			{
 				clear();
 				return false;

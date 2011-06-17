@@ -42,6 +42,28 @@ namespace xcore
 				return r;
 			}
 
+			bool		init(u32 stack_size, lifo::link* lifo_chain, lifo::link* mempool_lifo_chain, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
+			{
+				if (!_items.init(mempool_lifo_chain, stack_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
+				{
+					clear();
+					return false;
+				}
+				if (!_lifo.init(lifo_chain, stack_size))
+				{
+					clear();
+					return false;
+				}
+
+				if (!valid())
+				{
+					clear();
+					return false;
+				}
+
+				return true;
+			}
+
 			/**
 			* Clear stack, deallocates all memory, need to call init again.
 			*/
@@ -146,7 +168,10 @@ namespace xcore
 			* Finish push transaction.
 			* @param[in] item pointer to an item obtained with push_begin()
 			*/
-			void		pop_finish(T *p)										{ _items.put((u8 *) p); }
+			void		pop_finish(T *p)
+			{
+				_items.put((u8 *) p); 
+			}
 
 			/**
 			* Pop data from the stack.
@@ -174,7 +199,10 @@ namespace xcore
 			* Validate stack.
 			* Used for checking for constructor failures.
 			*/
-			bool		valid()														{ return (_lifo.valid() && _items.valid()); }
+			bool		valid()
+			{
+				return (_lifo.valid() && _items.valid());
+			}
 		};
 
 	} // namespace atomic
