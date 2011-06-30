@@ -114,22 +114,22 @@ namespace xcore
 		class xspeed
 		{
 		public:
-							xspeed();
-
-			void			calculate();
-
 			u64				getCPUSpeedInkHz() const;
 			u64				getCPUSpeedInMHz() const;
+
+		protected:
+			void			init();
 		};
 
 		class xinfo
 		{
 		public:
-							xinfo();
-
 			s32				getPhysicalProcessors () const;
 			s32				getLogicalProcessorsPerPhysical () const;
 			u64				getProcessorClockFrequency () const;
+
+		protected:
+			void			init();
 
 		private:
 			// TODO: These should be removed from the public interface

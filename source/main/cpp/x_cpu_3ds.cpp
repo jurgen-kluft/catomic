@@ -169,7 +169,7 @@ namespace xcore
 		//
 		// --------------------------------------------------------
 
-		xinfo::xinfo()
+		void	xinfo::init()
 		{
 			sInitialize();
 		}
@@ -306,14 +306,11 @@ namespace xcore
 		//
 		// --------------------------------------------------------
 
-		static u64 sCPUSpeedInkHz = 268 * 1000; 
+		static u64 sCPUSpeedInkHz = 0; 
 
-		xspeed::xspeed ()
+		void xspeed::init()
 		{
-		}
-
-		void xspeed::calculate ()
-		{
+			sCPUSpeedInkHz = 268 * 1000;
 		}
 
 		u64 xspeed::getCPUSpeedInkHz() const

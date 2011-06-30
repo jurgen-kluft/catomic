@@ -19,8 +19,6 @@ namespace xcore
 		static void initialize()
 		{
 			xspeed speed;
-			speed.calculate();
-
 			u64 khz = speed.getCPUSpeedInkHz();
 
 			// Various scale factors used for conversions.
@@ -537,9 +535,6 @@ namespace xcore
 				// First of all we check to see if the RDTSC (0x0F, 0x31) instruction is supported.
 				if (!Features.HasTSC)
 					return false;
-
-				// Get the clock speed.
-				Speed.calculate();
 
 				return true;
 			}
@@ -1144,7 +1139,7 @@ namespace xcore
 		//
 		// --------------------------------------------------------
 
-		xinfo::xinfo()
+		void	xinfo::init()
 		{
 			sInitialize();
 		}
@@ -1460,11 +1455,7 @@ namespace xcore
 
 		static u64 sCPUSpeedInkHz = 0; 
 
-		xspeed::xspeed ()
-		{
-		}
-
-		void xspeed::calculate ()
+		void xspeed::init()
 		{
 			if (sCPUSpeedInkHz == 0)
 			{

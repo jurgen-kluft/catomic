@@ -3,6 +3,7 @@
 #include "xbase\x_allocator.h"
 #include "xunittest\xunittest.h"
 
+#include "xatomic\x_atomic.h"
 #include "xatomic\x_cpu.h"
 
 UNITTEST_SUITE_LIST(xMultiCoreUnitTest);
@@ -98,7 +99,10 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 	xcore::TestHeapAllocator threadHeapAllocator(gSystemAllocator);
 	gAtomicAllocator = &threadHeapAllocator;
 	
+	xcore::atomic::x_Init();
 	int r = UNITTEST_SUITE_RUN(reporter, xMultiCoreUnitTest);
+	xcore::atomic::x_Exit();
+
 	if (unittestAllocator.mNumAllocations!=0)
 	{
 		reporter.reportFailure(__FILE__, __LINE__, "xunittest", "memory leaks detected!");
