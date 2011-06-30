@@ -162,14 +162,17 @@ UNITTEST_SUITE_BEGIN(queue)
 			xcore::atomic::fifo::link*		fifo_chain;
 			xcore::atomic::lifo::link*		lifo_chain;
 			xcore::xbyte*					mempool_buf;
+			xcore::atomic::atom_s32*		mempool_buf_eref;
 
 			QueueData()
 				: fifo_chain(NULL)
 				, lifo_chain(NULL)
-				, mempool_buf(NULL) { }
+				, mempool_buf(NULL)
+				, mempool_buf_eref(NULL) { }
 
 			void release()
 			{
+				gAtomicAllocator->deallocate(mempool_buf_eref);
 				gAtomicAllocator->deallocate(mempool_buf);
 				gAtomicAllocator->deallocate(lifo_chain);
 				gAtomicAllocator->deallocate(fifo_chain);
@@ -185,8 +188,11 @@ UNITTEST_SUITE_BEGIN(queue)
 			xcore::u32 mempool_size = mempool_esize * (_size + 1);
 			_queue_data.mempool_buf = (xcore::xbyte*)gAtomicAllocator->allocate(mempool_size, 4);
 
-			return _queue.init(_queue_data.fifo_chain, _size+1, _queue_data.lifo_chain, _size+1, _queue_data.mempool_buf, mempool_size, mempool_esize);
+			_queue_data.mempool_buf_eref = (xcore::atomic::atom_s32*)gAtomicAllocator->allocate((_size+1) * sizeof(xcore::atomic::atom_s32), 4);
+
+			return _queue.init(_queue_data.fifo_chain, _size+1, _queue_data.lifo_chain, _size+1, _queue_data.mempool_buf, mempool_size, mempool_esize, _queue_data.mempool_buf_eref);
 		}
+
 		UNITTEST_TEST(push_begin2)
 		{
 			xcore::atomic::queue<xcore::s32> f;

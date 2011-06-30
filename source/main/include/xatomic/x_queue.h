@@ -18,8 +18,6 @@ namespace xcore
 {
 	namespace atomic
 	{
-		//#define X_ATOMIC_QUEUE_REF_CNT
-
 		/**
 		* Multi-reader, multi-writer lock-free queue.
 		*/
@@ -30,9 +28,8 @@ namespace xcore
 			x_iallocator*	_allocator;
 			mempool			_pool;
 			fifo			_fifo;
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 			atom_s32*		_ref;
-#endif
+
 			/**
 			* Put an item back into the pool.
 			* Item must have been obtained via get() or pop().
@@ -40,9 +37,7 @@ namespace xcore
 			*/
 			void			release(u32 i)
 			{
-#ifdef X_ATOMIC_QUEUE_REF_CNT
-				if (!_ref[i].dec())
-#endif
+				if (!_ref[i].decr_test())
 					_pool.put(i);
 			}
 
@@ -50,15 +45,15 @@ namespace xcore
 			/**
 			* Constructor.
 			*/
-			queue() 
+			queue()
+				: _allocator(NULL)
+				, _ref(NULL)
 			{
 			}
 
 			/**
 			* Init.
 			* Allocates memory pool and fifo.
-			* Use 'size() != 0' to check whether 
-			* allocations where successful or not.
 			* @param size number of items for the queue
 			*/
 			bool		init(x_iallocator* allocator, u32 size);
@@ -67,7 +62,7 @@ namespace xcore
 			* Init.
 			* Memory pool, lifo, fifo and type buffer are supplied by the user.
 			*/
-			bool		init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize);
+			bool		init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize, atom_s32* mempool_buf_eref);
 
 			/**
 			* Clear.
@@ -78,13 +73,13 @@ namespace xcore
 				_pool.clear();
 				_fifo.clear();
 
-#ifdef X_ATOMIC_QUEUE_REF_CNT
-				if (_ref != NULL)
+				if (_ref != NULL && _allocator != NULL)
 				{
 					_allocator->deallocate(_ref);
 					_ref = NULL;
 				}
-#endif
+
+				_allocator = NULL;
 			}
 
 			/**
@@ -153,9 +148,7 @@ namespace xcore
 				u8 *p = _pool.get(i);
 				if (unlikely(!p))
 					return 0;
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 				_ref[i].set(1);
-#endif
 				return (T *) p;
 			}
 
@@ -180,9 +173,8 @@ namespace xcore
 				u32 i = _pool.c2i((u8 *) p);
 				ASSERTS(i < _pool.size(), "xcore::atomic::queue<T>: Error, invalid index");
 
-#ifdef X_ATOMIC_QUEUE_REF_CNT
-				_ref[i].inc();
-#endif
+				_ref[i].incr();
+
 				bool fp = _fifo.push(i, outCursor);
 				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
 			}
@@ -208,12 +200,11 @@ namespace xcore
 				if (unlikely(!p))
 					return false;
 
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 				// Holding two references. One for the queue itself 
 				// and one for the user.
 				// Same as in push_begin() -> push_commit() transaction.
 				_ref[i].set(2);
-#endif
+
 				*(T *)p = inData;
 
 				bool fp = _fifo.push(i, outCursor);
@@ -252,9 +243,7 @@ namespace xcore
 			void			pop_finish(T *p)
 			{
 				u32 i = _pool.c2i((u8 *) p);
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 				release(i);
-#endif
 			}
 
 			/**
@@ -275,9 +264,8 @@ namespace xcore
 				T *p = (T *) _pool.i2c(i);
 				outData = *p;
 
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 				release(i);
-#endif
+
 				return true;
 			}
 
@@ -287,10 +275,8 @@ namespace xcore
 			*/
 			bool			valid()
 			{
-#ifdef X_ATOMIC_QUEUE_REF_CNT
-				if (ref == NULL)
+				if (_ref == NULL)
 					return false;
-#endif
 				return (_fifo.valid() != 0 && _pool.valid());
 			}
 		};
@@ -317,9 +303,8 @@ namespace xcore
 				return false;
 			}
 
-#ifdef X_ATOMIC_QUEUE_REF_CNT
 			_ref = (atom_s32*)allocator->allocate(sizeof(atom_s32) * size, 4);
-#endif
+
 			if (!valid())
 			{
 				clear();
@@ -333,14 +318,14 @@ namespace xcore
 			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
-#ifdef X_ATOMIC_QUEUE_REF_CNT
+
 			_ref[i].set(1);
-#endif
+
 			return true;
 		}
 
 		template <typename T>
-		bool		queue<T>::init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize)
+		bool		queue<T>::init(fifo::link* fifo_chain, u32 fifo_size, lifo::link* lifo_chain, u32 lifo_size, xbyte *mempool_buf, u32 mempool_buf_size, u32 mempool_buf_esize, atom_s32* mempool_buf_eref)
 		{
 			ASSERT(lifo_size == fifo_size);
 
@@ -362,6 +347,8 @@ namespace xcore
 				return false;
 			}
 
+			_ref = mempool_buf_eref;
+
 			if (!valid())
 			{
 				clear();
@@ -375,6 +362,8 @@ namespace xcore
 			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
+
+			_ref[i].set(1);
 
 			return true;
 		}
