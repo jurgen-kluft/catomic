@@ -315,7 +315,7 @@ namespace xcore
 			u32 i;
 			u8 *p = _pool.get(i);
 
-			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
+			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
 
@@ -359,7 +359,7 @@ namespace xcore
 			u32 i;
 			u8 *p = _pool.get(i);
 
-			ASSERT(p && "xcore::atomic::queue<T>: Error, something is wrong!");
+			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
 
