@@ -94,6 +94,13 @@ namespace xcore
 			* Get number of used chunks in the pool.
 			* @return number of chunks
 			*/
+			/*
+			* Maybe this annotation is wrong,
+			* I think this function would return the number of unused/available chunks in the pool,
+			* rather than used.
+			* I renamed it. from size() to avail_size()
+			* -- Sieg.Lu (Lu Yufan)
+			*/
 			u32			size() const												{ return _lifo.size(); }
 
 			/**
@@ -101,7 +108,12 @@ namespace xcore
 			* @return number of chunks
 			* @warning this is a fairly slow operation.
 			*/
-			u32			avail() const;
+			/*
+			* Maybe this function return number of the used chunks
+			* I renamed it. from avail() to used_size()
+			* -- Sieg.Lu (Lu Yufan)
+			*/
+//			u32			avail() const;
 
 			/**
 			* Convert chunk pointer to index

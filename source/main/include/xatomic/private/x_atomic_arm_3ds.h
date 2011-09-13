@@ -26,7 +26,7 @@ namespace xcore
 
 			inline static u32 sRead(volatile u32 *src)
 			{
-				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::LoadRegEx((s32 volatile*)src);
+				s32 v = __ldrex(src);
 				return v;
 			}
 
@@ -34,7 +34,8 @@ namespace xcore
 			{
 				for (;;)
 				{
-					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s32>::StoreRegEx((s32)v, (s32 volatile*)dest)!=0)
+					s32 old_v = __ldrex(dest);
+					if (__strex(v, dest) == 0)
 						return;
 				}
 			}
@@ -55,7 +56,7 @@ namespace xcore
 
 			inline static u64 sRead64(volatile u64 *src)
 			{
-				u32 v = nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::LoadRegEx((s64 volatile*)src);
+				u64 v = __ldrexd(src);
 				return v;
 			}
 
@@ -63,7 +64,8 @@ namespace xcore
 			{
 				for (;;)
 				{
-					if (nn::fnd::ARMv6::detail::LoadStoreRegEx<s64>::StoreRegEx((s64)v, (s64 volatile*)dest)!=0)
+					u64 old_v = __ldrexd(dest);
+					if (__strexd(v, dest) == 0)
 						return;
 				}
 			}

@@ -14,6 +14,9 @@ UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, fifo);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, stack);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, queue);
 UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, ring);
+UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, shadow);
+UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, mempool);
+UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, mbufpool);
 
 namespace xcore
 {
@@ -31,7 +34,7 @@ namespace xcore
 
 		virtual const char*	name() const
 		{
-			return "xthread unittest test heap allocator";
+			return "xthre unittest test heap allocator";
 		}
 
 		virtual void*		allocate(u32 size, u32 alignment)

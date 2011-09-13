@@ -31,7 +31,8 @@ namespace xcore
 		public:
 			shadow() : _wcount(0)
 			{
-
+				_val[0] = 0;
+				_val[1] = 0;
 			}
 
 			shadow(const T& v)
@@ -101,7 +102,7 @@ namespace xcore
 				_wcount++;
 			}
 
-			void		write(T &v)													{ write(&v); }
+			void		write(const T &v)													{ write(&v); }
 		};
 	}
 } // namespace xcore

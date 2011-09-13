@@ -51,11 +51,11 @@ namespace xcore
 
 			void pool::dump()
 			{
-				x_printf("Available mbufs %u\n",   _head->avail());
-				x_printf("Available buffers %u\n", _data->avail());
+				x_printf("Available mbufs %u\n",   _head->size());
+				x_printf("Available buffers %u\n", _data->size());
 			}
 
-			pool::pool(x_iallocator* allocator, u32 data_size, u32 size, unsigned char factor)
+	 		pool::pool(x_iallocator* allocator, u32 data_size, u32 size, unsigned char factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;

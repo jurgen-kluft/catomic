@@ -167,7 +167,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			}
 		};
 
-		static bool sInitializering(xcore::u32 _size, xcore::atomic::ring<xcore::s32>& _ring, ringData _ring_data)
+		static bool sInitializering(xcore::u32 _size, xcore::atomic::ring<xcore::s32>& _ring, ringData &_ring_data)
 		{
 			_ring_data.items = (xcore::atomic::ring<xcore::s32>::node*)gAtomicAllocator->allocate((_size+1) * sizeof(xcore::atomic::ring<xcore::s32>::node), 4);
 			return _ring.init(_ring_data.items, _size+1);

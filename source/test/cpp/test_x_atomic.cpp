@@ -15,6 +15,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 		UNITTEST_TEST(construct)
 		{
 			aint i;
+			CHECK_EQUAL(0, i.get());
 		}
 
 		UNITTEST_TEST(get)

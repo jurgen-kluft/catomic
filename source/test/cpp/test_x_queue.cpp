@@ -179,7 +179,7 @@ UNITTEST_SUITE_BEGIN(queue)
 			}
 		};
 
-		static bool sInitializeQueue(xcore::u32 _size, xcore::atomic::queue<xcore::s32>& _queue, QueueData _queue_data)
+		static bool sInitializeQueue(xcore::u32 _size, xcore::atomic::queue<xcore::s32>& _queue, QueueData &_queue_data)
 		{
 			_queue_data.fifo_chain = (xcore::atomic::fifo::link*)gAtomicAllocator->allocate((_size+1) * sizeof(xcore::atomic::fifo::link), 4);
 			_queue_data.lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate((_size+1) * sizeof(xcore::atomic::lifo::link), 4);

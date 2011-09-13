@@ -171,7 +171,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			}
 		};
 
-		static bool sInitializeStack(xcore::u32 _size, xcore::atomic::stack<xcore::s32>& _stack, StackData _stack_data)
+		static bool sInitializeStack(xcore::u32 _size, xcore::atomic::stack<xcore::s32>& _stack, StackData &_stack_data)
 		{
 			_stack_data.lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(xcore::atomic::lifo::link), 4);
 			_stack_data.mempool_lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(xcore::atomic::lifo::link), 4);

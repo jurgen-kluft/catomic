@@ -32,7 +32,7 @@ namespace xcore
 			{
 				x_iallocator*	_allocator;
 			public:
-								allocator(x_iallocator* allocator) : _allocator(allocator)	{ }
+				allocator(x_iallocator* allocator) : _allocator(allocator)		{ }
 
 				virtual			~allocator()									{ }
 

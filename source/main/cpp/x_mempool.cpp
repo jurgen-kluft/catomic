@@ -102,9 +102,9 @@ namespace xcore
 			return (_lifo.max_size()>0 && _buffer!=NULL);
 		}
 
-		u32 mempool::avail() const
-		{
-			return _lifo.room();
-		}
+// 		u32 mempool::avail() const
+// 		{
+// 			return _lifo.room();
+// 		}
 	} // namespace atomic
 } // namespace xcore
