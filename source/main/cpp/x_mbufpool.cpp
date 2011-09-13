@@ -55,7 +55,7 @@ namespace xcore
 				x_printf("Available buffers %u\n", _data->size());
 			}
 
-	 		pool::pool(x_iallocator* allocator, u32 data_size, u32 size, unsigned char factor)
+	 		pool::pool(x_iallocator* allocator, u32 data_size, u32 size, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;
@@ -73,7 +73,7 @@ namespace xcore
 				_extern = false;
 			}
 
-			pool::pool(x_iallocator* allocator, u32 data_size, u8 *buf, u32 bsize, unsigned char factor)
+			pool::pool(x_iallocator* allocator, u32 data_size, u8 *buf, u32 bsize, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;
@@ -93,7 +93,7 @@ namespace xcore
 				_extern = false;
 			}
 
-			pool::pool(x_iallocator* allocator, mempool *mp, unsigned char factor)
+			pool::pool(x_iallocator* allocator, mempool *mp, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;
