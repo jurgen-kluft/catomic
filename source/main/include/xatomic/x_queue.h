@@ -257,7 +257,7 @@ namespace xcore
 
 				u32 i, r;
 				if (!_fifo.pop(i, r))
-					return 0;
+					return false;
 
 				release(r);
 
@@ -277,7 +277,7 @@ namespace xcore
 			{
 				if (_ref == NULL)
 					return false;
-				return (_fifo.valid() != 0 && _pool.valid());
+				return (_fifo.valid() && _pool.valid());
 			}
 		};
 
