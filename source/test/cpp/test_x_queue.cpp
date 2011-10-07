@@ -326,26 +326,64 @@ UNITTEST_SUITE_BEGIN(queue)
 		UNITTEST_TEST(size)
 		{
 			xcore::atomic::queue<xcore::s32> f;
-
-			f.init(gAtomicAllocator, 16);
-
-			for(xcore::s32 i = 0; i < 15; i++)
-				f.push(i);
+			CHECK_TRUE(f.init(gAtomicAllocator, 16));
 
 			xcore::s32 what;
-			for(xcore::s32 i = 0; i < 15; i++)
-				f.pop(what);
+			for (xcore::s32 retry=0; retry < 6; ++retry)
+			{
+				xcore::s32 ti = 0;
+				xcore::s32 hi = 0;
 
-			for(xcore::s32 i = 0; i < 15; i++)
-				f.push(i);
+				for(xcore::s32 i = 0; i < retry; i++)
+				{
+					CHECK_TRUE(f.push(hi++));
+				}
 
+				CHECK_EQUAL(retry, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
 
-			CHECK_EQUAL(15, f.size());
-			CHECK_EQUAL(f.max_size(), f.size() + f.room());
+				for(xcore::s32 i = 0; i < 10; i++)
+				{
+					CHECK_TRUE(f.push(hi++));
+				}
+				CHECK_EQUAL(10+retry, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
 
+				for(xcore::s32 i = 0; i < 10; i++)
+				{
+					CHECK_TRUE(f.pop(what));
+					CHECK_EQUAL(ti++, what);
+				}
+				CHECK_EQUAL(retry, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
+
+				for(xcore::s32 i = 0; i < 10; i++)
+				{
+					CHECK_TRUE(f.push(hi++));
+				}
+
+				CHECK_EQUAL(10+retry, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
+
+				for(xcore::s32 i = 0; i < 10; i++)
+				{
+					CHECK_TRUE(f.pop(what));
+					CHECK_EQUAL(ti++, what);
+				}
+
+				CHECK_EQUAL(retry, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
+
+				for(xcore::s32 i = 0; i < retry; i++)
+				{
+					CHECK_TRUE(f.pop(what));
+					CHECK_EQUAL(ti++, what);
+				}
+
+				CHECK_EQUAL(0, f.size());
+				CHECK_EQUAL(f.max_size(), f.size() + f.room());
+			}
 		}
-
-
 	}
 }
 UNITTEST_SUITE_END
