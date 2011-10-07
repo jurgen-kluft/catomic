@@ -323,6 +323,28 @@ UNITTEST_SUITE_BEGIN(queue)
 			_queue_data.release();
 		}
 
+		UNITTEST_TEST(size)
+		{
+			xcore::atomic::queue<xcore::s32> f;
+
+			f.init(gAtomicAllocator, 16);
+
+			for(xcore::s32 i = 0; i < 15; i++)
+				f.push(i);
+
+			xcore::s32 what;
+			for(xcore::s32 i = 0; i < 15; i++)
+				f.pop(what);
+
+			for(xcore::s32 i = 0; i < 15; i++)
+				f.push(i);
+
+
+			CHECK_EQUAL(15, f.size());
+			CHECK_EQUAL(f.max_size(), f.size() + f.room());
+
+		}
+
 
 	}
 }
