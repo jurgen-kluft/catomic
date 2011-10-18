@@ -35,7 +35,19 @@ UNITTEST_SUITE_BEGIN(queue)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 		}
-		
+
+		UNITTEST_TEST(construct3)
+		{
+			xcore::atomic::queue<xcore::s32>* f = new xcore::atomic::queue<xcore::s32>();
+			f->init(gAtomicAllocator, 16);
+			CHECK_TRUE(f->valid());
+
+			CHECK_EQUAL(true, f->empty());
+			CHECK_EQUAL(16, f->max_size());
+			CHECK_EQUAL(16, f->room());
+
+			delete f;
+		}
 
 		UNITTEST_TEST(push_begin)
 		{
