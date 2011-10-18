@@ -7,7 +7,9 @@
 
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
+#include "xbase\x_allocator.h"
 
+#include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_barrier.h"
@@ -34,6 +36,8 @@ namespace xcore
 			bool		_extern;
 
 		public:
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+
 			/**
 			* Constructor.
 			*/
@@ -171,12 +175,6 @@ namespace xcore
 				u32 i = c2i(chunk);
 				put(i);
 			}
-
-			/**
-			* Placement new/delete pair
-			*/
-			void*		operator new(xcore::xsize_t num_bytes, void* mem)			{ return mem; }
-			void		operator delete(void* mem, void* )							{ }
 
 			/**
 			* Validate mempool.

@@ -9,12 +9,14 @@
 
 namespace xcore
 {
+	class x_iallocator;
+
 	namespace atomic
 	{
 		//-------------------------------------------------------------------------------------
 		// atomic library init/exit
 		//-------------------------------------------------------------------------------------
-		extern void		x_Init();
+		extern void		x_Init(x_iallocator* allocator);
 		extern void		x_Exit();
 
 		//-------------------------------------------------------------------------------------

@@ -14,6 +14,8 @@ namespace xcore
 {
 	namespace atomic
 	{
+		extern x_iallocator*	sGetAllocator();
+
 		// The object type needs to support placement new
 		template<typename T>
 		inline T*	allocate_array(x_iallocator* allocator, xcore::u32 num_items)

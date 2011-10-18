@@ -7,6 +7,7 @@
 
 #include "xbase\x_types.h"
 
+#include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_atomic.h"
 #include "xatomic\x_barrier.h"
@@ -81,6 +82,8 @@ namespace xcore
 							: _chain(NULL)
 							, _size(0)
 							, _allocator(NULL)									{ }
+
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 16)
 
 			/**
 			* Destroy lifo.
