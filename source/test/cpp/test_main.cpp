@@ -23,12 +23,10 @@ namespace xcore
 	public:
 		TestHeapAllocator(xcore::x_iallocator* allocator)
 			: mAllocator(allocator)
-			, mNumAllocations(0)
 		{
 		}
 
 		xcore::x_iallocator*	mAllocator;
-		s32						mNumAllocations;
 
 		virtual const char*	name() const
 		{
@@ -37,7 +35,7 @@ namespace xcore
 
 		virtual void*		allocate(u32 size, u32 alignment)
 		{
-			++mNumAllocations;
+			UnitTest::IncNumAllocations();
 			return mAllocator->allocate(size, alignment);
 		}
 
@@ -48,7 +46,7 @@ namespace xcore
 
 		virtual void		deallocate(void* mem)
 		{
-			--mNumAllocations;
+			UnitTest::DecNumAllocations();
 			mAllocator->deallocate(mem);
 		}
 
@@ -62,22 +60,18 @@ class UnitTestAllocator : public UnitTest::Allocator
 {
 public:
 	xcore::x_iallocator*	mAllocator;
-	int						mNumAllocations;
 
 	UnitTestAllocator(xcore::x_iallocator* allocator)
-		: mNumAllocations(0)
 	{
 		mAllocator = allocator;
 	}
 
 	virtual void*	Allocate(int size)
 	{
-		++mNumAllocations;
 		return mAllocator->allocate(size, 4);
 	}
 	virtual void	Deallocate(void* ptr)
 	{
-		--mNumAllocations;
 		mAllocator->deallocate(ptr);
 	}
 };
@@ -97,17 +91,6 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 	xcore::atomic::x_Init(gAtomicAllocator);
 	int r = UNITTEST_SUITE_RUN(reporter, xAtomicUnitTest);
 	xcore::atomic::x_Exit();
-
-	if (unittestAllocator.mNumAllocations!=0)
-	{
-		reporter.reportFailure(__FILE__, __LINE__, "xunittest", "memory leaks detected!");
-		r = -1;
-	}
-	if (threadHeapAllocator.mNumAllocations!=0)
-	{
-		reporter.reportFailure(__FILE__, __LINE__, "xatomic::heap", "memory leaks detected!");
-		r = -1;
-	}
 
 	gAtomicAllocator = NULL;
 
