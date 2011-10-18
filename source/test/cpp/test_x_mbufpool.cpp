@@ -17,7 +17,8 @@ using namespace mbuf;
 
 UNITTEST_SUITE_BEGIN(mbufpool)
 {
-	inline s32 alignUp(s32 integer, s32 alignment = 4) {
+	inline xcore::s32 alignUp(xcore::s32 integer, xcore::s32 alignment = 4) 
+	{
 		return ((integer + (alignment-1)) & (~(alignment-1)));
 	}
 
