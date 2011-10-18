@@ -4,19 +4,17 @@
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_atomic.h"
-#include "xatomic\x_cpu.h"
 
-UNITTEST_SUITE_LIST(xMultiCoreUnitTest);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, cpu_info);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, atomic);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, lifo);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, fifo);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, stack);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, queue);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, ring);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, shadow);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, mempool);
-UNITTEST_SUITE_DECLARE(xMultiCoreUnitTest, mbufpool);
+UNITTEST_SUITE_LIST(xAtomicUnitTest);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, atomic);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, lifo);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, fifo);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, stack);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, queue);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, ring);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, shadow);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mempool);
+UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mbufpool);
 
 namespace xcore
 {
@@ -34,7 +32,7 @@ namespace xcore
 
 		virtual const char*	name() const
 		{
-			return "xthre unittest test heap allocator";
+			return "xthread unittest test heap allocator";
 		}
 
 		virtual void*		allocate(u32 size, u32 alignment)
@@ -96,8 +94,8 @@ bool gRunUnitTest(UnitTest::TestReporter& reporter)
 	xcore::TestHeapAllocator threadHeapAllocator(gSystemAllocator);
 	gAtomicAllocator = &threadHeapAllocator;
 	
-	xcore::atomic::x_Init();
-	int r = UNITTEST_SUITE_RUN(reporter, xMultiCoreUnitTest);
+	xcore::atomic::x_Init(gAtomicAllocator);
+	int r = UNITTEST_SUITE_RUN(reporter, xAtomicUnitTest);
 	xcore::atomic::x_Exit();
 
 	if (unittestAllocator.mNumAllocations!=0)

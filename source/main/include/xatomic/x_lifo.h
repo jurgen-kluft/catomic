@@ -6,7 +6,9 @@
 #endif
 
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
 
+#include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_atomic.h"
 #include "xatomic\x_barrier.h"
@@ -37,13 +39,20 @@ namespace xcore
 		class lifo 
 		{
 		public:
-			struct link 
+			struct link_t
 			{
 				volatile u32	next;
 			};
 
+			struct link : public link_t
+			{
+				XCORE_CLASS_PLACEMENT_NEW_DELETE
+			};
+
 		protected:
 			typedef		volatile u32	vu32;
+
+
 			union state
 			{
 				volatile u64 next_salt64;
@@ -83,6 +92,7 @@ namespace xcore
 			}
 
 		public:
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 			/**
 			* Create empty lifo. It can be initialized later by calling init().

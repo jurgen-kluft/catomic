@@ -7,6 +7,7 @@
 
 #include "xbase\x_types.h"
 #include "xbase\x_debug.h"
+#include "xbase\x_allocator.h"
 
 #include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
@@ -42,6 +43,8 @@ namespace xcore
 			}
 
 		public:
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+
 			/**
 			* Constructor.
 			*/

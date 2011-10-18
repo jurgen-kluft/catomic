@@ -6,7 +6,9 @@
 #endif
 
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
 
+#include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_lifo.h"
 #include "xatomic\x_mempool.h"
@@ -28,6 +30,8 @@ namespace xcore
 			lifo		_lifo;
 
 		public:
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+
 						stack() {}
 
 			/**

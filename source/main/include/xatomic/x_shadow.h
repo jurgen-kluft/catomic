@@ -6,7 +6,9 @@
 #endif
 
 #include "xbase\x_types.h"
+#include "xbase\x_allocator.h"
 
+#include "xatomic\private\x_allocator.h"
 #include "xatomic\x_barrier.h"
 
 namespace xcore
@@ -29,6 +31,8 @@ namespace xcore
 			T			_val[2];
 
 		public:
+			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+
 			shadow() : _wcount(0)
 			{
 				_val[0] = 0;
