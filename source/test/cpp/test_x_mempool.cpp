@@ -27,7 +27,8 @@ using namespace atomic;
 UNITTEST_SUITE_BEGIN(mempool)
 {
 	// memory alignment formula
-	inline s32 alignUp(s32 integer, s32 alignment = 4) {
+	inline xcore::s32 alignUp(xcore::s32 integer, xcore::s32 alignment = 4)
+	{
 		return ((integer + (alignment-1)) & (~(alignment-1)));
 	}
 
@@ -67,7 +68,7 @@ UNITTEST_SUITE_BEGIN(mempool)
 		UNITTEST_TEST(init3)
 		{
 			mempool mp;
-			u32 lifo_chain_size = 0x10;
+			xcore::u32 lifo_chain_size = 0x10;
 			xbyte* p = (xbyte*)gAtomicAllocator->allocate(sizeof(xbyte), 4);
 			xcore::atomic::lifo::link* lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(lifo_chain_size * sizeof(xcore::atomic::lifo::link), 4);
 			
@@ -107,7 +108,8 @@ UNITTEST_SUITE_BEGIN(mempool)
 			// test init end
 
 			// get the free chunk from the mp;
-			for (int i = 0; i < T; i++) {
+			for (int i = 0; i < T; i++) 
+			{
 				chunk[i] = mp.get();
 				CHECK_TRUE(chunk[i] != 0);
 			}
@@ -116,8 +118,10 @@ UNITTEST_SUITE_BEGIN(mempool)
 				*chunk[i] = i;
 			}
 			// put the chunks back to the mp
-			for (int i = 0; i < T; i++) {
-				u32 index = 0xffffffff;
+			for (int i = 0; i < T; i++) 
+			
+			{
+				xcore::u32 index = 0xffffffff;
 				mp.put(chunk[i], index);
 				CHECK_EQUAL(i, index);
 			}
@@ -136,12 +140,14 @@ UNITTEST_SUITE_BEGIN(mempool)
 			CHECK_EQUAL(mp.max_size(), mp.size());
 
 			xbyte* chunk[21];
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 20; i++) 
+			{
 				chunk[i] = mp.get();
 				*chunk[i] = (xbyte)i;
 				CHECK_EQUAL(mp.max_size() - (i + 1), mp.size());
 			}
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 20; i++) 
+			{
 				mp.put(chunk[i]);
 			}
 			CHECK_EQUAL(mp.max_size(), mp.size());
@@ -154,12 +160,14 @@ UNITTEST_SUITE_BEGIN(mempool)
 			CHECK_TRUE(mp.size() != 0);
 
 			xbyte* chunk[21];
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 20; i++) 
+			{
 				chunk[i] = mp.get();
 				*chunk[i] = (xbyte)i;
 			}
 
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 20; i++)
+			{
 				CHECK_EQUAL(i, mp.c2i(chunk[i]));
 				CHECK_EQUAL(chunk[i], mp.i2c(i));
 			}
