@@ -13,15 +13,13 @@ namespace xcore
 
 		bool fifo::init(x_iallocator* allocator, u32 size)
 		{
-			_size = 0;
-
-			size += 1;
-			_chain = (link*)allocator->allocate(sizeof(link) * size, 4);
+			_max_size = 0;
+			_chain = (link*)allocator->allocate(sizeof(link) * (size + 1), 4);
 			if (_chain!=NULL)
 			{
-				_size = size - 1;
+				_max_size = size;
 				_allocator = allocator;
-				reset();
+				reset(size);
 				return true;
 			}
 			return false;
@@ -29,13 +27,12 @@ namespace xcore
 
 		bool fifo::init(link* pChain, u32 uSize)
 		{
-			_size = 0;
-
+			_max_size = 0;
 			_allocator = NULL;
 			_chain = pChain;
 			if (_chain!=NULL)
 			{
-				_size = uSize - 1;
+				_max_size = uSize - 1;
 				reset();
 				return true;
 			}
@@ -50,12 +47,12 @@ namespace xcore
 				_allocator = NULL;
 			}
 			_chain = NULL;
-			_size = 0;
+			_max_size = 0;
 		}
 
 		void fifo::reset(u32 d)
 		{
-			for (u32 i=0; i <= _size; i++)
+			for (u32 i=0; i <= _max_size; i++)
 				_chain[i].next = UNUSED;
 
 			// Link in the dummy node
@@ -71,14 +68,14 @@ namespace xcore
 		void fifo::fill()
 		{
 			u32 i;
-			for (i=0; i < _size; i++)
+			for (i=0; i < _max_size; i++)
 				_chain[i].next = i + 1;
 
 			_chain[i].next = LAST;
 			_tail.next_salt32.next = i; 
 			_head.next_salt32.next = 0;
 
-			_tail.next_salt32.salt = _size;
+			_tail.next_salt32.salt = _max_size;
 			_head.next_salt32.salt = 0;
 		}
 

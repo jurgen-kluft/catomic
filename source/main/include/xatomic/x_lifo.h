@@ -6,6 +6,7 @@
 #endif
 
 #include "xbase\x_types.h"
+#include "xbase\x_debug.h"
 #include "xbase\x_allocator.h"
 
 #include "xatomic\private\x_allocator.h"
@@ -277,7 +278,8 @@ namespace xcore
 
 			// Clear 'next' index so that push() can check for double push. 
 			// Thread safe here because caller now owns the element.
-			_chain[h.next_salt32.next].next = UNUSED;
+			ASSERT(i < _max_size);
+			_chain[i].next = UNUSED;
 
 			return true;
 		}

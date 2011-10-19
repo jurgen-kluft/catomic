@@ -206,6 +206,7 @@ namespace xcore
 				// Holding two references. One for the queue itself 
 				// and one for the user.
 				// Same as in push_begin() -> push_commit() transaction.
+				ASSERTS(i < _pool.max_size(), "xcore::atomic::queue<T>: Error, invalid index");
 				_ref[i].set(2);
 
 				*(T *)p = inData;
@@ -306,7 +307,7 @@ namespace xcore
 				return false;
 			}
 
-			_ref = (atom_s32*)allocator->allocate(sizeof(atom_s32) * size, 4);
+			_ref = (atom_s32*)allocator->allocate(sizeof(atom_s32) * (size + 1), 4);
 
 			if (!valid())
 			{
@@ -321,9 +322,7 @@ namespace xcore
 			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
-
 			_ref[i].set(1);
-
 			return true;
 		}
 
@@ -365,9 +364,7 @@ namespace xcore
 			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
 			_fifo.reset(i);
-
 			_ref[i].set(1);
-
 			return true;
 		}
 

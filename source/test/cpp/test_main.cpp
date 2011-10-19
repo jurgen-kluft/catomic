@@ -21,17 +21,9 @@ namespace xcore
 	class TestHeapAllocator : public x_iallocator
 	{
 	public:
-		TestHeapAllocator(xcore::x_iallocator* allocator)
-			: mAllocator(allocator)
-		{
-		}
+							TestHeapAllocator(xcore::x_iallocator* allocator) : mAllocator(allocator) { 		}
 
-		xcore::x_iallocator*	mAllocator;
-
-		virtual const char*	name() const
-		{
-			return "xthread unittest test heap allocator";
-		}
+		virtual const char*	name() const	{ return "xthread unittest test heap allocator"; }
 
 		virtual void*		allocate(u32 size, u32 alignment)
 		{
@@ -50,30 +42,20 @@ namespace xcore
 			mAllocator->deallocate(mem);
 		}
 
-		virtual void		release()
-		{
-		}
+		virtual void		release()		{ }
+	private:
+		xcore::x_iallocator*	mAllocator;
 	};
 }
 
 class UnitTestAllocator : public UnitTest::Allocator
 {
 public:
+					UnitTestAllocator(xcore::x_iallocator* allocator) : mAllocator(allocator) {}
+	virtual void*	Allocate(int size)			{ return mAllocator->allocate(size, 4);}
+	virtual void	Deallocate(void* ptr)		{ mAllocator->deallocate(ptr); }
+private:
 	xcore::x_iallocator*	mAllocator;
-
-	UnitTestAllocator(xcore::x_iallocator* allocator)
-	{
-		mAllocator = allocator;
-	}
-
-	virtual void*	Allocate(int size)
-	{
-		return mAllocator->allocate(size, 4);
-	}
-	virtual void	Deallocate(void* ptr)
-	{
-		mAllocator->deallocate(ptr);
-	}
 };
 
 xcore::x_iallocator* gSystemAllocator = NULL;

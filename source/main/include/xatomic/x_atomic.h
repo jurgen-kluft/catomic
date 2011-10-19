@@ -58,41 +58,41 @@ namespace xcore
 		class atom_int_type
 		{
 		public:
-			typedef			volatile T			vo_int;
+			typedef		volatile T			vo_int;
 
 		protected:
-			vo_int			_data;
+			vo_int		_data;
 
 		public:
-			T				get() const;
-			void			set(T v);
+			T			get() const;
+			void		set(T v);
 
-			T				swap(T i);
+			T			swap(T i);
 
-			void			incr();
-			void			decr();
+			void		incr();
+			void		decr();
 
-			bool			test_decr();
-			bool			decr_test();
+			bool		test_decr();
+			bool		decr_test();
 
-			void			add(T i);
-			void			sub(T i);
+			void		add(T i);
+			void		sub(T i);
 
-			void			bit_or(T i);
-			void			bit_xor(T i);
-			void			bit_and(T i);
+			void		bit_or(T i);
+			void		bit_xor(T i);
+			void		bit_and(T i);
 
-			void			bit_set(u32 n);
-			void			bit_clr(u32 n);
-			void			bit_chg(u32 n);
+			void		bit_set(u32 n);
+			void		bit_clr(u32 n);
+			void		bit_chg(u32 n);
 
-			bool			bit_test_set(u32 n);
-			bool			bit_test_clr(u32 n);
-			bool			bit_test_chg(u32 n);
+			bool		bit_test_set(u32 n);
+			bool		bit_test_clr(u32 n);
+			bool		bit_test_chg(u32 n);
 
-							atom_int_type();
-							atom_int_type(const atom_int_type& i);
-							atom_int_type(T i);
+						atom_int_type();
+						atom_int_type(const atom_int_type& i);
+						atom_int_type(T i);
 		};
 	}
 }

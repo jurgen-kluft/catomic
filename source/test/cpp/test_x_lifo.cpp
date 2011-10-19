@@ -115,6 +115,20 @@ UNITTEST_SUITE_BEGIN(lifo)
 				CHECK_EQUAL(true, f.empty());
 			}
 		}
+
+		UNITTEST_TEST(push_full)
+		{
+			xcore::atomic::lifo f;
+			f.init(gAtomicAllocator, 4);
+
+			CHECK_EQUAL(true, f.empty());
+			CHECK_EQUAL(4, f.room());
+
+			CHECK_TRUE(f.push(0));
+			CHECK_TRUE(f.push(1));
+			CHECK_TRUE(f.push(2));
+			CHECK_TRUE(f.push(3));
+		}
 	}
 }
 UNITTEST_SUITE_END

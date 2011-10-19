@@ -71,7 +71,7 @@ namespace xcore
 			state		_head;
 			state		_tail;
 			link*		_chain;
-			u32			_size;
+			u32			_max_size;
 			x_iallocator* _allocator;
 
 		public:
@@ -80,7 +80,7 @@ namespace xcore
 			*/
 						fifo() 
 							: _chain(NULL)
-							, _size(0)
+							, _max_size(0)
 							, _allocator(NULL)									{ }
 
 			XCORE_CLASS_NEW_DELETE(sGetAllocator, 16)
@@ -123,7 +123,7 @@ namespace xcore
 			*/
 			u32			max_size() const
 			{
-				return _size;
+				return _max_size;
 			}
 
 			/**
@@ -136,9 +136,9 @@ namespace xcore
 				u32 const t = _tail.next_salt32.salt;
 
 				u32 used = (h < t) ? (t - h) : (h - t);
-				if (used > _size)
-					used = _size;
-				return _size - used;
+				if (used > _max_size)
+					used = _max_size;
+				return _max_size - used;
 			}
 
 			/**
@@ -151,8 +151,8 @@ namespace xcore
 				u32 const t = _tail.next_salt32.salt;
 
 				u32 used = (h < t) ? (t - h) : (h - t);
-				if (used > _size)
-					used = _size;
+				if (used > _max_size)
+					used = _max_size;
 				return used;
 			}
 
@@ -230,7 +230,7 @@ namespace xcore
 			u32 n;
 			state t;
 
-			if (i > _size)
+			if (i > _max_size)
 				return false;
 
 			// Double push trap.

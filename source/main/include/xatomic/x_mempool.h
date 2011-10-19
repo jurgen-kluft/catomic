@@ -101,13 +101,6 @@ namespace xcore
 			u32			size() const												{ return _lifo.size(); }
 
 			/**
-			* Get number of available chunks.
-			* @return number of chunks
-			* @warning this is a fairly slow operation.
-			*/
-//			u32			avail() const;
-
-			/**
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/

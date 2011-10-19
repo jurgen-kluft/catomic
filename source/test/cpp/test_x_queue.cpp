@@ -167,7 +167,68 @@ UNITTEST_SUITE_BEGIN(queue)
 			CHECK_FALSE(f.valid());
 		}
 
+		UNITTEST_TEST(push_full)
+		{
+			xcore::atomic::queue<xcore::s32> f;
+			f.init(gAtomicAllocator, 4);
+			CHECK_TRUE(f.valid());
 
+			CHECK_EQUAL(true, f.empty());
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(4, f.room());
+
+			CHECK_TRUE(f.push(11));
+			CHECK_TRUE(f.push(22));
+			CHECK_TRUE(f.push(33));
+			CHECK_TRUE(f.push(44));
+			
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(0, f.room());
+
+			for (xcore::s32 i=0; i<10; ++i)
+				CHECK_FALSE(f.push(i));	// Should not push
+
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(0, f.room());
+		}
+
+		UNITTEST_TEST(pop_past_empty)
+		{
+			xcore::atomic::queue<xcore::s32> f;
+			f.init(gAtomicAllocator, 4);
+			CHECK_TRUE(f.valid());
+
+			CHECK_EQUAL(true, f.empty());
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(4, f.room());
+
+			CHECK_TRUE(f.push(11));
+			CHECK_TRUE(f.push(22));
+			CHECK_TRUE(f.push(33));
+			CHECK_TRUE(f.push(44));
+
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(0, f.room());
+
+			xcore::s32 i;
+			CHECK_TRUE(f.pop(i));	// Should pop
+			CHECK_EQUAL(11, i);
+			CHECK_TRUE(f.pop(i));	// Should pop
+			CHECK_EQUAL(22, i);
+			CHECK_TRUE(f.pop(i));	// Should pop
+			CHECK_EQUAL(33, i);
+			CHECK_TRUE(f.pop(i));	// Should pop
+			CHECK_EQUAL(44, i);
+
+			CHECK_EQUAL(true, f.empty());
+			CHECK_EQUAL(4, f.room());
+
+			for (xcore::s32 i=0; i<10; ++i)
+				CHECK_FALSE(f.pop(i));	// Should not pop
+
+			CHECK_EQUAL(4, f.max_size());
+			CHECK_EQUAL(4, f.room());
+		}
 
 		struct QueueData
 		{

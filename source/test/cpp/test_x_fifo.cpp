@@ -93,6 +93,17 @@ UNITTEST_SUITE_BEGIN(fifo)
 			}
 		}
 
+		UNITTEST_TEST(push_full)
+		{
+			xcore::atomic::fifo f;
+			CHECK_TRUE(f.init(gAtomicAllocator, 4))
+
+			CHECK_TRUE(f.push(0));
+			CHECK_TRUE(f.push(1));
+			CHECK_TRUE(f.push(2));
+			CHECK_TRUE(f.push(3));
+		}
+
 		UNITTEST_TEST(cursor)
 		{
 			xcore::u32 i, r;
