@@ -18,7 +18,7 @@ namespace xcore
 
 	namespace atomic
 	{
-		/*
+		/**
 		* FIFO implementation is based on the
 		* "Lock-Free Techniques for Concurrent Access to Shared Objects"
 		* paper by Dominique Fober, Yann Orlarey and Stephane Letz.
@@ -53,8 +53,8 @@ namespace xcore
 				struct
 				{
 #ifdef X_LITTLE_ENDIAN
-					volatile u32 next;		// low u32, little endian will swap into the low word of a u64
-					volatile u32 salt;		// high u32
+					volatile u32 next;		///< low u32, little endian will swap into the low word of a u64
+					volatile u32 salt;		///< high u32
 #else
 					volatile u32 salt;
 					volatile u32 next;

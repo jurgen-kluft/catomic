@@ -7,10 +7,14 @@
 
 namespace xcore
 {
-	// We're using inline function here instead of #defines to avoid name space clashes.
+	/**
+	 * We're using inline function here instead of #defines to avoid name space clashes.
+	 */
 	namespace barrier
 	{
-		// Memory barriers
+		/**
+		 * Memory barriers
+		 */
 		inline void barrier::comp()		{ nn::os::ARM::InstructionMemoryBarrier(); }
 
 		inline void barrier::memr()		{ nn::os::ARM::DataSynchronizationBarrier(); }

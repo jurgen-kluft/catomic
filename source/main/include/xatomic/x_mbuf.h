@@ -106,9 +106,9 @@ namespace xcore
 			*/ 
 			struct shared 
 			{
-				u64				timestamp;					/** Timestamp */
-				u32				context;					/** Context. Owned by exclusive head owner. */
-				atom_s32		refcnt;						/** Data refcount. Used for cloning */
+				u64				timestamp;					///< Timestamp
+				u32				context;					///< Context. Owned by exclusive head owner.
+				atom_s32		refcnt;						///< Data refcount. Used for cloning
 
 				/**
 				* Placement new/delete pair
@@ -128,15 +128,15 @@ namespace xcore
 			protected:
 				friend class allocator;
 
-				u8*				_buf;					// Pointer to the memory buffer
-				shared*			_shared;				// Pointer to the shared area
-				atom_s32		_refcnt;				// The number of references to this object
-				u32				_size;					// Size of the buffer
-				u32				_data;					// Data offset
-				u32				_len;					// Data length
-				u16				_flags;					// Misc flags
-				u16				_tag;					// A tag. Used for tracking purposes.
-				allocator*		_allocator;				// Allocator used in creating this object and to be used when cloning and copying this object
+				u8*				_buf;					///< Pointer to the memory buffer
+				shared*			_shared;				///< Pointer to the shared area
+				atom_s32		_refcnt;				///< The number of references to this object
+				u32				_size;					///< Size of the buffer
+				u32				_data;					///< Data offset
+				u32				_len;					///< Data length
+				u16				_flags;					///< Misc flags
+				u16				_tag;					///< A tag. Used for tracking purposes.
+				allocator*		_allocator;				///< Allocator used in creating this object and to be used when cloning and copying this object
 
 				/**
 				* Constructor function. Needs to be private since it should not be used.

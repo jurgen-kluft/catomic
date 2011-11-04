@@ -15,7 +15,9 @@
 
 namespace xcore
 {
-	// We're using inline function here instead of #defines to avoid name space clashes.
+	/**
+	 * We're using inline function here instead of #defines to avoid name space clashes.
+	 */
 	namespace barrier
 	{
 		void		comp();
