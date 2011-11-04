@@ -13,23 +13,23 @@ namespace xcore
 
 	namespace atomic
 	{
-		//-------------------------------------------------------------------------------------
-		// atomic library init/exit
-		//-------------------------------------------------------------------------------------
+		/**
+		 * atomic library init/exit
+		 */
 		extern void		x_Init(x_iallocator* allocator);
 		extern void		x_Exit();
 
-		//-------------------------------------------------------------------------------------
-		// atomic integers, forward declare
-		//-------------------------------------------------------------------------------------
+		/**
+		 * atomic integers, forward declare
+		 */
 		class atom_s32;
 		class atom_u32;
 		class atom_s64;
 		class atom_u64;
 
-		//-------------------------------------------------------------------------------------
-		// atomic read32/write32, read64/write64, and cas32/cas64 functions
-		//-------------------------------------------------------------------------------------
+		/**
+		 * atomic read32/write32, read64/write64, and cas32/cas64 functions
+		 */
 		static s32		read_s32(s32 volatile* p);
 		static void		write_s32(s32 volatile* p, s32 v);
 		static bool		cas_s32(s32 volatile* mem, s32 old, s32 n);
@@ -51,9 +51,9 @@ namespace xcore
 		static bool		cas_u64(u64 volatile* mem, u32 ol, u32 oh, u32 nl, u32 nh);
 
 
-		//-------------------------------------------------------------------------------------
-		// atomic integer public base
-		//-------------------------------------------------------------------------------------
+		/**
+		 * atomic integer public base
+		 */
 		template<class T>
 		class atom_int_type
 		{

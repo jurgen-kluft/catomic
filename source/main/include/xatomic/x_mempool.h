@@ -78,7 +78,6 @@ namespace xcore
 			* Exit.
 			* Allocates data for fifo but memory pool is supplied by user
 			* Use 'size() != 0' to check whether creation was successful or not.
-
 			*/
 			void		clear();
 

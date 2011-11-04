@@ -19,7 +19,7 @@ namespace xcore
 
 	namespace atomic
 	{
-		/*
+		/**
 		* LIFO implementation is based on the
 		* "Lock-Free Techniques for Concurrent Access to Shared Objects"
 		* paper by Dominique Fober, Yann Orlarey and Stephane Letz.
@@ -220,8 +220,10 @@ namespace xcore
 			*/
 			bool		ipop(u32 &i);
 
-			// Emulates fifo::pop() interface.
-			// Used in the unit-test
+			/**
+			 * Emulates fifo::pop() interface.
+			 * Used in the unit-test
+			 */
 			bool		pop(u32 &i, u32 &r)
 			{
 				bool b = pop(i);
