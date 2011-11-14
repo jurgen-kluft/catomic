@@ -34,8 +34,8 @@ namespace xcore
 				mempool*		_data;
 				shared*			_shared;
 
-				// External buffer
-				bool			_extern;
+				
+				bool			_extern;   ///< External buffer
 
 			public:
 				/**

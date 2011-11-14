@@ -7,16 +7,18 @@
 #include "xbase\x_types.h"
 #include "xbase\x_allocator.h"
 
-//==============================================================================
-// xatomic namespace
-//==============================================================================
+/**
+ * xatomic namespace
+ */
 namespace xcore
 {
 	namespace atomic
 	{
 		extern x_iallocator*	sGetAllocator();
 
-		// The object type needs to support placement new
+		/**
+		 * The object type needs to support placement new
+		 */
 		template<typename T>
 		inline T*	allocate_array(x_iallocator* allocator, xcore::u32 num_items)
 		{
@@ -86,4 +88,4 @@ namespace xcore
 //==============================================================================
 // END
 //==============================================================================
-#endif    /// __XMULTICORE_ALLOCATION_PRIVATE_H__
+#endif    ///< __XMULTICORE_ALLOCATION_PRIVATE_H__
