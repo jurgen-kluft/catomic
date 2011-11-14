@@ -61,7 +61,7 @@ namespace xcore
 			node*		_next;
 			node*		_prev;
 
-			/*
+			/**
 			* Insert a new entry between two known consecutive entries. 
 			*
 			* This is only for internal list manipulation where we know
@@ -75,7 +75,7 @@ namespace xcore
 				_prev->_next = _node;
 			}
 
-			/*
+			/**
 			* Delete a list entry by making the prev/next entries
 			* point to each other.
 			*
@@ -193,11 +193,13 @@ namespace xcore
 				if (head->empty())
 					return;
 
-				// See the picture at the top to understand how this works.
-				// Basically we disconnect first and last node for the new
-				// list and reconnect them to 'this' list.
-				// Requires four pointer manipulations, just like inserting 
-				// a node into the list.
+				/**
+				 * See the picture at the top to understand how this works.
+				 * Basically we disconnect first and last node for the new
+				 * list and reconnect them to 'this' list.
+				 * Requires four pointer manipulations, just like inserting 
+				 * a node into the list.
+                 */
 				node *first  = head->_next;
 				node *last   = head->_prev;
 
@@ -313,7 +315,9 @@ namespace xcore
 			T*			_node;
 		};
 
-		// This can only be implemented after iterator is defined
+		/**
+		 * This can only be implemented after iterator is defined
+		 */
 		inline u32 head::count() const
 		{
 			u32 c = 0;
@@ -325,4 +329,4 @@ namespace xcore
 	} // namespace dlist
 } // namespace xcore
 
-#endif // __XMULTICORE_DLIST_H__
+#endif ///< __XMULTICORE_DLIST_H__

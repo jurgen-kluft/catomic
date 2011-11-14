@@ -6,10 +6,14 @@
 
 namespace xcore
 {
-	// We're using inline function here instead of #defines to avoid name space clashes.
+	/**
+	 * We're using inline function here instead of #defines to avoid name space clashes.
+	 */
 	namespace barrier
 	{
-		// Memory barriers
+		/**
+		 * Memory barriers
+		 */
 		inline void barrier::comp()		{ ; }
 
 		inline void barrier::memr()		{ __builtin_fence(); }

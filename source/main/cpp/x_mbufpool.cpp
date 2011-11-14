@@ -22,7 +22,9 @@ namespace xcore
 				_head->put((u8 *) h);
 			}
 
-			// Hack to get access to private members
+			/**
+			 * Hack to get access to private members
+			 */
 			class MB : public head
 			{
 				friend class pool;
