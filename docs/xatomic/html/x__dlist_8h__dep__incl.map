@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" href="$x__mbuf_8h.html" title="F:/Packages/xatomic/source/main/include/xatomic/x_mbuf.h" alt="" coords="437,80,813,107"/>
-<area shape="rect" href="$x__mbuf_8cpp.html" title="F:/Packages/xatomic/source/main/cpp/x_mbuf.cpp" alt="" coords="5,155,323,181"/>
-<area shape="rect" href="$x__mbufqueue_8cpp.html" title="F:/Packages/xatomic/source/main/cpp/x_mbufqueue.cpp" alt="" coords="284,229,639,256"/>
-<area shape="rect" href="$x__mbufqueue_8h.html" title="F:/Packages/xatomic/source/main/include/xatomic/private/x_mbufqueue.h" alt="" coords="397,155,853,181"/>
-<area shape="rect" href="$x__mbufpool_8h.html" title="F:/Packages/xatomic/source/main/include/xatomic/x_mbufpool.h" alt="" coords="877,155,1277,181"/>
-<area shape="rect" href="$test__x__mbufpool_8cpp.html" title="F:/Packages/xatomic/source/test/cpp/test_x_mbufpool.cpp" alt="" coords="1132,229,1497,256"/>
-<area shape="rect" href="$x__mbufpool_8cpp.html" title="F:/Packages/xatomic/source/main/cpp/x_mbufpool.cpp" alt="" coords="764,229,1108,256"/>
-</map>
