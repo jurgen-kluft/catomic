@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" href="$x__allocator_8h.html" title="xatomic\\private\\x_allocator.h" alt="" coords="600,155,789,181"/>
-<area shape="rect" href="$x__compiler_8h.html" title="xatomic\\private\\x_compiler.h" alt="" coords="24,229,213,256"/>
-<area shape="rect" href="$x__lifo_8h.html" title="xatomic\\x_lifo.h" alt="" coords="381,80,493,107"/>
-<area shape="rect" href="$x__barrier_8h.html" title="xatomic\\x_barrier.h" alt="" coords="131,155,264,181"/>
-<area shape="rect" href="$x__atomic_8h.html" title="xatomic\\x_atomic.h" alt="" coords="339,155,475,181"/>
-</map>

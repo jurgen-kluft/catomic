@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" href="$classxcore_1_1atomic_1_1mbuf_1_1head.html" title="xcore::atomic::mbuf::head" alt="" coords="8,80,181,107"/>
-<area shape="rect" href="$classxcore_1_1dlist_1_1head.html" title="xcore::dlist::head" alt="" coords="217,80,340,107"/>
-<area shape="rect" href="$classxcore_1_1atomic_1_1mbuf_1_1_m_b.html" title="xcore::atomic::mbuf::MB" alt="" coords="5,155,171,181"/>
-<area shape="rect" href="$classxcore_1_1atomic_1_1mbuf_1_1queue.html" title="xcore::atomic::mbuf::queue" alt="" coords="195,155,376,181"/>
-</map>

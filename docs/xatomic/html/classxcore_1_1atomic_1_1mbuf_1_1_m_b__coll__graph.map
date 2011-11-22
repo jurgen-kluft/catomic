@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" href="$classxcore_1_1atomic_1_1mbuf_1_1head.html" title="xcore::atomic::mbuf::head" alt="" coords="855,140,1028,167"/>
-<area shape="rect" href="$classxcore_1_1dlist_1_1node.html" title="xcore::dlist::node" alt="" coords="584,61,707,88"/>
-<area shape="rect" href="$classxcore_1_1atomic_1_1atom__s32.html" title="xcore::atomic::atom_s32" alt="" coords="295,139,460,165"/>
-<area shape="rect" href="$structxcore_1_1atomic_1_1mbuf_1_1shared.html" title="xcore::atomic::mbuf::shared" alt="" coords="553,176,737,203"/>
-<area shape="rect" href="$classxcore_1_1atomic_1_1atom__int__type.html" title="xcore::atomic::atom_int_type\&lt; s32 \&gt;" alt="" coords="7,139,241,165"/>
-<area shape="rect" href="$classxcore_1_1atomic_1_1mbuf_1_1allocator.html" title="xcore::atomic::mbuf::allocator" alt="" coords="548,227,743,253"/>
-</map>
