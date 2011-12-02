@@ -25,23 +25,6 @@ namespace xcore
 		template <typename T>
 		class queue
 		{
-		private:
-			x_iallocator*	_allocator;
-			mempool			_pool;
-			fifo			_fifo;
-			atom_s32*		_ref;
-
-			/**
-			* Put an item back into the pool.
-			* Item must have been obtained via get() or pop().
-			* @param[in] i item index
-			*/
-			void			release(u32 i)
-			{
-				if (!_ref[i].decr_test())
-					_pool.put(i);
-			}
-
 		public:
 			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
@@ -49,8 +32,8 @@ namespace xcore
 			* Constructor.
 			*/
 			queue()
-				: _allocator(NULL)
-				, _ref(NULL)
+				: mAllocator(NULL)
+				, mRef(NULL)
 			{
 			}
 
@@ -73,16 +56,16 @@ namespace xcore
 			*/
 			void		clear()
 			{
-				_pool.clear();
-				_fifo.clear();
+				mPool.clear();
+				mFifo.clear();
 
-				if (_ref != NULL && _allocator != NULL)
+				if (mRef != NULL && mAllocator != NULL)
 				{
-					_allocator->deallocate(_ref);
-					_ref = NULL;
+					mAllocator->deallocate(mRef);
+					mRef = NULL;
 				}
 
-				_allocator = NULL;
+				mAllocator = NULL;
 			}
 
 			/**
@@ -99,7 +82,7 @@ namespace xcore
 			*/
 			u32				max_size() const
 			{
-				return _fifo.max_size(); 
+				return mFifo.max_size(); 
 			}
 
 			/**
@@ -108,7 +91,7 @@ namespace xcore
 			*/
 			bool			empty() const
 			{
-				return _fifo.empty(); 
+				return mFifo.empty(); 
 			}
 
 			/**
@@ -117,7 +100,7 @@ namespace xcore
 			*/
 			u32				room() const
 			{
-				return _fifo.room(); 
+				return mFifo.room(); 
 			}
 
 			/**
@@ -126,7 +109,7 @@ namespace xcore
 			*/
 			u32				size() const
 			{
-				return _fifo.size(); 
+				return mFifo.size(); 
 			}
 
 			/**
@@ -135,7 +118,7 @@ namespace xcore
 			*/
 			bool			inside(u32 cursor) const
 			{
-				return _fifo.inside(cursor);
+				return mFifo.inside(cursor);
 			}
 
 			// ---- PUSH interface ----
@@ -148,10 +131,10 @@ namespace xcore
 			T*				push_begin()
 			{
 				u32 i;
-				u8 *p = _pool.get(i);
+				u8 *p = mPool.get(i);
 				if (unlikely(!p))
 					return 0;
-				_ref[i].set(1);
+				mRef[i].set(1);
 				return (T *) p;
 			}
 
@@ -162,7 +145,7 @@ namespace xcore
 			*/
 			void			push_cancel(T *p)
 			{
-				u32 i = _pool.c2i((u8 *) p);
+				u32 i = mPool.c2i((u8 *) p);
 				release(i);
 			}
 
@@ -173,12 +156,12 @@ namespace xcore
 			*/
 			void			push_commit(T *p, u32& outCursor)
 			{
-				u32 i = _pool.c2i((u8 *) p);
-				ASSERTS(i < _pool.size(), "xcore::atomic::queue<T>: Error, invalid index");
+				u32 i = mPool.c2i((u8 *) p);
+				ASSERTS(i < mPool.size(), "xcore::atomic::queue<T>: Error, invalid index");
 
-				_ref[i].incr();
+				mRef[i].incr();
 
-				bool fp = _fifo.push(i, outCursor);
+				bool fp = mFifo.push(i, outCursor);
 				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
 			}
 
@@ -199,19 +182,19 @@ namespace xcore
 				// transaction.
 
 				u32 i;
-				u8 *p = _pool.get(i);
+				u8 *p = mPool.get(i);
 				if (unlikely(!p))
 					return false;
 
 				// Holding two references. One for the queue itself 
 				// and one for the user.
 				// Same as in push_begin() -> push_commit() transaction.
-				ASSERTS(i < _pool.max_size(), "xcore::atomic::queue<T>: Error, invalid index");
-				_ref[i].set(2);
+				ASSERTS(i < mPool.max_size(), "xcore::atomic::queue<T>: Error, invalid index");
+				mRef[i].set(2);
 
 				*(T *)p = inData;
 
-				bool fp = _fifo.push(i, outCursor);
+				bool fp = mFifo.push(i, outCursor);
 				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
 
 				return true;
@@ -233,10 +216,10 @@ namespace xcore
 			T*				pop_begin()
 			{
 				u32 i, r;
-				if (!_fifo.pop(i, r))
+				if (!mFifo.pop(i, r))
 					return 0;
 				release(r);
-				return (T *) _pool.i2c(i);
+				return (T *) mPool.i2c(i);
 			}
 
 			/**
@@ -246,7 +229,7 @@ namespace xcore
 			*/
 			void			pop_finish(T *p)
 			{
-				u32 i = _pool.c2i((u8 *) p);
+				u32 i = mPool.c2i((u8 *) p);
 				release(i);
 			}
 
@@ -260,12 +243,12 @@ namespace xcore
 				// Open coded pop_begin() -> copy -> pop_finish() transaction.
 
 				u32 i, r;
-				if (!_fifo.pop(i, r))
+				if (!mFifo.pop(i, r))
 					return false;
 
 				release(r);
 
-				T *p = (T *) _pool.i2c(i);
+				T *p = (T *) mPool.i2c(i);
 				outData = *p;
 
 				release(i);
@@ -279,35 +262,52 @@ namespace xcore
 			*/
 			bool			valid()
 			{
-				if (_ref == NULL)
+				if (mRef == NULL)
 					return false;
-				return (_fifo.valid() && _pool.valid());
+				return (mFifo.valid() && mPool.valid());
 			}
+
+		private:
+			/**
+			* Put an item back into the pool.
+			* Item must have been obtained via get() or pop().
+			* @param[in] i item index
+			*/
+			void			release(u32 i)
+			{
+				if (!mRef[i].decr_test())
+					mPool.put(i);
+			}
+
+			x_iallocator*	mAllocator;
+			mempool			mPool;
+			fifo			mFifo;
+			atom_s32*		mRef;
 		};
 
 
 		template <typename T>
 		bool		queue<T>::init(x_iallocator* allocator, u32 size)
 		{
-			_allocator = allocator;
+			mAllocator = allocator;
 
-			if (!_pool.init(allocator, sizeof(T), size + 1))
+			if (!mPool.init(allocator, sizeof(T), size + 1))
 			{
 				clear();
 				return false;
 			}
-			if (_pool.max_size() != size + 1)
+			if (mPool.max_size() != size + 1)
 			{
 				clear();
 				return false;
 			}
-			if (!_fifo.init(allocator, size))
+			if (!mFifo.init(allocator, size))
 			{
 				clear();
 				return false;
 			}
 
-			_ref = (atom_s32*)allocator->allocate(sizeof(atom_s32) * (size + 1), 4);
+			mRef = (atom_s32*)allocator->allocate(sizeof(atom_s32) * (size + 1), 4);
 
 			if (!valid())
 			{
@@ -317,12 +317,12 @@ namespace xcore
 
 			// FIFO requires a dummy item
 			u32 i;
-			u8 *p = _pool.get(i);
+			u8 *p = mPool.get(i);
 
 			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
-			_fifo.reset(i);
-			_ref[i].set(1);
+			mFifo.reset(i);
+			mRef[i].set(1);
 			return true;
 		}
 
@@ -331,25 +331,25 @@ namespace xcore
 		{
 			ASSERT(lifo_size == fifo_size);
 
-			if (!_pool.init(lifo_chain, lifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
+			if (!mPool.init(lifo_chain, lifo_size, mempool_buf_esize, mempool_buf, mempool_buf_size))
 			{
 				clear();
 				return false;
 			}
 
-			if (_pool.max_size() != lifo_size)
+			if (mPool.max_size() != lifo_size)
 			{
 				clear();
 				return false;
 			}
 
-			if (!_fifo.init(fifo_chain, fifo_size))
+			if (!mFifo.init(fifo_chain, fifo_size))
 			{
 				clear();
 				return false;
 			}
 
-			_ref = mempool_buf_eref;
+			mRef = mempool_buf_eref;
 
 			if (!valid())
 			{
@@ -359,12 +359,12 @@ namespace xcore
 
 			// FIFO requires a dummy item
 			u32 i;
-			u8 *p = _pool.get(i);
+			u8 *p = mPool.get(i);
 
 			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
 
-			_fifo.reset(i);
-			_ref[i].set(1);
+			mFifo.reset(i);
+			mRef[i].set(1);
 			return true;
 		}
 

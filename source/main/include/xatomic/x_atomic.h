@@ -13,6 +13,11 @@ namespace xcore
 
 	namespace atomic
 	{
+		// TODO
+		// atomic hash trie: http://en.wikipedia.org/wiki/Ctrie
+		// atomic queue using linked list
+		// atomic stack using linked list
+
 		//-------------------------------------------------------------------------------------
 		// atomic library init/exit
 		//-------------------------------------------------------------------------------------
