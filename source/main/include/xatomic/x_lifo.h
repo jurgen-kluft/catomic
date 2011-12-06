@@ -75,10 +75,10 @@ namespace xcore
 				LAST   = 0xfffffffe,
 			};
 
-			state		_head;
-			link*		_chain;
-			u32			_max_size;
-			x_iallocator* _allocator;
+			state			_head;
+			link*			_chain;
+			u32				_max_size;
+			x_iallocator*	_allocator;
 
 			inline u32	increase_push(u32 salt)
 			{

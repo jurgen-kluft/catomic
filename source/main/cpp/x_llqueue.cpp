@@ -7,36 +7,126 @@ namespace xcore
 {
 	namespace atomic
 	{
-		void		xllqueue_free(xllqueue_t *queue) 
+		// Linked list structures
+		namespace ll
+		{
+			struct node;
+			struct pointer
+			{
+								pointer() : mCount(0), mPtr(NULL) { }
+								pointer(pointer const& o) : mCount(o.mCount), mPtr(o.mPtr) { }
+
+				u32				mCount;
+				node*			mPtr;
+			};
+
+			struct node
+			{
+								node() : mValue(NULL) { }
+								node(node const& o) : mValue(o.mValue), mNext(o.mNext) { }
+				XCORE_CLASS_PLACEMENT_NEW_DELETE
+				void*			mValue;
+				pointer			mNext;
+			};
+
+			// Linked list queue data
+			struct data
+			{
+				x_iallocator*	mAllocator;
+				ll::node		mGuard;
+				ll::pointer		mHead;
+				ll::pointer		mTail;
+			};
+		};
+
+
+
+		void			xqueue_free(xqueue *queue) 
 		{
 			if (queue != NULL)
 			{
-				xllqueue_clear(queue);
+				xqueue_clear(queue);
 				queue->mAllocator->deallocate(queue);
 			}
 		}
 
-		bool			xllqueue_is_empty (xllqueue_t *queue) 
+		bool			xqueue_is_empty (xqueue *queue) 
 		{
-			return(queue->mHead.mPtr == NULL);
+			return queue->mFIsEmpty(queue->mQueueData);
 		}
 
-		void			xllqueue_clear (xllqueue_t *queue) 
+		void			xqueue_clear (xqueue *queue) 
 		{
-			while (xllqueue_dequeue(queue) != NULL)
+			queue->mFClear(queue->mQueueData);
+		}
+
+		bool			xqueue_enqueue (xqueue *queue, void* item)
+		{
+			return queue->mFPush(queue->mQueueData, item);
+		}
+
+		void*			xqueue_peek (xqueue *queue)
+		{
+			return queue->mFPeek(queue->mQueueData);
+		}
+
+		void*			xqueue_dequeue (xqueue *queue)
+		{
+			return queue->mFPop(queue->mQueueData);
+		}
+
+		static bool		ll_enqueue (ll::data *queue, ll::node* new_node) 
+		{
+			ll::pointer tail, next, tmp;
+
+			while (1)
 			{
+				tail = queue->mTail;
+				next = tail.mPtr->mNext;
+
+				// Are tail and next consistent ?
+				if (tail.mCount == queue->mTail.mCount && tail.mPtr == queue->mTail.mPtr)
+				{
+					// Is tail pointing to the last node ?
+					if (next.mPtr == NULL) 
+					{
+						// Try to link new node at the end of the linked list
+						tmp.mPtr = new_node;
+						tmp.mCount = next.mCount + 1;
+						if (cas_u64((u64 volatile*)&tail.mPtr->mNext, *((u64*)&next), *((u64*)&tmp)) == true)
+						{
+							break;
+						}
+					}
+					else	// Tail was not pointing to the last node
+					{
+						tmp.mPtr = next.mPtr;
+						tmp.mCount = tail.mCount + 1;
+						// Try to swing tail to the next node
+						cas_u64((u64 volatile*)&queue->mTail, *((u64*)&tail), *((u64*)&tmp));
+					}
+				}
 			}
+			tmp.mPtr = new_node;
+			tmp.mCount = tail.mCount + 1;
+			cas_u64((u64 volatile*)&queue->mTail, *((u64*)&tail), *((u64*)&tmp));
+
+			return(true);
 		}
 
-		void*		xllqueue_peek (xllqueue_t *queue)
+		static void*		ll_peek(ll::data* queue)
 		{
-			xllqueue::pointer ptr = queue->mHead;
-			return ptr.mPtr->mValue;
+			ll::pointer head = queue->mHead;
+			ll::pointer next = head.mPtr->mNext;
+			if (next.mPtr != NULL)
+				return next.mPtr->mValue;
+			else
+				return NULL;
 		}
 
-		void*		xllqueue_dequeue (xllqueue_t *queue)
+		static ll::node*	ll_dequeue (ll::data *queue)
 		{
-			xllqueue::pointer head, tail, next, tmp;
+			ll::pointer head, tail, next, tmp;
 			void* outValue = NULL;
 			while (true)
 			{
@@ -46,184 +136,176 @@ namespace xcore
 
 				if (head.mCount == queue->mHead.mCount && head.mPtr == queue->mHead.mPtr)
 				{
+					// Is tail falling behind ?
 					if (head.mPtr == tail.mPtr)
 					{
+						// Is the list empty ?
 						if (next.mPtr == NULL)
 							return NULL;
 
 						tmp.mPtr   = next.mPtr;
 						tmp.mCount = head.mCount + 1;
+						// Tail is falling behind, try to advance it
 						cas_u64((u64 volatile*)&queue->mTail, *((u64*)&tail), *((u64*)&tmp));
 					}
-					else
+					else	// No need to deal with tail
 					{
+						// Read value before CAS otherwise another deque might try to free the next node
 						outValue   = next.mPtr->mValue;
 
 						tmp.mPtr   = next.mPtr;
 						tmp.mCount = head.mCount + 1;
-
+						// Try to swing head to the next node
 						if (cas_u64((u64 volatile*)&queue->mHead, *((u64*)&head), *((u64*)&tmp)) == true)
 							break;
 					}
 				}
 			}
-			queue->mFunctors.mFDealloc(*queue, head.mPtr);
-			return outValue;
+			head.mPtr->mValue = outValue;
+			return head.mPtr;
 		}
 
-		bool			xllqueue_enqueue (xllqueue_t *queue, void* data) 
-		{
-			xllqueue::pointer tail, next, tmp;
-
-			xllqueue::node *newNode = queue->mFunctors.mFAlloc(*queue, data);
-			if (newNode == NULL)
-				return false;
-
-			while (1)
-			{
-				tail = queue->mTail;
-				next = tail.mPtr->mNext;
-
-				if (tail.mCount == queue->mTail.mCount && tail.mPtr == queue->mTail.mPtr)
-				{
-					if (next.mPtr == NULL) 
-					{
-						tmp.mPtr = newNode;
-						tmp.mCount = next.mCount + 1;
-						if (cas_u64((u64 volatile*)&tail.mPtr->mNext, *((u64*)&next), *((u64*)&tmp)) == true)
-						{
-							break;
-						}
-					}
-					else
-					{
-						tmp.mPtr = next.mPtr;
-						tmp.mCount = tail.mCount + 1;
-						cas_u64((u64 volatile*)&queue->mTail, *((u64*)&tail), *((u64*)&tmp));
-					}
-				}
-			}
-			tmp.mPtr = newNode;
-			tmp.mCount = tail.mCount + 1;
-			cas_u64((u64 volatile*)&queue->mTail, *((u64*)&tail), *((u64*)&tmp));
-
-			return(true);
-		}
-
-
-
-		struct xllqueue_heap_provider : public xllqueue_t
+		
+		struct xqueue_heap_provider : public xqueue
 		{
 		public:
-			struct xllqueuenode : public xllqueue::node
+			struct llnode : public ll::node
 			{
 				XCORE_CLASS_PLACEMENT_NEW_DELETE
 			};
 
-			static xllqueue::node*	alloc(xllqueue_t& queue, void* item)
+			static bool			is_empty(void* queue_data)
 			{
-				void * mem = queue.mAllocator->allocate(sizeof(xllqueuenode), 4);
-				xllqueuenode* node = new (mem) xllqueuenode();
-				node->mValue = item;
-				return node;
+				void* item = ll_peek((ll::data*)queue_data);
+				return item!=NULL;
 			}
 
-			static void				dealloc(xllqueue_t& queue, xllqueue::node* node)
+			static void			clear(void* queue_data)
 			{
-				queue.mAllocator->deallocate(node);
+				while (ll_dequeue((ll::data*)queue_data)!=NULL)
+				{
+
+				}
 			}
 
-			static xllqueue::node*	to_node(xllqueue_t& queue, void* item)
+			static bool			push(void* queue_data, void* item)
 			{
-				// This provider does not have the ability to translate an item to a node
-				return NULL;
+				// Allocate a new node
+				ll::data* ll_data = (ll::data*)queue_data;
+				void* new_node_mem = ll_data->mAllocator->allocate(sizeof(ll::node), 4);
+				ll::node* new_node = new (new_node_mem) ll::node();
+				new_node->mValue = item;
+				return ll_enqueue(ll_data, new_node);
 			}
 
-			static void*			to_item(xllqueue_t& queue, xllqueue::node* node)
+			static void*		peek(void* queue_data)
 			{
-				xllqueuenode* item_node = reinterpret_cast<xllqueuenode*>(node);
-				return item_node->mValue;
+				return ll_peek((ll::data*)queue_data);
+			}
+
+			static void*		pop(void* queue_data)
+			{
+				return ll_dequeue((ll::data*)queue_data);
 			}
 
 			XCORE_CLASS_PLACEMENT_NEW_DELETE
 
-			xllqueue_heap_provider(x_iallocator* allocator)
+			xqueue_heap_provider(x_iallocator* allocator)
 			{
 				mAllocator = allocator;
-				mHead      = xllqueue::pointer();
-				mTail      = xllqueue::pointer();
 
-				mHead.mPtr = &mGuard;
-				mTail.mPtr = &mGuard;
+				mData.mAllocator = allocator;
+				mData.mGuard.mValue = (void*)0xDEADFEED;
+				mData.mHead      = ll::pointer();
+				mData.mTail      = ll::pointer();
+				mData.mHead.mPtr = &mData.mGuard;
+				mData.mTail.mPtr = &mData.mGuard;
 
-				mFunctors.mFAlloc = xllqueue_heap_provider::alloc;
-				mFunctors.mFDealloc = xllqueue_heap_provider::dealloc;
-				mFunctors.mFItemToNode = xllqueue_heap_provider::to_node;
-				mFunctors.mFNodeToItem = xllqueue_heap_provider::to_item;
+				mFIsEmpty = is_empty;
+				mFClear   = clear;
+				mFPush    = push;
+				mFPeek    = peek;
+				mFPop     = pop;
 			}
+		private:
+
+			ll::data			mData;
 		};
 
-		xllqueue_t*		xllqueue_heap(x_iallocator* heap)
+		xqueue*		xqueue_heap(x_iallocator* heap)
 		{
-			void* mem = heap->allocate(sizeof(xllqueue_heap_provider), 4);
-			xllqueue_heap_provider* provider = new (mem) xllqueue_heap_provider(heap);
+			void* mem = heap->allocate(sizeof(xqueue_heap_provider), 4);
+			xqueue_heap_provider* provider = new (mem) xqueue_heap_provider(heap);
 			return provider;
 		}
 
 
 
-		struct xllqueue_embedded_provider : public xllqueue_t
+		struct xqueue_embedded_provider : public xqueue
 		{
 		public:
-			u32						mMemberOffset;
-
-			static xllqueue::node*	alloc(xllqueue_t& queue, void* item)
+			static bool			is_empty(void* queue_data)
 			{
-				xllqueue::node* node = (xllqueue::node*)((u32)item + ((xllqueue_embedded_provider&)queue).mMemberOffset);
-				node->mValue = item;
-				return node;
+				void* item = ll_peek((ll::data*)queue_data);
+				return item!=NULL;
 			}
 
-			static void				dealloc(xllqueue_t& queue, xllqueue::node* node)
+			static void			clear(void* queue_data)
 			{
-				node->mValue = NULL;
+				while (ll_dequeue((ll::data*)queue_data)!=NULL)
+				{
+
+				}
 			}
 
-			static xllqueue::node*	to_node(xllqueue_t& queue, void* item)
+			static bool			push(void* queue_data, void* item)
 			{
-				xllqueue::node* node = (xllqueue::node*)((u32)item + ((xllqueue_embedded_provider&)queue).mMemberOffset);
-				return node;
+				// Allocate a new node
+				ll::node* new_node = NULL;
+				new_node->mValue = item;
+				return ll_enqueue((ll::data*)queue_data, new_node);
 			}
 
-			static void*			to_item(xllqueue_t& queue, xllqueue::node* node)
+			static void*		peek(void* queue_data)
 			{
-				void* item = node->mValue;
-				return item;
+				return ll_peek((ll::data*)queue_data);
+			}
+
+			static void*		pop(void* queue_data)
+			{
+				return ll_dequeue((ll::data*)queue_data);
 			}
 
 			XCORE_CLASS_PLACEMENT_NEW_DELETE
 
-			xllqueue_embedded_provider(x_iallocator* allocator, u32 member_offset)
+			xqueue_embedded_provider(x_iallocator* allocator, u32 member_offset)
 				: mMemberOffset(member_offset)
 			{
 				mAllocator = allocator;
-				mHead      = xllqueue::pointer();
-				mTail      = xllqueue::pointer();
 
-				mHead.mPtr = &mGuard;
-				mTail.mPtr = &mGuard;
+				mData.mAllocator = allocator;
+				mData.mGuard.mValue = (void*)0xDEADFEED;
+				mData.mHead      = ll::pointer();
+				mData.mTail      = ll::pointer();
+				mData.mHead.mPtr = &mData.mGuard;
+				mData.mTail.mPtr = &mData.mGuard;
 
-				mFunctors.mFAlloc = xllqueue_embedded_provider::alloc;
-				mFunctors.mFDealloc = xllqueue_embedded_provider::dealloc;
-				mFunctors.mFItemToNode = xllqueue_embedded_provider::to_node;
-				mFunctors.mFNodeToItem = xllqueue_embedded_provider::to_item;
+				mFIsEmpty = is_empty;
+				mFClear   = clear;
+				mFPush    = push;
+				mFPeek    = peek;
+				mFPop     = pop;
 			}
+
+		private:
+			u32					mMemberOffset;
+			ll::data			mData;
 		};
 
-		xllqueue_t*		xllqueue_member(x_iallocator* heap, u32 member_offset)
+		xqueue*		xqueue_member(x_iallocator* heap, u32 member_offset)
 		{
-			void* mem = heap->allocate(sizeof(xllqueue_embedded_provider), 4);
-			xllqueue_embedded_provider* provider = new (mem) xllqueue_embedded_provider(heap, member_offset);
+			void* mem = heap->allocate(sizeof(xqueue_embedded_provider), 4);
+			xqueue_embedded_provider* provider = new (mem) xqueue_embedded_provider(heap, member_offset);
 			return provider;
 		}
 
