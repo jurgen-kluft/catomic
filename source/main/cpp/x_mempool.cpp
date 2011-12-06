@@ -11,34 +11,34 @@ namespace xcore
 	{
 		mempool::mempool()
 		{
-			_allocator = NULL;
-			_buffer = NULL;
-			_csize = 0;
-			_extern = false;
+			mAllocator = NULL;
+			mBuffer = NULL;
+			mCsize = 0;
+			mExtern = false;
 		}
 
 		bool mempool::init(x_iallocator* allocator, u32 mempool_esize, u32 size)
 		{
-			_allocator = allocator;
+			mAllocator = allocator;
 
 			// Initialize the lifo first
-			if (!_lifo.init(allocator, size))
+			if (!mLifo.init(allocator, size))
 				return false;
 
 			u32 csize = x_intu::alignUp(mempool_esize, 4);
 
-			_extern = false;
-			_buffer = (xbyte*)allocator->allocate(csize * size, 4);
-			x_memset(_buffer, 0, csize * size);
+			mExtern = false;
+			mBuffer = (xbyte*)allocator->allocate(csize * size, 4);
+			x_memset(mBuffer, 0, csize * size);
 
 			// Caller will have to do the delete anyway. Let the
 			// destructor take care of partial allocations.
-			if (!_buffer)
+			if (!mBuffer)
 				return false;
 
-			_csize = csize;
+			mCsize = csize;
 
-			_lifo.fill();
+			mLifo.fill();
 			return true;
 		}
 
@@ -49,14 +49,14 @@ namespace xcore
 			u32 size = mempool_size / mempool_esize;
 
 			// Initialize the lifo first
-			if (!_lifo.init(allocator, size))
+			if (!mLifo.init(allocator, size))
 				return false;
 
 			// Attach to an external buffer 
-			_buffer = mempool_buf;
-			_extern = true;
+			mBuffer = mempool_buf;
+			mExtern = true;
 
-			_lifo.fill();
+			mLifo.fill();
 			return true;
 		}
 
@@ -68,28 +68,28 @@ namespace xcore
 			if (size > lifo_size)
 				return false;
 
-			if (!_lifo.init(lifo_chain, lifo_size))
+			if (!mLifo.init(lifo_chain, lifo_size))
 				return false;
 
 			// Attach to an external buffer 
-			_buffer = mempool_buf;
-			_csize  = csize;
-			_extern = true;
+			mBuffer = mempool_buf;
+			mCsize  = csize;
+			mExtern = true;
 
-			_lifo.fill();
+			mLifo.fill();
 			return true;
 		}
 
 		void	mempool::clear()
 		{
-			if (!_extern)
+			if (!mExtern)
 			{
-				if (_buffer != NULL)
-					_allocator->deallocate(_buffer);
-				_buffer = NULL;
+				if (mBuffer != NULL)
+					mAllocator->deallocate(mBuffer);
+				mBuffer = NULL;
 			}
-			_lifo.clear();
-			_csize = 0;
+			mLifo.clear();
+			mCsize = 0;
 		}
 
 		mempool::~mempool()
@@ -99,12 +99,12 @@ namespace xcore
 
 		bool mempool::valid()
 		{
-			return (_lifo.max_size()>0 && _buffer!=NULL);
+			return (mLifo.max_size()>0 && mBuffer!=NULL);
 		}
 
 // 		u32 mempool::avail() const
 // 		{
-// 			return _lifo.room();
+// 			return mLifo.room();
 // 		}
 	} // namespace atomic
 } // namespace xcore

@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_LL_QUEUE_H__
-#define __XMULTICORE_LL_QUEUE_H__
+#ifndef __XMULTICORE_LF_QUEUE_H__
+#define __XMULTICORE_LF_QUEUE_H__
 #include "xbase\x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -12,72 +12,51 @@ namespace xcore
 {
 	namespace atomic
 	{
-		namespace xllqueue
+		struct xqueue_data;
+		struct xqueue_node
 		{
-			struct node;
-			struct pointer
-			{
-							pointer() : mCount(0), mPtr(NULL) { }
-							pointer(pointer const& o) : mCount(o.mCount), mPtr(o.mPtr) { }
-
-				u32			mCount;
-				node*		mPtr;
-			};
-
-			struct node
-			{
-							node() : mValue(NULL) { }
-							node(node const& o) : mValue(o.mValue), mNext(o.mNext) { }
-				void*		mValue;
-				pointer		mNext;
-			};
+			void*		mData[4];
 		};
 
-		struct xllqueue_t;
-
-		namespace xllqueue_f
+		struct xqueue
 		{
-			typedef xllqueue::node*			(*alloc)  (xllqueue_t& queue, void* item);
-			typedef void					(*dealloc)(xllqueue_t& queue, xllqueue::node* node);
+			x_iallocator*		mAllocator;
+			void*				mQueueData;
 
-			typedef xllqueue::node*			(*to_node)(xllqueue_t& queue, void* item);
-			typedef void*					(*to_item)(xllqueue_t& queue, xllqueue::node* node);
-		}
+			typedef bool		(*is_empty_func)(void* queue_data);
+			typedef void		(*clear_func)(void* queue_data);
 
-		struct xllqueue_functors
-		{
-			xllqueue_f::alloc			mFAlloc;
-			xllqueue_f::dealloc			mFDealloc;
-			xllqueue_f::to_node			mFItemToNode;
-			xllqueue_f::to_item			mFNodeToItem;
+			typedef bool		(*push_func	)(void* queue_data, void* item);
+			typedef void*		(*peek_func	)(void* queue_data);
+			typedef void*		(*pop_func	)(void* queue_data);
+
+			is_empty_func		mFIsEmpty;
+			clear_func			mFClear;
+
+			push_func			mFPush;
+			peek_func			mFPeek;
+			pop_func			mFPop;
 		};
 
-		struct xllqueue_t
-		{
-			x_iallocator*				mAllocator;
-			xllqueue::node				mGuard;
-			xllqueue::pointer			mHead;
-			xllqueue::pointer			mTail;
-			xllqueue_functors			mFunctors;
-		};
+		///< Requires the allocator to be thread safe, can be pool allocator since we
+		///< will only allocate nodes from this allocator.
+		xqueue*			xqueue_heap			(x_iallocator* heap, x_iallocator* nodes);
+		
+		///< Does own nodes and detects double push/pop, fully thread safe
+		xqueue*			xqueue_member		(x_iallocator* heap, u32 member_offset);
+		
+		///< Fully thread safe, will copy the item
+		xqueue*			xqueue_pool			(x_iallocator* heap, u32 item_size, u32 pool_size);
 
-		xllqueue_t*		xllqueue_heap		(x_iallocator* heap);
-		xllqueue_t*		xllqueue_member		(x_iallocator* heap, u32 member_offset);
+		void			xqueue_free			(xqueue *queue);
 
-		void			xllqueue_free		(xllqueue_t *queue);
+		bool			xqueue_is_empty		(xqueue *queue);
+		void			xqueue_clear		(xqueue *queue);
 
-		bool			xllqueue_is_empty	(xllqueue_t *queue);
-		void			xllqueue_clear		(xllqueue_t *queue);
-
-		bool			xllqueue_enqueue	(xllqueue_t *queue, void* data);
-		void*			xllqueue_dequeue	(xllqueue_t *queue);
-
-		void*			xllqueue_peek		(xllqueue_t *queue);
-
-		inline bool		xllqueue_push		(xllqueue_t *queue, void* data)				{ return xllqueue_enqueue(queue, data); }
-		inline void*	xllqueue_pop		(xllqueue_t *queue)							{ return xllqueue_dequeue(queue); }
-
+		bool			xqueue_enqueue		(xqueue *queue, void* item);
+		void*			xqueue_peek			(xqueue *queue);
+		void*			xqueue_dequeue		(xqueue *queue);
 	};
 };
 
-#endif	///< __XMULTICORE_LL_QUEUE_H__
+#endif	///< __XMULTICORE_LF_QUEUE_H__

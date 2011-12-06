@@ -29,11 +29,11 @@ namespace xcore
 		class mempool
 		{
 		protected:
-			x_iallocator* _allocator;
-			lifo		_lifo;
-			xbyte*		_buffer;
-			u32			_csize;
-			bool		_extern;
+			x_iallocator*	mAllocator;
+			lifo			mLifo;
+			xbyte*			mBuffer;
+			u32				mCsize;
+			bool			mExtern;
 
 		public:
 			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
@@ -86,31 +86,31 @@ namespace xcore
 			* Get chunk size.
 			* @return chunk size
 			*/
-			u32			chunk_size() const											{ return _csize; }
+			u32			chunk_size() const											{ return mCsize; }
 
 			/**
 			* Get total number of chunks in the pool.
 			* @return number of chunks
 			*/
-			u32			max_size() const											{ return _lifo.max_size(); }
+			u32			max_size() const											{ return mLifo.max_size(); }
 
 			/**
 			* Get number of used chunks in the pool.
 			* @return number of chunks
 			*/
-			u32			size() const												{ return _lifo.size(); }
+			u32			size() const												{ return mLifo.size(); }
 
 			/**
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/
-			u32			c2i(xbyte *chunk) const										{ return (chunk - _buffer) / _csize; }
+			u32			c2i(xbyte *chunk) const										{ return (chunk - mBuffer) / mCsize; }
 
 			/**
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/
-			xbyte*		i2c(u32 i) const											{ return _buffer + (i * _csize); }
+			xbyte*		i2c(u32 i) const											{ return mBuffer + (i * mCsize); }
 
 			/**
 			* Get free chunk from the pool.
@@ -120,8 +120,8 @@ namespace xcore
 			*/
 			xbyte*		get(u32 &i)
 			{
-				if (!_lifo.pop(i))
-					return 0;
+				if (!mLifo.pop(i))
+					return NULL;
 				return i2c(i);
 			}
 
@@ -143,7 +143,7 @@ namespace xcore
 			*/
 			void		put(u32 i)
 			{
-				bool r = _lifo.push(i);
+				bool r = mLifo.push(i);
 				ASSERTS(r, "xcore::atomic::mempool: Error, invalid index or double free");
 			}
 
