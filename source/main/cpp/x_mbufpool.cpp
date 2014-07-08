@@ -1,5 +1,5 @@
 #include "xbase\x_allocator.h"
-#include "xbase\x_string_std.h"
+#include "xbase\x_string_ascii.h"
 
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_mbufpool.h"

@@ -64,7 +64,7 @@
 		<Properties DependencyType="Root" Platform="*">
 			<PropertyGroup Label="xatomic_TargetDirs">
 				<xatomic_RootDir>$(SolutionDir)</xatomic_RootDir> 
-				<xatomic_LibraryDir>$(SolutionDir)target\xatomic\outdir\xatomic_$(Configuration)_$(Platform)\</xatomic_LibraryDir>
+				<xatomic_LibraryDir>$(SolutionDir)target\xatomic\outdir\xatomic_$(PackageSignature)\</xatomic_LibraryDir>
 				<xatomic_IncludeDir>$(SolutionDir)source\main\include\</xatomic_IncludeDir>
 			</PropertyGroup>
 		</Properties>
@@ -80,7 +80,7 @@
 		<Properties DependencyType="Source" Platform="*">
 			<PropertyGroup Label="xatomic_TargetDirs">
 				<xatomic_RootDir>$(SolutionDir)target\xatomic\</xatomic_RootDir> 
-				<xatomic_LibraryDir>$(SolutionDir)target\xatomic\target\xatomic\outdir\xatomic_$(Configuration)_$(Platform)\</xatomic_LibraryDir>
+				<xatomic_LibraryDir>$(SolutionDir)target\xatomic\target\xatomic\outdir\xatomic_$(PackageSignature)\</xatomic_LibraryDir>
 				<xatomic_IncludeDir>$(SolutionDir)target\xatomic\source\main\include\</xatomic_IncludeDir>
 			</PropertyGroup>
 		</Properties>
@@ -140,7 +140,52 @@
 						<AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
 					</Link>
 				</ItemDefinitionGroup>
-				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevDebug|PS3'">
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevDebug|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevFinal|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>#${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevDebug|PS3'">
 					<ClCompile>
 						<AdditionalIncludeDirectories>$(${Name}_IncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
 					</ClCompile>
@@ -245,13 +290,19 @@
 				<PropertyGroup Label="Globals">
 					<ProjectGuid>{${GUID_UnitTest}}</ProjectGuid>
 				</PropertyGroup>
-				<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|Win32'" Label="Configuration">
-					<ConfigurationType>Application</ConfigurationType>
-				</PropertyGroup>
-				<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|Win32'" Label="Configuration">
-					<ConfigurationType>Application</ConfigurationType>
-				</PropertyGroup>
-				<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|PS3'" Label="Configuration">
+        <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|Win32'" Label="Configuration">
+          <ConfigurationType>Application</ConfigurationType>
+        </PropertyGroup>
+        <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|Win32'" Label="Configuration">
+          <ConfigurationType>Application</ConfigurationType>
+        </PropertyGroup>
+        <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|x64'" Label="Configuration">
+          <ConfigurationType>Application</ConfigurationType>
+        </PropertyGroup>
+        <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|x64'" Label="Configuration">
+          <ConfigurationType>Application</ConfigurationType>
+        </PropertyGroup>
+        <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|PS3'" Label="Configuration">
 					<ConfigurationType>Application</ConfigurationType>
 				</PropertyGroup>
 				<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|PS3'" Label="Configuration">
@@ -269,25 +320,43 @@
 				<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|Xbox 360'" Label="Configuration">
 					<ConfigurationType>Application</ConfigurationType>
 				</PropertyGroup>
-				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|Win32'">
-					<ClCompile>
-						<AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
-					</ClCompile>
-					<Link>
-						<AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
-						<AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
-					</Link>
-				</ItemDefinitionGroup>
-				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|Win32'">
-					<ClCompile>
-						<AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
-					</ClCompile>
-					<Link>
-						<AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
-						<AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
-					</Link>
-				</ItemDefinitionGroup>
-				<ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|PS3'">
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|Win32'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|Win32'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestRelease|x64'">
+          <ClCompile>
+            <AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
+          </ClCompile>
+          <Link>
+            <AdditionalLibraryDirectories>$(${Name}_LibraryDir)</AdditionalLibraryDirectories>
+            <AdditionalDependencies>${Name}_$(PackageSignature).lib</AdditionalDependencies>
+          </Link>
+        </ItemDefinitionGroup>
+        <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestDebug|PS3'">
 					<ClCompile>
 						<AdditionalIncludeDirectories>$(${Name}_TestIncludeDir)</AdditionalIncludeDirectories>
 					</ClCompile>

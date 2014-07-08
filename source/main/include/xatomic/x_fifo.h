@@ -5,8 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
-
 #include "xatomic\private\x_allocator.h"
 #include "xatomic\private\x_compiler.h"
 #include "xatomic\x_atomic.h"

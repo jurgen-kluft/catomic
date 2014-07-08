@@ -1,4 +1,3 @@
-#include "xbase\x_types.h"
 #include "xunittest\xunittest.h"
 
 #include "xatomic\x_atomic.h"

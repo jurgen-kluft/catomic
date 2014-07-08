@@ -1,5 +1,4 @@
 #include "xbase\x_target.h"
-#include "xbase\x_types.h"
 #include "xbase\x_allocator.h"
 #include "xunittest\xunittest.h"
 
@@ -25,13 +24,13 @@ namespace xcore
 
 		virtual const char*	name() const	{ return "xthread unittest test heap allocator"; }
 
-		virtual void*		allocate(u32 size, u32 alignment)
+		virtual void*		allocate(xsize_t size, u32 alignment)
 		{
 			UnitTest::IncNumAllocations();
 			return mAllocator->allocate(size, alignment);
 		}
 
-		virtual void*		reallocate(void* mem, u32 size, u32 alignment)
+		virtual void*		reallocate(void* mem, xsize_t size, u32 alignment)
 		{
 			return mAllocator->reallocate(mem, size, alignment);
 		}
@@ -52,7 +51,7 @@ class UnitTestAllocator : public UnitTest::Allocator
 {
 public:
 					UnitTestAllocator(xcore::x_iallocator* allocator) : mAllocator(allocator) {}
-	virtual void*	Allocate(int size)			{ return mAllocator->allocate(size, 4);}
+	virtual void*	Allocate(size_t size)		{ return mAllocator->allocate(size, 4);}
 	virtual void	Deallocate(void* ptr)		{ mAllocator->deallocate(ptr); }
 private:
 	xcore::x_iallocator*	mAllocator;
