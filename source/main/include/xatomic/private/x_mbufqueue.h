@@ -5,9 +5,7 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
 #include "xbase\x_debug.h"
-
 #include "xatomic\x_mbuf.h"
 
 namespace xcore

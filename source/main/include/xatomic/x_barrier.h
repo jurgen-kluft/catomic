@@ -5,8 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
-
 #include "xatomic\private\x_compiler.h"
 
 #if defined(TARGET_360)
@@ -29,7 +27,11 @@ namespace xcore
 
 
 #if defined(TARGET_PC)
-	#include "xatomic\private\x_barrier_x86_win32.h"
+	#if defined(TARGET_32BIT)
+		#include "xatomic\private\x_barrier_x86_win32.h"
+	#else
+		#include "xatomic\private\x_barrier_x86_win64.h"
+	#endif
 #elif defined(TARGET_360)
 	#include "xatomic\private\x_barrier_ppc_360.h"
 #elif defined(TARGET_PS3)

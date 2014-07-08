@@ -5,8 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
-
 /**
 * @file xatomic\dlist.h
 * Generic circular doubly linked list

@@ -5,7 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
 #include "xbase\x_debug.h"
 #include "xbase\x_allocator.h"
 
@@ -104,7 +103,7 @@ namespace xcore
 			* Convert chunk pointer to index
 			* @return chunk index
 			*/
-			u32			c2i(xbyte *chunk) const										{ return (chunk - mBuffer) / mCsize; }
+			u32			c2i(xbyte *chunk) const										{ return (u32)((chunk - mBuffer) / mCsize); }
 
 			/**
 			* Convert chunk pointer to index

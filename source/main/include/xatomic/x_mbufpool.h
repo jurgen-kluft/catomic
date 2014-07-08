@@ -5,8 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
-
 #include "xatomic\x_mempool.h"
 #include "xatomic\x_mbuf.h"
 

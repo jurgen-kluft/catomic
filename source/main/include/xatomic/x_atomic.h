@@ -5,8 +5,6 @@
 #pragma once 
 #endif
 
-#include "xbase\x_types.h"
-
 namespace xcore
 {
 	class x_iallocator;
@@ -103,7 +101,11 @@ namespace xcore
 }
 
 #if defined(TARGET_PC)
-	#include "xatomic\private\x_atomic_x86_win32.h"
+	#if defined(TARGET_32BIT)
+		#include "xatomic\private\x_atomic_x86_win32.h"
+	#else
+		#include "xatomic\private\x_atomic_x86_win64.h"
+	#endif
 #elif defined(TARGET_360)
 	#include "xatomic\private\x_atomic_ppc_360.h"
 #elif defined(TARGET_PS3)
