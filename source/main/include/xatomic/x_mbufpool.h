@@ -1,12 +1,12 @@
 #ifndef __XMULTICORE_MBUFPOOL_H__
 #define __XMULTICORE_MBUFPOOL_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xatomic\x_mempool.h"
-#include "xatomic\x_mbuf.h"
+#include "xatomic/x_mempool.h"
+#include "xatomic/x_mbuf.h"
 
 namespace xcore
 {

@@ -1,6 +1,6 @@
 #ifndef __XMULTICORE_COMPILER_H__
 #define __XMULTICORE_COMPILER_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif

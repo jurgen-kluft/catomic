@@ -1,12 +1,12 @@
 #ifndef __XMULTICORE_MBUF_QUEUE_H__
 #define __XMULTICORE_MBUF_QUEUE_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xbase\x_debug.h"
-#include "xatomic\x_mbuf.h"
+#include "xbase/x_debug.h"
+#include "xatomic/x_mbuf.h"
 
 namespace xcore
 {

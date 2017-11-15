@@ -1,9 +1,9 @@
-#include "xbase\x_allocator.h"
+#include "xbase/x_allocator.h"
 
 #include "xunittest\xunittest.h"
 
-#include "xatomic\x_mbufpool.h"
-#include "xatomic\x_mbuf.h"
+#include "xatomic/x_mbufpool.h"
+#include "xatomic/x_mbuf.h"
 
 extern xcore::x_iallocator* gAtomicAllocator;
 

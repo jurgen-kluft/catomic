@@ -1,16 +1,16 @@
 #ifndef __XMULTICORE_STACK_H__
 #define __XMULTICORE_STACK_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xbase\x_allocator.h"
+#include "xbase/x_allocator.h"
 
-#include "xatomic\private\x_allocator.h"
-#include "xatomic\private\x_compiler.h"
-#include "xatomic\x_lifo.h"
-#include "xatomic\x_mempool.h"
+#include "xatomic/private\x_allocator.h"
+#include "xatomic/private\x_compiler.h"
+#include "xatomic/x_lifo.h"
+#include "xatomic/x_mempool.h"
 
 namespace xcore
 {

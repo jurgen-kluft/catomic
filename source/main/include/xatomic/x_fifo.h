@@ -1,14 +1,14 @@
 #ifndef __XMULTICORE_FIFO_H__
 #define __XMULTICORE_FIFO_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xatomic\private\x_allocator.h"
-#include "xatomic\private\x_compiler.h"
-#include "xatomic\x_atomic.h"
-#include "xatomic\x_barrier.h"
+#include "xatomic/private\x_allocator.h"
+#include "xatomic/private\x_compiler.h"
+#include "xatomic/x_atomic.h"
+#include "xatomic/x_barrier.h"
 
 namespace xcore
 {

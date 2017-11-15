@@ -1,8 +1,8 @@
-#include "xbase\x_allocator.h"
+#include "xbase/x_allocator.h"
 
 #include "xunittest\xunittest.h"
 
-#include "xatomic\x_lifo.h"
+#include "xatomic/x_lifo.h"
 
 extern xcore::x_iallocator* gAtomicAllocator;
 

@@ -1,6 +1,6 @@
-#include "xbase\x_allocator.h"
+#include "xbase/x_allocator.h"
 
-#include "xatomic\x_lifo.h"
+#include "xatomic/x_lifo.h"
 
 namespace xcore
 {

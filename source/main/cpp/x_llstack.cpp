@@ -1,7 +1,7 @@
-#include "xbase\x_target.h"
-#include "xbase\x_allocator.h"
-#include "xatomic\x_llstack.h"
-#include "xatomic\x_atomic.h"
+#include "xbase/x_target.h"
+#include "xbase/x_allocator.h"
+#include "xatomic/x_llstack.h"
+#include "xatomic/x_atomic.h"
 
 namespace xcore
 {

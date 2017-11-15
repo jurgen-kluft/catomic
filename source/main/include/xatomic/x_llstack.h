@@ -1,12 +1,12 @@
 #ifndef __XMULTICORE_LL_STACK_H__
 #define __XMULTICORE_LL_STACK_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xbase\x_debug.h"
-#include "xbase\x_allocator.h"
+#include "xbase/x_debug.h"
+#include "xbase/x_allocator.h"
 
 namespace xcore
 {

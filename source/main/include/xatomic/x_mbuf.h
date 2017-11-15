@@ -1,16 +1,16 @@
 #ifndef __XMULTICORE_MBUF_H__
 #define __XMULTICORE_MBUF_H__
-#include "xbase\x_target.h"
+#include "xbase/x_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
 #endif
 
-#include "xbase\x_debug.h"
-#include "xbase\x_memory_std.h"
+#include "xbase/x_debug.h"
+#include "xbase/x_memory_std.h"
 
-#include "xatomic\private\x_dlist.h"
-#include "xatomic\x_atomic.h"
-#include "xatomic\private\x_compiler.h"
+#include "xatomic/private\x_dlist.h"
+#include "xatomic/x_atomic.h"
+#include "xatomic/private\x_compiler.h"
 
 namespace xcore
 {
