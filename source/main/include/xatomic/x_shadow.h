@@ -7,7 +7,7 @@
 
 #include "xbase/x_allocator.h"
 
-#include "xatomic/private\x_allocator.h"
+#include "xatomic/private/x_allocator.h"
 #include "xatomic/x_barrier.h"
 
 namespace xcore

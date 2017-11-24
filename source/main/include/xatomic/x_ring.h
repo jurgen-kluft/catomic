@@ -8,8 +8,8 @@
 #include "xbase/x_allocator.h"
 #include "xbase/x_integer.h"
 
-#include "xatomic/private\x_allocator.h"
-#include "xatomic/private\x_compiler.h"
+#include "xatomic/private/x_allocator.h"
+#include "xatomic/private/x_compiler.h"
 #include "xatomic/x_barrier.h"
 
 namespace xcore
@@ -18,7 +18,7 @@ namespace xcore
 	{
 		/**
 		* Ring buffer. Simple and efficient lock free circular fifo.
-		* Thread safety is guarantied only for the 'single writer -> single reader' case.
+		* Thread safety is guaranteed only for the 'single writer -> single reader' case.
 		* Ring size is restricted to the powers of two. One item is always reserved for 
 		* internal operation.
 		*/

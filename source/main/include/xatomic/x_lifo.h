@@ -8,8 +8,8 @@
 #include "xbase/x_debug.h"
 #include "xbase/x_allocator.h"
 
-#include "xatomic/private\x_allocator.h"
-#include "xatomic/private\x_compiler.h"
+#include "xatomic/private/x_allocator.h"
+#include "xatomic/private/x_compiler.h"
 #include "xatomic/x_atomic.h"
 #include "xatomic/x_barrier.h"
 

@@ -1,6 +1,6 @@
 #include "xbase/x_allocator.h"
 
-#include "xunittest\xunittest.h"
+#include "xunittest/xunittest.h"
 
 #include "xatomic/x_fifo.h"
 

@@ -1,4 +1,4 @@
-#include "xunittest\xunittest.h"
+#include "xunittest/xunittest.h"
 
 #include "xatomic/x_atomic.h"
 

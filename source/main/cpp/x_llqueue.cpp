@@ -7,6 +7,32 @@ namespace xcore
 {
 	namespace atomic
 	{
+		struct xqueue_data;
+		struct xqueue_node
+		{
+			void*		mData[4];
+		};
+
+		struct xqueue
+		{
+			x_iallocator*		mAllocator;
+			void*				mQueueData;
+
+			typedef bool(*is_empty_func)(void* queue_data);
+			typedef void(*clear_func)(void* queue_data);
+
+			typedef bool(*push_func)(void* queue_data, void* item);
+			typedef void*		(*peek_func)(void* queue_data);
+			typedef void*		(*pop_func)(void* queue_data);
+
+			is_empty_func		mFIsEmpty;
+			clear_func			mFClear;
+
+			push_func			mFPush;
+			peek_func			mFPeek;
+			pop_func			mFPop;
+		};
+
 		// Linked list structures
 		namespace ll
 		{

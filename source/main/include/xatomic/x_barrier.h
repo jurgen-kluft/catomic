@@ -5,7 +5,7 @@
 #pragma once 
 #endif
 
-#include "xatomic/private\x_compiler.h"
+#include "xatomic/private/x_compiler.h"
 
 #if defined(TARGET_360)
 #include <PPCIntrinsics.h>
@@ -28,18 +28,18 @@ namespace xcore
 
 #if defined(TARGET_PC)
 	#if defined(TARGET_32BIT)
-		#include "xatomic/private\x_barrier_x86_win32.h"
+		#include "xatomic/private/x_barrier_x86_win32.h"
 	#else
-		#include "xatomic/private\x_barrier_x86_win64.h"
+		#include "xatomic/private/x_barrier_x86_win64.h"
 	#endif
 #elif defined(TARGET_360)
-	#include "xatomic/private\x_barrier_ppc_360.h"
+	#include "xatomic/private/x_barrier_ppc_360.h"
 #elif defined(TARGET_PS3)
-	#include "xatomic/private\x_barrier_ppc_ps3.h"
+	#include "xatomic/private/x_barrier_ppc_ps3.h"
 #elif defined(TARGET_WII)
-	#include "xatomic/private\x_barrier_ppc_wii.h"
+	#include "xatomic/private/x_barrier_ppc_wii.h"
 #elif defined(TARGET_3DS)
-	#include "xatomic/private\x_barrier_arm_3ds.h"
+	#include "xatomic/private/x_barrier_arm_3ds.h"
 #else
 	#error Unsupported CPU
 #endif

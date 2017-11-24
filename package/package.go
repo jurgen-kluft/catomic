@@ -28,6 +28,7 @@ func GetPackage() *denv.Package {
 	maintest := denv.SetupDefaultCppTestProject("xatomic_test", "github.com\\jurgen-kluft\\xatomic")
 	maintest.Dependencies = append(maintest.Dependencies, unittestpkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, entrypkg.GetMainLib())
+	maintest.Dependencies = append(maintest.Dependencies, basepkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, mainlib)
 
 	mainpkg.AddMainLib(mainlib)
