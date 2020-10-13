@@ -1,4 +1,4 @@
-#include "xbase/x_memory_std.h"
+#include "xbase/x_memory.h"
 
 #include "xatomic/private/x_allocator.h"
 #include "xatomic/private/x_compiler.h"

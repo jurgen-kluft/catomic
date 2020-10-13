@@ -15,7 +15,7 @@
 
 namespace xcore
 {
-	class x_iallocator;
+	class xalloc;
 
 	namespace atomic
 	{
@@ -77,7 +77,7 @@ namespace xcore
 			state			_head;
 			link*			_chain;
 			u32				_max_size;
-			x_iallocator*	_allocator;
+			xalloc*	_allocator;
 
 			inline u32	increase_push(u32 salt)
 			{
@@ -110,7 +110,7 @@ namespace xcore
 			/**
 			* Complete initialization.
 			*/
-			bool		init(x_iallocator* allocator, u32 size);
+			bool		init(xalloc* allocator, u32 size);
 
 			/**
 			* Complete initialization.

@@ -14,7 +14,7 @@
 
 namespace xcore
 {
-	class x_iallocator;
+	class xalloc;
 
 	namespace atomic
 	{
@@ -37,7 +37,7 @@ namespace xcore
 			* Init. Allocates the stack.
 			* @param size number of items in the stack
 			*/
-			bool		init(x_iallocator* allocator, u32 size) 
+			bool		init(xalloc* allocator, u32 size) 
 			{
 				bool r = false;
 				if (_items.init(allocator, sizeof(T), size))

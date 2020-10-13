@@ -6,7 +6,7 @@
 #endif
 
 #include "xbase/x_debug.h"
-#include "xbase/x_memory_std.h"
+#include "xbase/x_memory.h"
 
 #include "xatomic/private/x_dlist.h"
 #include "xatomic/x_atomic.h"
@@ -14,7 +14,7 @@
 
 namespace xcore
 {
-	class x_iallocator;
+	class xalloc;
 
 	namespace atomic
 	{
@@ -29,9 +29,9 @@ namespace xcore
 			*/ 
 			class allocator
 			{
-				x_iallocator*	_allocator;
+				xalloc*	_allocator;
 			public:
-				allocator(x_iallocator* allocator) : _allocator(allocator)		{ }
+				allocator(xalloc* allocator) : _allocator(allocator)		{ }
 
 				virtual			~allocator()									{ }
 

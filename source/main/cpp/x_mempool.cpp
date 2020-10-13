@@ -1,6 +1,6 @@
 #include "xbase/x_allocator.h"
 #include "xbase/x_integer.h"
-#include "xbase/x_memory_std.h"
+#include "xbase/x_memory.h"
 
 #include "xatomic/x_atomic.h"
 #include "xatomic/x_mempool.h"
@@ -17,7 +17,7 @@ namespace xcore
 			mExtern = false;
 		}
 
-		bool mempool::init(x_iallocator* allocator, u32 mempool_esize, u32 size)
+		bool mempool::init(xalloc* allocator, u32 mempool_esize, u32 size)
 		{
 			mAllocator = allocator;
 
@@ -25,7 +25,7 @@ namespace xcore
 			if (!mLifo.init(allocator, size))
 				return false;
 
-			u32 csize = x_intu::alignUp(mempool_esize, 4);
+			u32 csize = xalignUp(mempool_esize, 4);
 
 			mExtern = false;
 			mBuffer = (xbyte*)allocator->allocate(csize * size, 4);
@@ -42,9 +42,9 @@ namespace xcore
 			return true;
 		}
 
-		bool mempool::init(x_iallocator* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
+		bool mempool::init(xalloc* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
 		{
-			u32 csize = x_intu::alignUp(mempool_esize, 4);
+			u32 csize = xalignUp(mempool_esize, 4);
 
 			u32 size = mempool_size / mempool_esize;
 
@@ -62,7 +62,7 @@ namespace xcore
 
 		bool	mempool::init(lifo::link* lifo_chain, u32 lifo_size, u32 mempool_esize, u8 *mempool_buf, u32 mempool_size)
 		{
-			u32 csize = x_intu::alignUp(mempool_esize, 4);
+			u32 csize = xalignUp(mempool_esize, 4);
 
 			u32 size = mempool_size / csize;
 			if (size > lifo_size)

@@ -36,7 +36,7 @@ namespace xcore
 		protected:
 			typedef volatile u32 vo_u32; 
 
-			x_iallocator*	_allocator;
+			xalloc*	_allocator;
 
 			node*			_items;
 			u32				_size;
@@ -77,7 +77,7 @@ namespace xcore
 			/**
 			* Allocate the ring of specified size
 			*/
-			bool		init(x_iallocator* allocator, u32 size)
+			bool		init(xalloc* allocator, u32 size)
 			{
 				_allocator = allocator;
 				_size = size;

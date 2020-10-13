@@ -768,7 +768,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<s64>::bit_set(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -779,7 +779,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<s64>::bit_clr(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -790,7 +790,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<s64>::bit_chg(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -801,7 +801,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_set(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -813,7 +813,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_clr(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -825,7 +825,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<s64>::bit_test_chg(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register s64 old;
 			do
 			{
@@ -1024,7 +1024,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<u64>::bit_set(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{
@@ -1035,7 +1035,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<u64>::bit_clr(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{
@@ -1046,7 +1046,7 @@ namespace xcore
 		template <>
 		inline void		atom_int_type<u64>::bit_chg(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{
@@ -1057,7 +1057,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_set(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{
@@ -1069,7 +1069,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_clr(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{
@@ -1081,7 +1081,7 @@ namespace xcore
 		template <>
 		inline bool		atom_int_type<u64>::bit_test_chg(u32 n)
 		{
-			s64 const i = (1<<n);
+			s64 const i = ((s64)1<<n);
 			register u64 old;
 			do
 			{

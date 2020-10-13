@@ -4,7 +4,7 @@
 
 #include "xatomic/x_lifo.h"
 
-extern xcore::x_iallocator* gAtomicAllocator;
+extern xcore::xalloc* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(lifo)
 {

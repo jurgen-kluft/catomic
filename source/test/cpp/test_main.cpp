@@ -17,52 +17,45 @@ UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mbufpool);
 
 namespace xcore
 {
-	class TestHeapAllocator : public x_iallocator
+	class TestHeapAllocator : public xalloc
 	{
 	public:
-							TestHeapAllocator(xcore::x_iallocator* allocator) : mAllocator(allocator) { 		}
+							TestHeapAllocator(xcore::xalloc* allocator) : mAllocator(allocator) { 		}
 
-		virtual const char*	name() const	{ return "xthread unittest test heap allocator"; }
-
-		virtual void*		allocate(xsize_t size, u32 alignment)
+		virtual void*		v_allocate(u32 size, u32 alignment)
 		{
 			UnitTest::IncNumAllocations();
 			return mAllocator->allocate(size, alignment);
 		}
 
-		virtual void*		reallocate(void* mem, xsize_t size, u32 alignment)
-		{
-			return mAllocator->reallocate(mem, size, alignment);
-		}
-
-		virtual void		deallocate(void* mem)
+		virtual u32			v_deallocate(void* mem)
 		{
 			UnitTest::DecNumAllocations();
-			mAllocator->deallocate(mem);
+			return mAllocator->deallocate(mem);
 		}
 
-		virtual void		release()		{ }
+		virtual void		v_release()		{ }
 	private:
-		xcore::x_iallocator*	mAllocator;
+		xcore::xalloc*	mAllocator;
 	};
 }
 
 class UnitTestAllocator : public UnitTest::Allocator
 {
 public:
-					UnitTestAllocator(xcore::x_iallocator* allocator) : mAllocator(allocator) {}
-	virtual void*	Allocate(size_t size)		{ return mAllocator->allocate(size, 4);}
-	virtual void	Deallocate(void* ptr)		{ mAllocator->deallocate(ptr); }
+					UnitTestAllocator(xcore::xalloc* allocator) : mAllocator(allocator) {}
+	virtual void*	Allocate(size_t size)		{ return mAllocator->allocate((xcore::u32)size, 4);}
+	virtual size_t	Deallocate(void* ptr)		{ return mAllocator->deallocate(ptr); }
 private:
-	xcore::x_iallocator*	mAllocator;
+	xcore::xalloc*	mAllocator;
 };
 
-xcore::x_iallocator* gSystemAllocator = NULL;
-xcore::x_iallocator* gAtomicAllocator = NULL;
+xcore::xalloc* gSystemAllocator = NULL;
+xcore::xalloc* gAtomicAllocator = NULL;
 
 bool gRunUnitTest(UnitTest::TestReporter& reporter)
 {
-	gSystemAllocator = xcore::gCreateSystemAllocator();
+	gSystemAllocator = xcore::xalloc::get_system();
 	UnitTestAllocator unittestAllocator( gSystemAllocator );
 	UnitTest::SetAllocator(&unittestAllocator);
 

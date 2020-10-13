@@ -12,7 +12,7 @@
 
 namespace xcore
 {
-	class x_iallocator;
+	class xalloc;
 
 	namespace atomic
 	{
@@ -40,11 +40,6 @@ namespace xcore
 				volatile u32 next;
 			};
 
-#ifdef TARGET_TEST
-		public:
-#else
-		protected:
-#endif
 			union state 
 			{
 				volatile u64 next_salt64;
@@ -70,7 +65,7 @@ namespace xcore
 			state		_tail;
 			link*		_chain;
 			u32			_max_size;
-			x_iallocator* _allocator;
+			xalloc* _allocator;
 
 		public:
 			/**
@@ -92,7 +87,7 @@ namespace xcore
 			* Complete initialization.
 			* Note: fifo uses a dummy item, so if you want a fifo of 16 items you need to create 17 items and pass uSize=17
 			*/
-			bool		init(x_iallocator* allocator, u32 uSize);
+			bool		init(xalloc* allocator, u32 uSize);
 
 			/**
 			* Create empty lifo. It can be initialized lated by calling init().

@@ -1,5 +1,6 @@
 #include "xbase/x_allocator.h"
-#include "xbase/x_string_ascii.h"
+#include "xbase/x_runes.h"
+#include "xbase/x_printf.h"
 
 #include "xatomic/private/x_compiler.h"
 #include "xatomic/x_mbufpool.h"
@@ -53,11 +54,11 @@ namespace xcore
 
 			void pool::dump()
 			{
-				x_printf("Available mbufs %u\n",   _head->size());
-				x_printf("Available buffers %u\n", _data->size());
+				ascii::printf(ascii::crunes("Available mbufs %u\n"),   x_va(_head->size()));
+				ascii::printf(ascii::crunes("Available buffers %u\n"), x_va(_data->size()));
 			}
 
-	 		pool::pool(x_iallocator* allocator, u32 data_size, u32 size, u8 factor)
+	 		pool::pool(xalloc* allocator, u32 data_size, u32 size, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;
@@ -75,7 +76,7 @@ namespace xcore
 				_extern = false;
 			}
 
-			pool::pool(x_iallocator* allocator, u32 data_size, u8 *buf, u32 bsize, u8 factor)
+			pool::pool(xalloc* allocator, u32 data_size, u8 *buf, u32 bsize, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;
@@ -95,7 +96,7 @@ namespace xcore
 				_extern = false;
 			}
 
-			pool::pool(x_iallocator* allocator, mempool *mp, u8 factor)
+			pool::pool(xalloc* allocator, mempool *mp, u8 factor)
 				: allocator(allocator)
 			{
 				_allocator = allocator;

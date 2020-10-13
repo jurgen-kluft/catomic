@@ -13,7 +13,7 @@ struct xnode_dll
 	xcore::u32		mData;
 };
 
-extern xcore::x_iallocator* gAtomicAllocator;
+extern xcore::xalloc* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(fifo)
 {
