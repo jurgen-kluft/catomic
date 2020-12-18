@@ -17,7 +17,7 @@ namespace xcore
 			mExtern = false;
 		}
 
-		bool mempool::init(xalloc* allocator, u32 mempool_esize, u32 size)
+		bool mempool::init(alloc_t* allocator, u32 mempool_esize, u32 size)
 		{
 			mAllocator = allocator;
 
@@ -42,7 +42,7 @@ namespace xcore
 			return true;
 		}
 
-		bool mempool::init(xalloc* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
+		bool mempool::init(alloc_t* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size)
 		{
 			u32 csize = xalignUp(mempool_esize, 4);
 

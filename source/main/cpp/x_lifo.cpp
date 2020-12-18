@@ -12,7 +12,7 @@ namespace xcore
 			clear();
 		}
 
-		bool lifo::init(xalloc* allocator, u32 size)
+		bool lifo::init(alloc_t* allocator, u32 size)
 		{
 			link* c = (link*)allocator->allocate(sizeof(link) * size, 4);
 			bool res = init(c, size);

@@ -14,7 +14,7 @@
 
 namespace xcore
 {
-	class xalloc;
+	class alloc_t;
 
 	namespace atomic
 	{
@@ -29,9 +29,9 @@ namespace xcore
 			*/ 
 			class allocator
 			{
-				xalloc*	_allocator;
+				alloc_t*	_allocator;
 			public:
-				allocator(xalloc* allocator) : _allocator(allocator)		{ }
+				allocator(alloc_t* allocator) : _allocator(allocator)		{ }
 
 				virtual			~allocator()									{ }
 

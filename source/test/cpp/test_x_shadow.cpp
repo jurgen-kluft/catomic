@@ -4,7 +4,7 @@
 
 #include "xatomic/x_shadow.h"
 
-extern xcore::xalloc* gAtomicAllocator;
+extern xcore::alloc_t* gAtomicAllocator;
 
 using namespace xcore;
 using namespace atomic;

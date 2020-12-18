@@ -14,13 +14,13 @@ namespace xcore
 {
 	namespace atomic
 	{
-		extern xalloc*	sGetAllocator();
+		extern alloc_t*	sGetAllocator();
 
 		/**
 		 * The object type needs to support placement new
 		 */
 		template<typename T>
-		inline T*	allocate_array(xalloc* allocator, xcore::u32 num_items)
+		inline T*	allocate_array(alloc_t* allocator, xcore::u32 num_items)
 		{
 			s32 total_size = num_items * sizeof(T);
 			void* _mem = allocator->allocate(total_size, 8);
@@ -34,7 +34,7 @@ namespace xcore
 		}
 
 		template<typename T>
-		inline void	deallocate_array(xalloc* allocator, T* _array, xcore::u32 num_items)
+		inline void	deallocate_array(alloc_t* allocator, T* _array, xcore::u32 num_items)
 		{
 			for (xcore::u32 i=0; i<num_items; ++i)
 			{
@@ -45,7 +45,7 @@ namespace xcore
 		}
 
 		template<typename T>
-		inline void construct_object(xalloc* allocator, T*& p, s32 alignment = 4)
+		inline void construct_object(alloc_t* allocator, T*& p, s32 alignment = 4)
 		{
 			s32 total_size = sizeof(T);
 			void* _mem = allocator->allocate(total_size, alignment);
@@ -53,7 +53,7 @@ namespace xcore
 		}
 		
 		template<typename T>
-		inline void destruct_object(xalloc* allocator, T*& p)
+		inline void destruct_object(alloc_t* allocator, T*& p)
 		{
 			p->~T();
 			allocator->deallocate(p);
@@ -61,7 +61,7 @@ namespace xcore
 		}
 
 		template<typename T>
-		inline void* allocate_object(xalloc* allocator, s32 alignment = 4)
+		inline void* allocate_object(alloc_t* allocator, s32 alignment = 4)
 		{
 			s32 total_size = sizeof(T);
 			void* _mem = allocator->allocate(total_size, alignment);
@@ -69,7 +69,7 @@ namespace xcore
 		}
 
 		template<typename T>
-		inline void deallocate_object(xalloc* allocator, T*& p)
+		inline void deallocate_object(alloc_t* allocator, T*& p)
 		{
 			allocator->deallocate(p);
 			p = NULL;

@@ -5,7 +5,7 @@
 #include "xatomic/x_mbufpool.h"
 #include "xatomic/x_mbuf.h"
 
-extern xcore::xalloc* gAtomicAllocator;
+extern xcore::alloc_t* gAtomicAllocator;
 
 // #include <iostream>
 // using namespace std;

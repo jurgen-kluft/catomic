@@ -5,9 +5,9 @@ namespace xcore
 {
 	namespace atomic
 	{
-		static xalloc* sAllocator = NULL;
+		static alloc_t* sAllocator = NULL;
 
-		void		x_Init(xalloc* allocator)
+		void		x_Init(alloc_t* allocator)
 		{
 			sAllocator = allocator;
 		}
@@ -17,7 +17,7 @@ namespace xcore
 			sAllocator = NULL;
 		}
 
-		xalloc*	sGetAllocator()
+		alloc_t*	sGetAllocator()
 		{
 			return sAllocator;
 		}

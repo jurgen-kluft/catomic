@@ -11,7 +11,7 @@ namespace xcore
 			clear();
 		}
 
-		bool fifo::init(xalloc* allocator, u32 size)
+		bool fifo::init(alloc_t* allocator, u32 size)
 		{
 			_max_size = 0;
 			_chain = (link*)allocator->allocate(sizeof(link) * (size + 1), 4);

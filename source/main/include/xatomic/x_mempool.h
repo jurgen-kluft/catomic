@@ -15,7 +15,7 @@
 
 namespace xcore
 {
-	class xalloc;
+	class alloc_t;
 
 	namespace atomic
 	{
@@ -28,7 +28,7 @@ namespace xcore
 		class mempool
 		{
 		protected:
-			xalloc*	mAllocator;
+			alloc_t*	mAllocator;
 			lifo			mLifo;
 			xbyte*			mBuffer;
 			u32				mCsize;
@@ -54,7 +54,7 @@ namespace xcore
 			* @param mempool_esize size of an element (chunk)
 			* @param size number of chunks in the pool
 			*/
-			bool		init(xalloc* allocator, u32 mempool_esize, u32 size);
+			bool		init(alloc_t* allocator, u32 mempool_esize, u32 size);
 
 			/**
 			* Init.
@@ -64,7 +64,7 @@ namespace xcore
 			* @param mempool_buf pointer to an existing buffer
 			* @param mempool_size size of the buffer
 			*/
-			bool		init(xalloc* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
+			bool		init(alloc_t* allocator, u32 mempool_esize, xbyte *mempool_buf, u32 mempool_size);
 
 			/**
 			* Init.

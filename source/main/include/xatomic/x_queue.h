@@ -41,7 +41,7 @@ namespace xcore
 			* Allocates memory pool and fifo.
 			* @param size number of items for the queue
 			*/
-			bool		init(xalloc* allocator, u32 size);
+			bool		init(alloc_t* allocator, u32 size);
 
 			/**
 			* Init.
@@ -278,7 +278,7 @@ namespace xcore
 					mPool.put(i);
 			}
 
-			xalloc*	mAllocator;
+			alloc_t*	mAllocator;
 			mempool			mPool;
 			fifo			mFifo;
 			atom_s32*		mRef;
@@ -286,7 +286,7 @@ namespace xcore
 
 
 		template <typename T>
-		bool		queue<T>::init(xalloc* allocator, u32 size)
+		bool		queue<T>::init(alloc_t* allocator, u32 size)
 		{
 			mAllocator = allocator;
 

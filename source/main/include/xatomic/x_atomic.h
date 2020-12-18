@@ -7,7 +7,7 @@
 
 namespace xcore
 {
-	class xalloc;
+	class alloc_t;
 
 	namespace atomic
 	{
@@ -19,7 +19,7 @@ namespace xcore
 		//-------------------------------------------------------------------------------------
 		// atomic library init/exit
 		//-------------------------------------------------------------------------------------
-		extern void		x_Init(xalloc* allocator);
+		extern void		x_Init(alloc_t* allocator);
 		extern void		x_Exit();
 
 		//-------------------------------------------------------------------------------------

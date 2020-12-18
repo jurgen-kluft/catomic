@@ -17,10 +17,10 @@ UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mbufpool);
 
 namespace xcore
 {
-	class TestHeapAllocator : public xalloc
+	class TestHeapAllocator : public alloc_t
 	{
 	public:
-							TestHeapAllocator(xcore::xalloc* allocator) : mAllocator(allocator) { 		}
+							TestHeapAllocator(xcore::alloc_t* allocator) : mAllocator(allocator) { 		}
 
 		virtual void*		v_allocate(u32 size, u32 alignment)
 		{
@@ -36,26 +36,26 @@ namespace xcore
 
 		virtual void		v_release()		{ }
 	private:
-		xcore::xalloc*	mAllocator;
+		xcore::alloc_t*	mAllocator;
 	};
 }
 
 class UnitTestAllocator : public UnitTest::Allocator
 {
 public:
-					UnitTestAllocator(xcore::xalloc* allocator) : mAllocator(allocator) {}
+					UnitTestAllocator(xcore::alloc_t* allocator) : mAllocator(allocator) {}
 	virtual void*	Allocate(size_t size)		{ return mAllocator->allocate((xcore::u32)size, 4);}
 	virtual size_t	Deallocate(void* ptr)		{ return mAllocator->deallocate(ptr); }
 private:
-	xcore::xalloc*	mAllocator;
+	xcore::alloc_t*	mAllocator;
 };
 
-xcore::xalloc* gSystemAllocator = NULL;
-xcore::xalloc* gAtomicAllocator = NULL;
+xcore::alloc_t* gSystemAllocator = NULL;
+xcore::alloc_t* gAtomicAllocator = NULL;
 
 bool gRunUnitTest(UnitTest::TestReporter& reporter)
 {
-	gSystemAllocator = xcore::xalloc::get_system();
+	gSystemAllocator = xcore::alloc_t::get_system();
 	UnitTestAllocator unittestAllocator( gSystemAllocator );
 	UnitTest::SetAllocator(&unittestAllocator);
 
