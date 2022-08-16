@@ -1,8 +1,8 @@
-#include "xbase/x_allocator.h"
+#include "cbase/c_allocator.h"
 
-#include "xunittest/xunittest.h"
+#include "cunittest/xunittest.h"
 
-#include "xatomic/x_shadow.h"
+#include "catomic/c_shadow.h"
 
 extern xcore::alloc_t* gAtomicAllocator;
 

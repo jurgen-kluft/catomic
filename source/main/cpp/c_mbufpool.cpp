@@ -1,11 +1,11 @@
-#include "xbase/x_allocator.h"
-#include "xbase/x_runes.h"
-#include "xbase/x_printf.h"
+#include "cbase/c_allocator.h"
+#include "cbase/c_runes.h"
+#include "cbase/c_printf.h"
 
-#include "xatomic/private/x_compiler.h"
-#include "xatomic/x_mbufpool.h"
+#include "catomic/private/c_compiler.h"
+#include "catomic/c_mbufpool.h"
 
-#include "xatomic/private/x_allocator.h"
+#include "catomic/private/c_allocator.h"
 
 namespace xcore
 {

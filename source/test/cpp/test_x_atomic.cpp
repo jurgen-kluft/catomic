@@ -1,6 +1,6 @@
-#include "xunittest/xunittest.h"
+#include "cunittest/xunittest.h"
 
-#include "xatomic/x_atomic.h"
+#include "catomic/c_atomic.h"
 
 UNITTEST_SUITE_BEGIN(atomic)
 {

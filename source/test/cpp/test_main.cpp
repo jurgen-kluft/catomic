@@ -1,8 +1,8 @@
-#include "xbase/x_target.h"
-#include "xbase/x_allocator.h"
-#include "xunittest/xunittest.h"
+#include "cbase/c_target.h"
+#include "cbase/c_allocator.h"
+#include "cunittest/xunittest.h"
 
-#include "xatomic/x_atomic.h"
+#include "catomic/c_atomic.h"
 
 UNITTEST_SUITE_LIST(xAtomicUnitTest);
 UNITTEST_SUITE_DECLARE(xAtomicUnitTest, atomic);

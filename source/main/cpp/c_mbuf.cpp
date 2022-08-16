@@ -1,8 +1,8 @@
-#include "xbase/x_memory.h"
+#include "cbase/c_memory.h"
 
-#include "xatomic/private/x_allocator.h"
-#include "xatomic/private/x_compiler.h"
-#include "xatomic/x_mbuf.h"
+#include "catomic/private/c_allocator.h"
+#include "catomic/private/c_compiler.h"
+#include "catomic/c_mbuf.h"
 
 namespace xcore
 {

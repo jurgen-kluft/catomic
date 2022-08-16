@@ -1,6 +1,6 @@
-#include "xatomic/private/x_compiler.h"
-#include "xatomic/x_mbuf.h"
-#include "xatomic/private/x_mbufqueue.h"
+#include "catomic/private/c_compiler.h"
+#include "catomic/c_mbuf.h"
+#include "catomic/private/c_mbufqueue.h"
 
 namespace xcore
 {

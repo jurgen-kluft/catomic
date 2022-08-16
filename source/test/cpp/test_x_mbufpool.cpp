@@ -1,9 +1,9 @@
-#include "xbase/x_allocator.h"
+#include "cbase/c_allocator.h"
 
-#include "xunittest/xunittest.h"
+#include "cunittest/xunittest.h"
 
-#include "xatomic/x_mbufpool.h"
-#include "xatomic/x_mbuf.h"
+#include "catomic/c_mbufpool.h"
+#include "catomic/c_mbuf.h"
 
 extern xcore::alloc_t* gAtomicAllocator;
 
