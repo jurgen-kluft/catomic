@@ -1,9 +1,3 @@
-/**
- * @file xatomic\private\atomic-x86.h
- * X86 (32 and 64 bit) specific implementation of the atomic operations.
- * @warning Do not include this header file directly. Include "xatomic\atomic.h" instead.
- */
-
 // Windows includes first
 #define WIN32_LEAN_AND_MEAN
 #define NOGDI

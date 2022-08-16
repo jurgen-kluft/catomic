@@ -16,11 +16,6 @@ namespace xcore
 		// atomic queue using linked list
 		// atomic stack using linked list
 
-		//-------------------------------------------------------------------------------------
-		// atomic library init/exit
-		//-------------------------------------------------------------------------------------
-		extern void		x_Init(alloc_t* allocator);
-		extern void		x_Exit();
 
 		//-------------------------------------------------------------------------------------
 		// atomic integers, forward declare
