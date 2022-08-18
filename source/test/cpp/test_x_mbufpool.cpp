@@ -1,6 +1,6 @@
 #include "cbase/c_allocator.h"
 
-#include "cunittest/xunittest.h"
+#include "cunittest/cunittest.h"
 
 #include "catomic/c_mbufpool.h"
 #include "catomic/c_mbuf.h"

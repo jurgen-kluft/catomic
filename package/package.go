@@ -1,30 +1,30 @@
-package xatomic
+package catomic
 
 import (
+	cbase "github.com/jurgen-kluft/cbase/package"
 	"github.com/jurgen-kluft/ccode/denv"
-	"github.com/jurgen-kluft/xbase/package"
-	"github.com/jurgen-kluft/xentry/package"
+	centry "github.com/jurgen-kluft/centry/package"
 )
 
-// GetPackage returns the package object of 'xatomic'
+// GetPackage returns the package object of 'catomic'
 func GetPackage() *denv.Package {
 	// Dependencies
-	unittestpkg := xunittest.GetPackage()
-	entrypkg := xentry.GetPackage()
-	basepkg := xbase.GetPackage()
+	unittestpkg := cunittest.GetPackage()
+	entrypkg := centry.GetPackage()
+	basepkg := cbase.GetPackage()
 
-	// The main (xatomic) package
-	mainpkg := denv.NewPackage("xatomic")
+	// The main (catomic) package
+	mainpkg := denv.NewPackage("catomic")
 	mainpkg.AddPackage(unittestpkg)
 	mainpkg.AddPackage(entrypkg)
 	mainpkg.AddPackage(basepkg)
 
-	// 'xatomic' library
-	mainlib := denv.SetupDefaultCppLibProject("xatomic", "github.com\\jurgen-kluft\\xatomic")
+	// 'catomic' library
+	mainlib := denv.SetupDefaultCppLibProject("catomic", "github.com\\jurgen-kluft\\catomic")
 	mainlib.Dependencies = append(mainlib.Dependencies, basepkg.GetMainLib())
 
-	// 'xatomic' unittest project
-	maintest := denv.SetupDefaultCppTestProject("xatomic_test", "github.com\\jurgen-kluft\\xatomic")
+	// 'catomic' unittest project
+	maintest := denv.SetupDefaultCppTestProject("catomic_test", "github.com\\jurgen-kluft\\catomic")
 	maintest.Dependencies = append(maintest.Dependencies, unittestpkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, entrypkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, basepkg.GetMainLib())

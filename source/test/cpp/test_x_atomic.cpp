@@ -1,4 +1,4 @@
-#include "cunittest/xunittest.h"
+#include "cunittest/cunittest.h"
 
 #include "catomic/c_atomic.h"
 
