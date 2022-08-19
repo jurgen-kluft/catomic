@@ -1,10 +1,10 @@
 package main
 
 import (
-	xatomic "github.com/jurgen-kluft/xatomic/package"
+	cpkg "github.com/jurgen-kluft/catomic/package"
+	ccode "github.com/jurgen-kluft/ccode"
 )
 
 func main() {
-	xcode.Init()
-	xcode.Generate(xatomic.GetPackage())
+	ccode.Generate(cpkg.GetPackage())
 }
