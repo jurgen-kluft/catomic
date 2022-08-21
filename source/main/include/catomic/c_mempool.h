@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_MEMPOOL_H__
-#define __XMULTICORE_MEMPOOL_H__
+#ifndef __CMULTICORE_MEMPOOL_H__
+#define __CMULTICORE_MEMPOOL_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -177,4 +177,4 @@ namespace xcore
 	} // namespace atomic
 } // namespace xcore
 
-#endif // __XMULTICORE_MEMPOOL_H__
+#endif // __CMULTICORE_MEMPOOL_H__

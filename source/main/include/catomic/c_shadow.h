@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_SHADOW_H__
-#define __XMULTICORE_SHADOW_H__
+#ifndef __CMULTICORE_SHADOW_H__
+#define __CMULTICORE_SHADOW_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -110,4 +110,4 @@ namespace xcore
 	}
 } // namespace xcore
 
-#endif // __XMULTICORE_SHADOW_H__
+#endif // __CMULTICORE_SHADOW_H__

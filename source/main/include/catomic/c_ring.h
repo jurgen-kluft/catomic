@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_RING_H__
-#define __XMULTICORE_RING_H__
+#ifndef __CMULTICORE_RING_H__
+#define __CMULTICORE_RING_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -412,4 +412,4 @@ namespace xcore
 	}
 } // namespace xcore
 
-#endif // __XMULTICORE_RING_H__
+#endif // __CMULTICORE_RING_H__

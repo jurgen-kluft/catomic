@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_COMPILER_H__
-#define __XMULTICORE_COMPILER_H__
+#ifndef __CMULTICORE_COMPILER_H__
+#define __CMULTICORE_COMPILER_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -25,5 +25,5 @@
 
 
 
-#endif // __XMULTICORE_COMPILER_H__
+#endif // __CMULTICORE_COMPILER_H__
 

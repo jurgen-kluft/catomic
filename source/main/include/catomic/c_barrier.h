@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_BARRIER_H__
-#define __XMULTICORE_BARRIER_H__
+#ifndef __CMULTICORE_BARRIER_H__
+#define __CMULTICORE_BARRIER_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -44,4 +44,4 @@ namespace xcore
 	#error Unsupported CPU
 #endif
 
-#endif // __XMULTICORE_BARRIER_H__
+#endif // __CMULTICORE_BARRIER_H__

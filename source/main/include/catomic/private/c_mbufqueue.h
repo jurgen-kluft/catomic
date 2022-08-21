@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_MBUF_QUEUE_H__
-#define __XMULTICORE_MBUF_QUEUE_H__
+#ifndef __CMULTICORE_MBUF_QUEUE_H__
+#define __CMULTICORE_MBUF_QUEUE_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -152,4 +152,4 @@ namespace xcore
 	} // namespace atomic
 } // namespace xcore
 
-#endif // __XMULTICORE_MBUF_QUEUE_H__
+#endif // __CMULTICORE_MBUF_QUEUE_H__

@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_DLIST_H__
-#define __XMULTICORE_DLIST_H__
+#ifndef __CMULTICORE_DLIST_H__
+#define __CMULTICORE_DLIST_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -327,4 +327,4 @@ namespace xcore
 	} // namespace dlist
 } // namespace xcore
 
-#endif ///< __XMULTICORE_DLIST_H__
+#endif ///< __CMULTICORE_DLIST_H__

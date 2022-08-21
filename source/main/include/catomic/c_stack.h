@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_STACK_H__
-#define __XMULTICORE_STACK_H__
+#ifndef __CMULTICORE_STACK_H__
+#define __CMULTICORE_STACK_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -212,4 +212,4 @@ namespace xcore
 
 } // namespace xcore
 
-#endif // __XMULTICORE_STACK_H__
+#endif // __CMULTICORE_STACK_H__

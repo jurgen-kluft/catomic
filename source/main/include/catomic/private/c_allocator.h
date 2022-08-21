@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_ALLOCATION_PRIVATE_H__
-#define __XMULTICORE_ALLOCATION_PRIVATE_H__
+#ifndef __CMULTICORE_ALLOCATION_PRIVATE_H__
+#define __CMULTICORE_ALLOCATION_PRIVATE_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -88,4 +88,4 @@ namespace xcore
 //==============================================================================
 // END
 //==============================================================================
-#endif    ///< __XMULTICORE_ALLOCATION_PRIVATE_H__
+#endif    ///< __CMULTICORE_ALLOCATION_PRIVATE_H__

@@ -1,5 +1,5 @@
-#ifndef __XMULTICORE_ATOMIC_H__
-#define __XMULTICORE_ATOMIC_H__
+#ifndef __CMULTICORE_ATOMIC_H__
+#define __CMULTICORE_ATOMIC_H__
 #include "cbase/c_target.h"
 #ifdef USE_PRAGMA_ONCE 
 #pragma once 
@@ -115,4 +115,4 @@ namespace xcore
 
 
 
-#endif // __XMULTICORE_ATOMIC_H__
+#endif // __CMULTICORE_ATOMIC_H__
