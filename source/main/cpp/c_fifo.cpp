@@ -2,7 +2,7 @@
 
 #include "catomic/c_fifo.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -95,4 +95,4 @@ namespace xcore
 			return ipop(i, r);
 		}
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

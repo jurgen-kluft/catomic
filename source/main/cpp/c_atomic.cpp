@@ -1,10 +1,10 @@
 #include "cbase/c_allocator.h"
 
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
 
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

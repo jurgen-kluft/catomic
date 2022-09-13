@@ -8,7 +8,7 @@
 #include "catomic/c_mempool.h"
 #include "catomic/c_mbuf.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -84,6 +84,6 @@ namespace xcore
 			};
 		} // namespace mbuf
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_MBUFPOOL_H__

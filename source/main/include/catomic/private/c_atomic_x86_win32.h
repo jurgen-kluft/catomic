@@ -5,7 +5,7 @@
 #define NOKANJI
 #include <windows.h>
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{

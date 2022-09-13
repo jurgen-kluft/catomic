@@ -10,7 +10,7 @@
 #include "catomic/c_atomic.h"
 #include "catomic/c_barrier.h"
 
-namespace xcore
+namespace ncore
 {
 	class alloc_t;
 
@@ -311,6 +311,6 @@ namespace xcore
 			return true;
 		}
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_FIFO_H__

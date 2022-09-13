@@ -13,7 +13,7 @@
 #include "catomic/c_lifo.h"
 #include "catomic/c_barrier.h"
 
-namespace xcore
+namespace ncore
 {
 	class alloc_t;
 
@@ -175,6 +175,6 @@ namespace xcore
 			bool		valid();
 		};
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_MEMPOOL_H__

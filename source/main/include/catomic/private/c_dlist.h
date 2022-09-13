@@ -34,7 +34,7 @@
 *   Most list operations can be done without having to know the actual head.
 */
 
-namespace xcore
+namespace ncore
 {
 	namespace dlist
 	{
@@ -325,6 +325,6 @@ namespace xcore
 		}
 
 	} // namespace dlist
-} // namespace xcore
+} // namespace ncore
 
 #endif ///< __CMULTICORE_DLIST_H__

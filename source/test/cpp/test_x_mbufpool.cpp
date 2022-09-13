@@ -10,7 +10,7 @@ extern xcore::alloc_t* gAtomicAllocator;
 // #include <iostream>
 // using namespace std;
 
-using namespace xcore;
+using namespace ncore;
 using namespace atomic;
 using namespace mbuf;
 

@@ -5,7 +5,7 @@
 #pragma once 
 #endif
 
-namespace xcore
+namespace ncore
 {
 	class alloc_t;
 

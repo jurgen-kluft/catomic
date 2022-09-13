@@ -2,7 +2,7 @@
 
 #include "catomic/c_lifo.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -75,4 +75,4 @@ namespace xcore
 			return ipop(i);
 		}
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

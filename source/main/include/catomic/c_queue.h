@@ -14,7 +14,7 @@
 #include "catomic/c_mempool.h"
 #include "catomic/c_atomic.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -369,6 +369,6 @@ namespace xcore
 
 
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_QUEUE_H__

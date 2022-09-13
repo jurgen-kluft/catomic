@@ -5,7 +5,7 @@
 #include "catomic/c_atomic.h"
 #include "catomic/c_mempool.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -107,4 +107,4 @@ namespace xcore
 // 			return mLifo.room();
 // 		}
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

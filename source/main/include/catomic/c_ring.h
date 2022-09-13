@@ -12,7 +12,7 @@
 #include "catomic/private/c_compiler.h"
 #include "catomic/c_barrier.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -410,6 +410,6 @@ namespace xcore
 			};
 		};
 	}
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_RING_H__

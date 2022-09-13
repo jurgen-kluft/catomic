@@ -6,7 +6,7 @@
 
 extern xcore::alloc_t* gAtomicAllocator;
 
-using namespace xcore;
+using namespace ncore;
 using namespace atomic;
 
 /************************************************************************/

@@ -11,7 +11,7 @@
 #include <PPCIntrinsics.h>
 #endif
 
-namespace xcore
+namespace ncore
 {
 	/**
 	 * We're using inline function here instead of #defines to avoid name space clashes.

@@ -2,7 +2,7 @@
 #include "catomic/c_mbuf.h"
 #include "catomic/private/c_mbufqueue.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -34,4 +34,4 @@ namespace xcore
 			}
 		} // namespace mbuf
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

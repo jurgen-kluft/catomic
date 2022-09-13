@@ -12,7 +12,7 @@
 #include "catomic/c_lifo.h"
 #include "catomic/c_mempool.h"
 
-namespace xcore
+namespace ncore
 {
 	class alloc_t;
 
@@ -210,6 +210,6 @@ namespace xcore
 
 	} // namespace atomic
 
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_STACK_H__

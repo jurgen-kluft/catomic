@@ -15,7 +15,7 @@ UNITTEST_SUITE_DECLARE(xAtomicUnitTest, shadow);
 UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mempool);
 UNITTEST_SUITE_DECLARE(xAtomicUnitTest, mbufpool);
 
-namespace xcore
+namespace ncore
 {
 	class TestHeapAllocator : public alloc_t
 	{

@@ -7,7 +7,7 @@
 
 #include "catomic/private/c_allocator.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -128,4 +128,4 @@ namespace xcore
 			}
 		} // namespace mbuf
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore

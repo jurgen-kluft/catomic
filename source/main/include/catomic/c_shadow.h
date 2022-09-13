@@ -10,7 +10,7 @@
 #include "catomic/private/c_allocator.h"
 #include "catomic/c_barrier.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -108,6 +108,6 @@ namespace xcore
 			void		write(const T &v)													{ write(&v); }
 		};
 	}
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_SHADOW_H__

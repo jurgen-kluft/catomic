@@ -4,7 +4,7 @@
  * @warning do not include directly. @see xatomic\x_barrier.h
  */
 
-namespace xcore
+namespace ncore
 {
 	/**
 	 * We're using inline function here instead of #defines to avoid name space clashes.

@@ -12,7 +12,7 @@
 #include "catomic/c_atomic.h"
 #include "catomic/private/c_compiler.h"
 
-namespace xcore
+namespace ncore
 {
 	class alloc_t;
 
@@ -490,6 +490,6 @@ namespace xcore
 
 		} // namespace mbuf
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
 
 #endif // __CMULTICORE_MBUF_H__

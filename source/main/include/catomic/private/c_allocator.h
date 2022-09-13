@@ -10,7 +10,7 @@
 /**
  * xatomic namespace
  */
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{

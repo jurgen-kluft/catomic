@@ -4,7 +4,7 @@
 #include "catomic/private/c_compiler.h"
 #include "catomic/c_mbuf.h"
 
-namespace xcore
+namespace ncore
 {
 	namespace atomic
 	{
@@ -84,4 +84,4 @@ namespace xcore
 
 		} // namespace mbuf
 	} // namespace atomic
-} // namespace xcore
+} // namespace ncore
