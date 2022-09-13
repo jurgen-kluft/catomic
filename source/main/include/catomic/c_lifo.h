@@ -58,7 +58,7 @@ namespace ncore
 				volatile u64 next_salt64;
 				struct
 				{
-#ifdef X_LITTLE_ENDIAN
+#ifdef D_LITTLE_ENDIAN
 					vu32	next;
 					vu32	salt;
 #else

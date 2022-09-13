@@ -297,7 +297,7 @@ namespace ncore
 					head *mb = _allocator->allocate_head();
 					if (likely(mb != 0))
 					{
-						x_memcpy(mb, this, sizeof(*this));
+						nmem::memcpy(mb, this, sizeof(*this));
 						mb->_refcnt.set(1);
 						mb->_shared->refcnt.incr();
 					}
@@ -364,7 +364,7 @@ namespace ncore
 					u8 *p = put(len);
 					if (unlikely(p == 0))
 						return false;
-					x_memcpy(p, data, len);
+					nmem::memcpy(p, data, len);
 					return true;
 				}
 
@@ -382,7 +382,7 @@ namespace ncore
 					if (unlikely(p == 0))
 						return false;
 
-					x_memcpy(p, m->data(), m->len());
+					nmem::memcpy(p, m->data(), m->len());
 					return true;
 				}
 

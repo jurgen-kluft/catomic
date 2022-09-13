@@ -45,7 +45,7 @@ namespace ncore
 				volatile u64 next_salt64;
 				struct
 				{
-#ifdef X_LITTLE_ENDIAN
+#ifdef D_LITTLE_ENDIAN
 					volatile u32 next;		// low u32, little endian will swap into the low word of a u64
 					volatile u32 salt;		// high u32
 #else
