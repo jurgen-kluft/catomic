@@ -4,7 +4,7 @@
 
 #include "catomic/c_lifo.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(lifo)
 {
@@ -15,12 +15,12 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(construct1)
 		{
-			xcore::atomic::lifo f;
+			ncore::atomic::lifo f;
 		}
 
 		UNITTEST_TEST(construct2)
 		{
-			xcore::atomic::lifo f;
+			ncore::atomic::lifo f;
 			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
@@ -29,19 +29,19 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(fill)
 		{
-			xcore::atomic::lifo f;
+			ncore::atomic::lifo f;
 			f.init(gAtomicAllocator, 16);
 			f.fill();
 
 			CHECK_EQUAL(false, f.empty());
 			CHECK_EQUAL(0, f.room());
 
-			xcore::u32 ii = 0;
-			xcore::u32 rr = 0;
-			for (xcore::s32 x=0; !f.empty(); ++x)
+			ncore::u32 ii = 0;
+			ncore::u32 rr = 0;
+			for (ncore::s32 x=0; !f.empty(); ++x)
 			{
 				CHECK_EQUAL(x, f.room());
-				xcore::u32 i,r;
+				ncore::u32 i,r;
 				CHECK_EQUAL(true, f.pop(i, r));
 				CHECK_EQUAL(ii, i);
 				CHECK_EQUAL(rr, r);
@@ -52,15 +52,15 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(push1_pop1)
 		{
-			xcore::u32 i, r;
-			xcore::atomic::lifo f;
+			ncore::u32 i, r;
+			ncore::atomic::lifo f;
 			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32 x = 0;
-			for (xcore::s32 y=0; y<100; ++y, ++x)
+			ncore::s32 x = 0;
+			for (ncore::s32 y=0; y<100; ++y, ++x)
 			{
 				if (x == 16) x = 0;
 
@@ -77,15 +77,15 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(push2_pop2)
 		{
-			xcore::u32 i, r;
-			xcore::atomic::lifo f;
+			ncore::u32 i, r;
+			ncore::atomic::lifo f;
 			f.init(gAtomicAllocator, 16);
 
 			CHECK_EQUAL(true, f.empty());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32 x = 0;
-			for (xcore::s32 y=0; y<100; ++y, x+=2)
+			ncore::s32 x = 0;
+			for (ncore::s32 y=0; y<100; ++y, x+=2)
 			{
 				// Push 2
 
@@ -117,7 +117,7 @@ UNITTEST_SUITE_BEGIN(lifo)
 
 		UNITTEST_TEST(push_full)
 		{
-			xcore::atomic::lifo f;
+			ncore::atomic::lifo f;
 			f.init(gAtomicAllocator, 4);
 
 			CHECK_EQUAL(true, f.empty());

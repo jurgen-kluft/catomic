@@ -242,7 +242,7 @@ namespace ncore
 				if (n == LAST) 
 				{
 					// Try to link this element to the tail element
-					if (cas_u32((xcore::u32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
+					if (cas_u32((ncore::u32 volatile*)&_chain[t.next_salt32.next].next, LAST, i))
 						break;
 				} 
 				else

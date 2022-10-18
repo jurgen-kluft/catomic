@@ -4,7 +4,7 @@
 
 #include "catomic/c_ring.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(ring)
 {
@@ -15,7 +15,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		UNITTEST_TEST(construct1)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 1);
 			CHECK_TRUE(f.valid());
 
@@ -26,7 +26,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		UNITTEST_TEST(construct2)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -37,7 +37,7 @@ UNITTEST_SUITE_BEGIN(ring)
 		
 		UNITTEST_TEST(push_begin)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -45,13 +45,13 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 			f.push_cancel(i1);
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -60,7 +60,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		UNITTEST_TEST(push_cancel)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -68,7 +68,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -76,7 +76,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -87,7 +87,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		UNITTEST_TEST(push_commit)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -95,7 +95,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -103,7 +103,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
@@ -117,7 +117,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		UNITTEST_TEST(push)
 		{
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -139,7 +139,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(12, f.room());
 
-			xcore::s32 i;
+			ncore::s32 i;
 			f.pop(i);
 			CHECK_EQUAL(55, i);
 			f.pop(i);
@@ -155,7 +155,7 @@ UNITTEST_SUITE_BEGIN(ring)
 
 		struct ringData
 		{
-			xcore::atomic::ring<xcore::s32>::node*	items;
+			ncore::atomic::ring<ncore::s32>::node*	items;
 
 			ringData()
 				: items(NULL)	{ }
@@ -166,9 +166,9 @@ UNITTEST_SUITE_BEGIN(ring)
 			}
 		};
 
-		static bool sInitializering(xcore::u32 _size, xcore::atomic::ring<xcore::s32>& _ring, ringData &_ring_data)
+		static bool sInitializering(ncore::u32 _size, ncore::atomic::ring<ncore::s32>& _ring, ringData &_ring_data)
 		{
-			_ring_data.items = (xcore::atomic::ring<xcore::s32>::node*)gAtomicAllocator->allocate((_size+1) * sizeof(xcore::atomic::ring<xcore::s32>::node), 4);
+			_ring_data.items = (ncore::atomic::ring<ncore::s32>::node*)gAtomicAllocator->allocate((_size+1) * sizeof(ncore::atomic::ring<ncore::s32>::node), 4);
 			return _ring.init(_ring_data.items, _size+1);
 		}
 
@@ -177,7 +177,7 @@ UNITTEST_SUITE_BEGIN(ring)
 		UNITTEST_TEST(push_begin2)
 		{
 			ringData _ring_data;
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			CHECK_TRUE(sInitializering(16, f, _ring_data));
 			CHECK_TRUE(f.valid());
 
@@ -185,13 +185,13 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 			f.push_cancel(i1);
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -203,7 +203,7 @@ UNITTEST_SUITE_BEGIN(ring)
 		UNITTEST_TEST(push_cancel2)
 		{
 			ringData _ring_data;
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			CHECK_TRUE(sInitializering(16, f, _ring_data));
 			CHECK_TRUE(f.valid());
 
@@ -211,7 +211,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -219,7 +219,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -233,7 +233,7 @@ UNITTEST_SUITE_BEGIN(ring)
 		UNITTEST_TEST(push_commit2)
 		{
 			ringData _ring_data;
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			CHECK_TRUE(sInitializering(16, f, _ring_data));
 			CHECK_TRUE(f.valid());
 
@@ -241,7 +241,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -249,7 +249,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
@@ -266,7 +266,7 @@ UNITTEST_SUITE_BEGIN(ring)
 		UNITTEST_TEST(push2)
 		{
 			ringData _ring_data;
-			xcore::atomic::ring<xcore::s32> f;
+			ncore::atomic::ring<ncore::s32> f;
 			CHECK_TRUE(sInitializering(16, f, _ring_data));
 			CHECK_TRUE(f.valid());
 
@@ -288,7 +288,7 @@ UNITTEST_SUITE_BEGIN(ring)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(12, f.room());
 
-			xcore::s32 i;
+			ncore::s32 i;
 			f.pop(i);
 			CHECK_EQUAL(55, i);
 			f.pop(i);

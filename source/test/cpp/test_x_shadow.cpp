@@ -4,7 +4,7 @@
 
 #include "catomic/c_shadow.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 using namespace ncore;
 using namespace atomic;
@@ -69,7 +69,7 @@ UNITTEST_SUITE_BEGIN(shadow)
 
 		UNITTEST_TEST(assignment1)
 		{
-			for (xcore::s32 i = -500; i < 600; i++) {
+			for (ncore::s32 i = -500; i < 600; i++) {
 				shadow<s32> sh(i);
 				shadow<s32> sh2;
 				sh2 = sh;

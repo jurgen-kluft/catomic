@@ -9,7 +9,7 @@ UNITTEST_SUITE_BEGIN(atomic)
         UNITTEST_FIXTURE_SETUP() {}
         UNITTEST_FIXTURE_TEARDOWN() {}
 
-		typedef xcore::atomic::atom_s32		aint;
+		typedef ncore::atomic::atom_s32		aint;
 
 		UNITTEST_TEST(construct)
 		{
@@ -54,7 +54,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i;
 			CHECK_EQUAL(0, i.get());
 
-			for (xcore::s32 x=0; x<32; x++)
+			for (ncore::s32 x=0; x<32; x++)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.incr();
@@ -66,7 +66,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(32);
 			CHECK_EQUAL(32, i.get());
 
-			for (xcore::s32 x=32; x>0; --x)
+			for (ncore::s32 x=32; x>0; --x)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.decr();
@@ -102,7 +102,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(0);
 			CHECK_EQUAL(0, i.get());
 
-			for (xcore::s32 x=0; x<32; ++x)
+			for (ncore::s32 x=0; x<32; ++x)
 			{
 				CHECK_EQUAL(x*3, i.get());
 				i.add(3);
@@ -114,7 +114,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(32*159);
 			CHECK_EQUAL(32*159, i.get());
 
-			for (xcore::s32 x=32*159; x>0; x-=159)
+			for (ncore::s32 x=32*159; x>0; x-=159)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.sub(159);
@@ -127,7 +127,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 		UNITTEST_FIXTURE_SETUP() {}
 		UNITTEST_FIXTURE_TEARDOWN() {}
 
-		typedef xcore::atomic::atom_s64	aint;
+		typedef ncore::atomic::atom_s64	aint;
 
 		UNITTEST_TEST(construct)
 		{
@@ -171,7 +171,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i;
 			CHECK_EQUAL(0, i.get());
 
-			for (xcore::s32 x=0; x<32; x++)
+			for (ncore::s32 x=0; x<32; x++)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.incr();
@@ -183,7 +183,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(32);
 			CHECK_EQUAL(32, i.get());
 
-			for (xcore::s32 x=32; x>0; --x)
+			for (ncore::s32 x=32; x>0; --x)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.decr();
@@ -207,7 +207,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(0);
 			CHECK_EQUAL(0, i.get());
 
-			for (xcore::s32 x=0; x<32; ++x)
+			for (ncore::s32 x=0; x<32; ++x)
 			{
 				CHECK_EQUAL(x*3, i.get());
 				i.add(3);
@@ -219,7 +219,7 @@ UNITTEST_SUITE_BEGIN(atomic)
 			aint i(32*159);
 			CHECK_EQUAL(32*159, i.get());
 
-			for (xcore::s32 x=32*159; x>0; x-=159)
+			for (ncore::s32 x=32*159; x>0; x-=159)
 			{
 				CHECK_EQUAL(x, i.get());
 				i.sub(159);

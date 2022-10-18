@@ -4,7 +4,7 @@
 
 #include "catomic/c_mempool.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 using namespace ncore;
 using namespace atomic;
@@ -26,7 +26,7 @@ using namespace atomic;
 UNITTEST_SUITE_BEGIN(mempool)
 {
 	// memory alignment formula
-	inline xcore::s32 alignUp(xcore::s32 integer, xcore::s32 alignment = 4)
+	inline ncore::s32 alignUp(ncore::s32 integer, ncore::s32 alignment = 4)
 	{
 		return ((integer + (alignment-1)) & (~(alignment-1)));
 	}
@@ -67,9 +67,9 @@ UNITTEST_SUITE_BEGIN(mempool)
 		UNITTEST_TEST(init3)
 		{
 			mempool mp;
-			xcore::u32 lifo_chain_size = 0x10;
+			ncore::u32 lifo_chain_size = 0x10;
 			xbyte* p = (xbyte*)gAtomicAllocator->allocate(sizeof(xbyte), 4);
-			xcore::atomic::lifo::link* lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(lifo_chain_size * sizeof(xcore::atomic::lifo::link), 4);
+			ncore::atomic::lifo::link* lifo_chain = (ncore::atomic::lifo::link*)gAtomicAllocator->allocate(lifo_chain_size * sizeof(ncore::atomic::lifo::link), 4);
 			
 			mp.init(lifo_chain, lifo_chain_size, 0xff, p, 0xff);
 			CHECK_TRUE(mp.size() != 0);
@@ -120,7 +120,7 @@ UNITTEST_SUITE_BEGIN(mempool)
 			for (int i = 0; i < T; i++) 
 			
 			{
-				xcore::u32 index = 0xffffffff;
+				ncore::u32 index = 0xffffffff;
 				mp.put(chunk[i], index);
 				CHECK_EQUAL(i, index);
 			}

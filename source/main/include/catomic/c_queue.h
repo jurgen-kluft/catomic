@@ -156,12 +156,12 @@ namespace ncore
 			void			push_commit(T *p, u32& outCursor)
 			{
 				u32 i = mPool.c2i((u8 *) p);
-				ASSERTS(i < mPool.size(), "xcore::atomic::queue<T>: Error, invalid index");
+				ASSERTS(i < mPool.size(), "ncore::atomic::queue<T>: Error, invalid index");
 
 				mRef[i].incr();
 
 				bool fp = mFifo.push(i, outCursor);
-				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
+				ASSERTS(fp, "ncore::atomic::queue<T>: Error, state is corrupted!");
 			}
 
 			void			push_commit(T *p)
@@ -188,13 +188,13 @@ namespace ncore
 				// Holding two references. One for the queue itself 
 				// and one for the user.
 				// Same as in push_begin() -> push_commit() transaction.
-				ASSERTS(i < mPool.max_size(), "xcore::atomic::queue<T>: Error, invalid index");
+				ASSERTS(i < mPool.max_size(), "ncore::atomic::queue<T>: Error, invalid index");
 				mRef[i].set(2);
 
 				*(T *)p = inData;
 
 				bool fp = mFifo.push(i, outCursor);
-				ASSERTS(fp, "xcore::atomic::queue<T>: Error, state is corrupted!");
+				ASSERTS(fp, "ncore::atomic::queue<T>: Error, state is corrupted!");
 
 				return true;
 			}
@@ -318,7 +318,7 @@ namespace ncore
 			u32 i;
 			u8 *p = mPool.get(i);
 
-			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
+			ASSERTS(p!=NULL, "ncore::atomic::queue<T>: Error, something is wrong!");
 
 			mFifo.reset(i);
 			mRef[i].set(1);
@@ -360,7 +360,7 @@ namespace ncore
 			u32 i;
 			u8 *p = mPool.get(i);
 
-			ASSERTS(p!=NULL, "xcore::atomic::queue<T>: Error, something is wrong!");
+			ASSERTS(p!=NULL, "ncore::atomic::queue<T>: Error, something is wrong!");
 
 			mFifo.reset(i);
 			mRef[i].set(1);

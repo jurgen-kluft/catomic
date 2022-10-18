@@ -4,7 +4,7 @@
 
 #include "catomic/c_stack.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 UNITTEST_SUITE_BEGIN(stack)
 {
@@ -15,7 +15,7 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		UNITTEST_TEST(construct1)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 1);
 			CHECK_TRUE(f.valid());
 
@@ -26,7 +26,7 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		UNITTEST_TEST(construct2)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -37,7 +37,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		
 		UNITTEST_TEST(push_begin)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -45,12 +45,12 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -58,7 +58,7 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		UNITTEST_TEST(push_cancel)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -66,7 +66,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -74,7 +74,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -85,7 +85,7 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		UNITTEST_TEST(push_commit)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -93,7 +93,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -101,7 +101,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
@@ -115,7 +115,7 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		UNITTEST_TEST(push)
 		{
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			f.init(gAtomicAllocator, 16);
 			CHECK_TRUE(f.valid());
 
@@ -137,7 +137,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(12, f.room());
 
-			xcore::s32 i;
+			ncore::s32 i;
 			f.pop(i);
 			CHECK_EQUAL(99, i);
 			f.pop(i);
@@ -153,9 +153,9 @@ UNITTEST_SUITE_BEGIN(stack)
 
 		struct StackData
 		{
-			xcore::atomic::lifo::link*		lifo_chain;
-			xcore::atomic::lifo::link*		mempool_lifo_chain;
-			xcore::xbyte*					mempool_buf;
+			ncore::atomic::lifo::link*		lifo_chain;
+			ncore::atomic::lifo::link*		mempool_lifo_chain;
+			ncore::xbyte*					mempool_buf;
 
 			StackData()
 				: lifo_chain(NULL)
@@ -170,14 +170,14 @@ UNITTEST_SUITE_BEGIN(stack)
 			}
 		};
 
-		static bool sInitializeStack(xcore::u32 _size, xcore::atomic::stack<xcore::s32>& _stack, StackData &_stack_data)
+		static bool sInitializeStack(ncore::u32 _size, ncore::atomic::stack<ncore::s32>& _stack, StackData &_stack_data)
 		{
-			_stack_data.lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(xcore::atomic::lifo::link), 4);
-			_stack_data.mempool_lifo_chain = (xcore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(xcore::atomic::lifo::link), 4);
+			_stack_data.lifo_chain = (ncore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(ncore::atomic::lifo::link), 4);
+			_stack_data.mempool_lifo_chain = (ncore::atomic::lifo::link*)gAtomicAllocator->allocate(_size * sizeof(ncore::atomic::lifo::link), 4);
 
-			xcore::u32 mempool_esize = sizeof(xcore::s32);
-			xcore::u32 mempool_size = mempool_esize * _size;
-			_stack_data.mempool_buf = (xcore::xbyte*)gAtomicAllocator->allocate(mempool_size, 4);
+			ncore::u32 mempool_esize = sizeof(ncore::s32);
+			ncore::u32 mempool_size = mempool_esize * _size;
+			_stack_data.mempool_buf = (ncore::xbyte*)gAtomicAllocator->allocate(mempool_size, 4);
 
 			return _stack.init(_size, _stack_data.lifo_chain, _stack_data.mempool_lifo_chain, _stack_data.mempool_buf, mempool_size, mempool_esize);
 		}
@@ -187,7 +187,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_begin2)
 		{
 			StackData _stack_data;
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			CHECK_TRUE(sInitializeStack(16, f, _stack_data));
 			CHECK_TRUE(f.valid());
 
@@ -195,12 +195,12 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -211,7 +211,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_cancel2)
 		{
 			StackData _stack_data;
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			CHECK_TRUE(sInitializeStack(16, f, _stack_data));
 			CHECK_TRUE(f.valid());
 
@@ -219,7 +219,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -227,7 +227,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -241,7 +241,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push_commit2)
 		{
 			StackData _stack_data;
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			CHECK_TRUE(sInitializeStack(16, f, _stack_data));
 			CHECK_TRUE(f.valid());
 
@@ -249,7 +249,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
 
-			xcore::s32* i1 = f.push_begin();
+			ncore::s32* i1 = f.push_begin();
 			CHECK_NOT_NULL(i1);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(16, f.room());
@@ -257,7 +257,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
 
-			xcore::s32* i2 = f.push_begin();
+			ncore::s32* i2 = f.push_begin();
 			CHECK_NOT_NULL(i2);
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(15, f.room());
@@ -274,7 +274,7 @@ UNITTEST_SUITE_BEGIN(stack)
 		UNITTEST_TEST(push2)
 		{
 			StackData _stack_data;
-			xcore::atomic::stack<xcore::s32> f;
+			ncore::atomic::stack<ncore::s32> f;
 			CHECK_TRUE(sInitializeStack(16, f, _stack_data));
 			CHECK_TRUE(f.valid());
 
@@ -296,7 +296,7 @@ UNITTEST_SUITE_BEGIN(stack)
 			CHECK_EQUAL(16, f.max_size());
 			CHECK_EQUAL(12, f.room());
 
-			xcore::s32 i;
+			ncore::s32 i;
 			f.pop(i);
 			CHECK_EQUAL(99, i);
 			f.pop(i);

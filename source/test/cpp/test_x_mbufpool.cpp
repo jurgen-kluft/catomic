@@ -5,7 +5,7 @@
 #include "catomic/c_mbufpool.h"
 #include "catomic/c_mbuf.h"
 
-extern xcore::alloc_t* gAtomicAllocator;
+extern ncore::alloc_t* gAtomicAllocator;
 
 // #include <iostream>
 // using namespace std;
@@ -16,7 +16,7 @@ using namespace mbuf;
 
 UNITTEST_SUITE_BEGIN(mbufpool)
 {
-	inline xcore::s32 alignUp(xcore::s32 integer, xcore::s32 alignment = 4) 
+	inline ncore::s32 alignUp(ncore::s32 integer, ncore::s32 alignment = 4) 
 	{
 		return ((integer + (alignment-1)) & (~(alignment-1)));
 	}
