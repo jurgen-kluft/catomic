@@ -30,7 +30,7 @@ namespace ncore
 			{
 				inline	node() {}
 				T		item;
-				XCORE_CLASS_PLACEMENT_NEW_DELETE
+				DCORE_CLASS_PLACEMENT_NEW_DELETE
 			};
 
 		protected:
@@ -52,7 +52,7 @@ namespace ncore
 			T*				_push_transaction;
 
 		public:
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 			/**
 			* Construct an invalid ring, use init() to initialize a valid ring.

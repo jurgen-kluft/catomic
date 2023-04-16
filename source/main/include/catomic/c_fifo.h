@@ -76,7 +76,7 @@ namespace ncore
 							, _max_size(0)
 							, _allocator(NULL)									{ }
 
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 16)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 16)
 
 			/**
 			* Destroy lifo.

@@ -46,7 +46,7 @@ namespace ncore
 
 			struct link : public link_t
 			{
-				XCORE_CLASS_PLACEMENT_NEW_DELETE
+				DCORE_CLASS_PLACEMENT_NEW_DELETE
 			};
 
 		protected:
@@ -92,7 +92,7 @@ namespace ncore
 			}
 
 		public:
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 			/**
 			* Create empty lifo. It can be initialized later by calling init().

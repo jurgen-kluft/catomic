@@ -29,7 +29,7 @@ namespace ncore
 			lifo		_lifo;
 
 		public:
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 						stack() {}
 

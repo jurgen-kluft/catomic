@@ -25,7 +25,7 @@ namespace ncore
 		class queue
 		{
 		public:
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 			/**
 			* Constructor.

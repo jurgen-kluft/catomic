@@ -30,7 +30,7 @@ namespace ncore
 			T			_val[2];
 
 		public:
-			XCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
+			DCORE_CLASS_NEW_DELETE(sGetAllocator, 4)
 
 			shadow() : _wcount(0)
 			{
