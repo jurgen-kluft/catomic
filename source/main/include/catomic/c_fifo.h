@@ -171,7 +171,7 @@ namespace ncore
 				u64 t = _tail.next_salt32.salt;	// push
 
 				if (t < h)
-					t += X_CONSTANT_U64(0x0000000100000000);
+					t += D_CONSTANT_U64(0x0000000100000000);
 
 				return (c>=h && c<t);
 			}
