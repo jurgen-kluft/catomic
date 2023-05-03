@@ -3,7 +3,6 @@ package catomic
 import (
 	cbase "github.com/jurgen-kluft/cbase/package"
 	"github.com/jurgen-kluft/ccode/denv"
-	centry "github.com/jurgen-kluft/centry/package"
 	cunittest "github.com/jurgen-kluft/cunittest/package"
 )
 
@@ -11,13 +10,11 @@ import (
 func GetPackage() *denv.Package {
 	// Dependencies
 	unittestpkg := cunittest.GetPackage()
-	entrypkg := centry.GetPackage()
 	basepkg := cbase.GetPackage()
 
 	// The main (catomic) package
 	mainpkg := denv.NewPackage("catomic")
 	mainpkg.AddPackage(unittestpkg)
-	mainpkg.AddPackage(entrypkg)
 	mainpkg.AddPackage(basepkg)
 
 	// 'catomic' library
@@ -27,7 +24,6 @@ func GetPackage() *denv.Package {
 	// 'catomic' unittest project
 	maintest := denv.SetupDefaultCppTestProject("catomic_test", "github.com\\jurgen-kluft\\catomic")
 	maintest.Dependencies = append(maintest.Dependencies, unittestpkg.GetMainLib())
-	maintest.Dependencies = append(maintest.Dependencies, entrypkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, basepkg.GetMainLib())
 	maintest.Dependencies = append(maintest.Dependencies, mainlib)
 
