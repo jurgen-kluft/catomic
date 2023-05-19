@@ -6,7 +6,7 @@
 #endif
 
 #include "ccore/c_debug.h"
-#include "cbase/c_allocator.h"
+#include "ccore/c_allocator.h"
 
 #include "catomic/private/c_allocator.h"
 #include "catomic/private/c_compiler.h"
