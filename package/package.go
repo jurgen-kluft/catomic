@@ -18,13 +18,13 @@ func GetPackage() *denv.Package {
 	mainpkg.AddPackage(basepkg)
 
 	// 'catomic' library
-	mainlib := denv.SetupDefaultCppLibProject("catomic", "github.com\\jurgen-kluft\\catomic")
-	mainlib.Dependencies = append(mainlib.Dependencies, basepkg.GetMainLib())
+	mainlib := denv.SetupCppLibProject("catomic", "github.com\\jurgen-kluft\\catomic")
+	mainlib.AddDependencies(basepkg.GetMainLib()...)
 
 	// 'catomic' unittest project
 	maintest := denv.SetupDefaultCppTestProject("catomic_test", "github.com\\jurgen-kluft\\catomic")
-	maintest.Dependencies = append(maintest.Dependencies, unittestpkg.GetMainLib())
-	maintest.Dependencies = append(maintest.Dependencies, basepkg.GetMainLib())
+	maintest.AddDependencies(unittestpkg.GetMainLib()...)
+	maintest.AddDependencies(basepkg.GetMainLib()...)
 	maintest.Dependencies = append(maintest.Dependencies, mainlib)
 
 	mainpkg.AddMainLib(mainlib)
