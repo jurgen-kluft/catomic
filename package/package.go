@@ -13,19 +13,19 @@ func GetPackage() *denv.Package {
 	basepkg := cbase.GetPackage()
 
 	// The main (catomic) package
-	mainpkg := denv.NewPackage("catomic")
+	mainpkg := denv.NewPackage("github.com\\jurgen-kluft", "catomic")
 	mainpkg.AddPackage(unittestpkg)
 	mainpkg.AddPackage(basepkg)
 
 	// 'catomic' library
-	mainlib := denv.SetupCppLibProject("catomic", "github.com\\jurgen-kluft\\catomic")
+	mainlib := denv.SetupCppLibProject(mainpkg, "catomic")
 	mainlib.AddDependencies(basepkg.GetMainLib()...)
 
 	// 'catomic' unittest project
-	maintest := denv.SetupDefaultCppTestProject("catomic_test", "github.com\\jurgen-kluft\\catomic")
+	maintest := denv.SetupCppTestProject(mainpkg, "catomic_test")
 	maintest.AddDependencies(unittestpkg.GetMainLib()...)
 	maintest.AddDependencies(basepkg.GetMainLib()...)
-	maintest.Dependencies = append(maintest.Dependencies, mainlib)
+	maintest.AddDependency(mainlib)
 
 	mainpkg.AddMainLib(mainlib)
 	mainpkg.AddUnittest(maintest)
